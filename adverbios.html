@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Repaso de Español: Los Adverbios | Saint George</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- html2canvas para la descarga del comprobante en PNG -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0f5ff',
+              100: '#e0ecff',
+              500: '#2563eb',
+              600: '#1d4ed8',
+              700: '#1e40af',
+              900: '#0f172a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Suavizado de tipografía y animaciones */
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .pulse-glow {
+      box-shadow: 0 0 25px rgba(37, 99, 235, 0.25);
+    }
+    /* Estilos para el capture de html2canvas */
+    #reporte-card {
+      background: #ffffff;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between p-3 sm:p-6 antialiased">
+
+  <!-- ENCABEZADO SUPERIOR -->
+  <header class="max-w-2xl mx-auto w-full mb-3 flex items-center justify-between bg-white px-5 py-3.5 rounded-2xl shadow-sm border border-slate-200">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white font-extrabold text-lg shadow-md shadow-blue-500/30">
+        SG
+      </div>
+      <div>
+        <h1 class="text-xs font-bold uppercase tracking-wider text-blue-700">Saint George School</h1>
+        <p class="text-sm font-extrabold text-slate-900 leading-none">Español: Los Adverbios</p>
+      </div>
+    </div>
+    <div class="text-right">
+      <span class="text-xs text-slate-400 font-semibold block">Estudiante:</span>
+      <span class="text-sm font-bold text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">Mati 👦🏻</span>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="max-w-2xl mx-auto w-full flex-1 flex flex-col justify-center">
+
+    <!-- PANTALLA 1: BIENVENIDA -->
+    <div id="pantalla-inicio" class="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80 text-center">
+      <div class="inline-flex p-3 bg-blue-50 rounded-2xl text-blue-600 mb-4">
+        <svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-2">¡Hola, Mati! 🚀</h2>
+      <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6 max-w-lg mx-auto">
+        Es momento de demostrar lo que aprendiste sobre <strong class="text-blue-700">Los Adverbios</strong>: lugar, tiempo, modo, cantidad, afirmación, negación y duda.
+      </p>
+
+      <div class="grid grid-cols-2 gap-3 mb-6 text-left max-w-md mx-auto">
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center space-x-3">
+          <div class="text-2xl">📝</div>
+          <div>
+            <div class="text-xs text-slate-400 font-semibold">Preguntas</div>
+            <div class="font-bold text-slate-800">20 desafíos</div>
+          </div>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center space-x-3">
+          <div class="text-2xl">🎯</div>
+          <div>
+            <div class="text-xs text-slate-400 font-semibold">Puntaje Total</div>
+            <div class="font-bold text-blue-600">100 Puntos</div>
+          </div>
+        </div>
+      </div>
+
+      <button id="btn-iniciar" onclick="iniciarTest()" class="w-full max-w-md bg-blue-600 hover:bg-blue-700 active:scale-[0.98] transition-all text-white font-bold py-4 px-8 rounded-2xl shadow-lg shadow-blue-500/30 text-lg flex items-center justify-center space-x-2 mx-auto cursor-pointer">
+        <span>Comenzar el Test</span>
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+      </button>
+
+      <button onclick="verHistorialModal()" class="mt-4 text-xs font-bold text-slate-500 hover:text-slate-800 underline block mx-auto py-1">
+        📜 Ver mis intentos anteriores
+      </button>
+    </div>
+
+    <!-- PANTALLA 2: ÁREA DE PREGUNTAS -->
+    <div id="pantalla-quiz" class="hidden bg-white rounded-3xl p-5 sm:p-7 shadow-xl border border-slate-200/80 flex flex-col">
+      <!-- Barra superior de estado -->
+      <div class="flex items-center justify-between mb-4">
+        <span id="badge-clasificacion" class="text-xs font-extrabold uppercase px-3 py-1 bg-blue-100 text-blue-700 rounded-full tracking-wider">
+          Concepto
+        </span>
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-bold text-slate-400">Puntos:</span>
+          <span id="puntos-actuales" class="font-extrabold text-blue-600 text-base bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100">0 pts</span>
+        </div>
+      </div>
+
+      <!-- Barra de progreso continua -->
+      <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-5">
+        <div id="barra-progreso" class="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-300" style="width: 5%"></div>
+      </div>
+
+      <div class="flex items-center justify-between text-xs text-slate-400 font-semibold mb-2">
+        <span id="contador-pregunta">Pregunta 1 de 20</span>
+        <span>5 pts por acierto</span>
+      </div>
+
+      <!-- Texto de la pregunta -->
+      <div class="min-h-[70px] flex items-center mb-6">
+        <h3 id="texto-pregunta" class="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
+          Cargando pregunta...
+        </h3>
+      </div>
+
+      <!-- Opciones de respuesta -->
+      <div id="contenedor-opciones" class="space-y-3 mb-6">
+        <!-- Generadas dinámicamente con JS -->
+      </div>
+
+      <!-- Mensaje didáctico de Feedback -->
+      <div id="caja-feedback" class="hidden p-4 rounded-2xl mb-5 text-sm transition-all border">
+        <div class="flex items-start space-x-3">
+          <span id="icono-feedback" class="text-2xl leading-none"></span>
+          <div class="flex-1">
+            <h4 id="titulo-feedback" class="font-extrabold text-base leading-tight mb-1"></h4>
+            <p id="texto-explicacion" class="text-slate-600 text-xs sm:text-sm leading-relaxed"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón siguiente -->
+      <button id="btn-siguiente" onclick="siguientePregunta()" class="hidden w-full bg-slate-900 hover:bg-black active:scale-[0.98] transition-all text-white font-bold py-3.5 px-6 rounded-2xl text-base flex items-center justify-center space-x-2 cursor-pointer shadow-md">
+        <span>Siguiente Pregunta</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+      </button>
+    </div>
+
+    <!-- PANTALLA 3: RESULTADOS Y COMPROBANTE -->
+    <div id="pantalla-resultados" class="hidden">
+      <!-- Tarjeta exportable como imagen -->
+      <div id="reporte-card" class="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-slate-200 relative overflow-hidden">
+        
+        <!-- Marca de agua decorativa -->
+        <div class="absolute -right-12 -top-12 w-48 h-48 bg-blue-50 rounded-full opacity-60 pointer-events-none"></div>
+
+        <!-- Encabezado del reporte -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5 relative">
+          <div class="flex items-center space-x-3">
+            <div class="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-blue-500/30">
+              SG
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-widest text-blue-600 block">Reporte Oficial de Práctica</span>
+              <h2 class="text-xl font-extrabold text-slate-900">Saint George International</h2>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[11px] font-semibold text-slate-400 block">Asignatura</span>
+            <span class="text-xs font-bold text-slate-800">Español • 3° Grado</span>
+          </div>
+        </div>
+
+        <!-- Datos del Estudiante -->
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-6 flex items-center justify-between">
+          <div>
+            <span class="text-xs text-slate-400 block font-semibold">Estudiante:</span>
+            <span class="text-lg font-black text-slate-800 tracking-tight">Osvaldo Matías</span>
+          </div>
+          <div class="text-right">
+            <span class="text-xs text-slate-400 block font-semibold">Fecha y Hora:</span>
+            <span id="fecha-resultado" class="text-xs font-bold text-slate-600">--/--/----</span>
+          </div>
+        </div>
+
+        <!-- Cuadro Central de Calificación -->
+        <div class="text-center py-4 px-2 bg-gradient-to-b from-blue-50/50 to-white rounded-3xl border border-blue-100 mb-6 relative">
+          <div id="medalla-resultado" class="text-5xl mb-2">🏆</div>
+          <div class="text-xs font-bold text-blue-700 tracking-wider uppercase mb-1">Calificación Obtenida</div>
+          <div class="flex items-baseline justify-center space-x-2">
+            <span id="nota-final" class="text-6xl sm:text-7xl font-black text-slate-900 tracking-tight">100</span>
+            <span class="text-2xl font-bold text-slate-400">/ 100 pts</span>
+          </div>
+
+          <div class="mt-3 flex justify-center space-x-6 text-sm font-semibold">
+            <div>
+              <span class="text-slate-400">Aciertos:</span>
+              <span id="aciertos-total" class="text-emerald-600 font-extrabold ml-1">20 de 20</span>
+            </div>
+            <div>
+              <span class="text-slate-400">Efectividad:</span>
+              <span id="porcentaje-total" class="text-blue-600 font-extrabold ml-1">100%</span>
+            </div>
+          </div>
+
+          <div id="mensaje-motivacional" class="mt-4 px-4 py-2 bg-white rounded-xl inline-block text-xs sm:text-sm font-bold text-slate-700 border border-slate-200/80 shadow-sm">
+            ¡Excelente trabajo! Dominio completo de los adverbios.
+          </div>
+        </div>
+
+        <!-- Resumen de temas repasados -->
+        <div class="text-xs text-slate-500 border-t border-slate-100 pt-3 flex flex-wrap justify-between gap-1">
+          <span>✔️ Lugar, Tiempo y Modo</span>
+          <span>✔️ Cantidad</span>
+          <span>✔️ Afirmación, Negación y Duda</span>
+        </div>
+      </div>
+
+      <!-- BOTONES DE ACCIÓN (Fuera de la tarjeta para no ensuciar la foto) -->
+      <div class="mt-6 space-y-3">
+        <!-- BOTÓN DESCARGAR IMAGEN PARA WHATSAPP -->
+        <button id="btn-descargar-foto" onclick="descargarComprobante()" class="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] transition-all text-white font-extrabold py-4 px-6 rounded-2xl text-base sm:text-lg flex items-center justify-center space-x-3 shadow-lg shadow-emerald-600/30 cursor-pointer">
+          <span class="text-2xl">📸</span>
+          <span>Descargar Foto para WhatsApp</span>
+        </button>
+
+        <div class="grid grid-cols-2 gap-3">
+          <button onclick="reiniciarTest()" class="w-full bg-slate-800 hover:bg-slate-900 active:scale-[0.98] text-white font-bold py-3 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 cursor-pointer">
+            <span>🔄 Repetir Test</span>
+          </button>
+          <button onclick="verHistorialModal()" class="w-full bg-white hover:bg-slate-50 active:scale-[0.98] text-slate-700 border border-slate-300 font-bold py-3 px-4 rounded-xl text-sm transition-all flex items-center justify-center space-x-2 cursor-pointer">
+            <span>📜 Ver Historial</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL HISTORIAL DE INTENTOS -->
+  <div id="modal-historial" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 flex flex-col max-h-[85vh]">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+        <h3 class="font-extrabold text-lg text-slate-900 flex items-center space-x-2">
+          <span>📜</span>
+          <span>Historial de Prácticas</span>
+        </h3>
+        <button onclick="cerrarHistorialModal()" class="text-slate-400 hover:text-slate-600 p-1 text-2xl leading-none cursor-pointer">&times;</button>
+      </div>
+
+      <div id="lista-historial" class="overflow-y-auto flex-1 space-y-2 pr-1">
+        <!-- Renderizado dinámicamente -->
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 mt-4 flex space-x-2">
+        <button onclick="borrarHistorial()" class="text-xs text-rose-500 font-semibold hover:underline py-2 px-3">
+          Borrar historial
+        </button>
+        <button onclick="cerrarHistorialModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-2.5 rounded-xl text-sm">
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICACIÓN -->
+  <div id="toast" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs sm:text-sm font-semibold px-5 py-3 rounded-2xl shadow-xl transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center space-x-2">
+    <span id="toast-icon">✨</span>
+    <span id="toast-msg">Mensaje</span>
+  </div>
+
+  <!-- JAVASCRIPT DEL TEST -->
+  <script>
+    // BANCO DE 20 PREGUNTAS (5 PUNTOS C/U = 100 PUNTOS TOTALES)
+    // Basado fielmente en el resumen del Colegio Saint George
+    const bancoPreguntas = [
+      {
+        clasificacion: "Concepto de Adverbio",
+        pregunta: "¿Qué es un adverbio según tu material de estudio?",
+        opciones: [
+          "Una palabra invariable que acompaña al verbo, al adjetivo o a otro adverbio.",
+          "Una acción que realiza el sustantivo en la oración.",
+          "Una palabra que siempre tiene masculino, femenino, singular y plural."
+        ],
+        correcta: 0,
+        explicacion: "¡Exacto! El adverbio es una palabra invariable que indica circunstancias como lugar, tiempo, modo, cantidad, etc."
+      },
+      {
+        clasificacion: "Características",
+        pregunta: "Una característica fundamental de los adverbios es que:",
+        opciones: [
+          "Tienen género masculino y femenino.",
+          "No tienen género ni número (son invariables).",
+          "Siempre terminan en la letra 's'."
+        ],
+        correcta: 1,
+        explicacion: "¡Muy bien! Los adverbios no cambian: no tienen género (femenino/masculino) ni número (singular/plural)."
+      },
+      {
+        clasificacion: "Adverbios de Lugar",
+        pregunta: "¿Qué indican los adverbios de lugar?",
+        opciones: [
+          "Indican cuándo ocurre la acción.",
+          "Indican de qué manera o cómo se hace algo.",
+          "Indican dónde ocurre la acción."
+        ],
+        correcta: 2,
+        explicacion: "¡Correcto! Los adverbios de lugar responden a la pregunta: ¿Dónde ocurre la acción?"
+      },
+      {
+        clasificacion: "Adverbios de Lugar",
+        pregunta: "En la oración: «El gato está abajo de la cama», ¿cuál es el adverbio de lugar?",
+        opciones: [
+          "abajo",
+          "gato",
+          "cama"
+        ],
+        correcta: 0,
+        explicacion: "¡Excelente! 'Abajo' nos indica exactamente el lugar donde está el gato."
+      },
+      {
+        clasificacion: "Adverbios de Lugar",
+        pregunta: "¿Cuál de estos grupos contiene ÚNICAMENTE adverbios de lugar?",
+        opciones: [
+          "ayer, hoy, mañana",
+          "aquí, allí, cerca, lejos",
+          "bien, mal, despacio"
+        ],
+        correcta: 1,
+        explicacion: "¡Así es! 'Aquí, allí, cerca y lejos' son adverbios que señalan lugares o distancias."
+      },
+      {
+        clasificacion: "Adverbios de Tiempo",
+        pregunta: "¿Qué pregunta responden los adverbios de tiempo?",
+        opciones: [
+          "¿Cuándo ocurre la acción?",
+          "¿Cuánto cuesta?",
+          "¿Quién lo hizo?"
+        ],
+        correcta: 0,
+        explicacion: "¡Correcto! Los adverbios de tiempo nos dicen el momento en que sucede la acción."
+      },
+      {
+        clasificacion: "Adverbios de Tiempo",
+        pregunta: "En la oración: «Llego temprano a mi escuela», la palabra subrayada es un adverbio de:",
+        preguntaSub: "temprano",
+        opciones: [
+          "Modo",
+          "Tiempo",
+          "Cantidad"
+        ],
+        correcta: 1,
+        explicacion: "¡Perfecto! 'Temprano' (al igual que hoy, ayer, tarde) es un adverbio de tiempo."
+      },
+      {
+        clasificacion: "Adverbios de Tiempo",
+        pregunta: "Selecciona la oración que tiene un adverbio de tiempo:",
+        opciones: [
+          "Tu casa está lejos.",
+          "Ayer comí helado.",
+          "Mi mamá come despacio."
+        ],
+        correcta: 1,
+        explicacion: "¡Muy bien! 'Ayer' indica el momento en que comiste helado."
+      },
+      {
+        clasificacion: "Adverbios de Modo",
+        pregunta: "Los adverbios de modo nos indican:",
+        opciones: [
+          "Cómo o de qué manera se realiza la acción.",
+          "Cuánto peso tiene el objeto.",
+          "En qué lugar está la persona."
+        ],
+        correcta: 0,
+        explicacion: "¡Exacto! Los adverbios de modo responden a la pregunta: ¿Cómo se realiza la acción?"
+      },
+      {
+        clasificacion: "Adverbios de Modo",
+        pregunta: "En: «Yo hago el examen fácilmente», la palabra 'fácilmente' es un adverbio de:",
+        opciones: [
+          "Lugar",
+          "Tiempo",
+          "Modo"
+        ],
+        correcta: 2,
+        explicacion: "¡Genial! 'Fácilmente' describe el modo o manera en que haces el examen."
+      },
+      {
+        clasificacion: "Adverbios de Modo",
+        pregunta: "¿Cuál de las siguientes palabras es un adverbio de modo?",
+        opciones: [
+          "bien",
+          "bastante",
+          "arriba"
+        ],
+        correcta: 0,
+        explicacion: "¡Correcto! En tu hoja: 'bien, mal, despacio, rápidamente, lentamente' son de modo."
+      },
+      {
+        clasificacion: "Adverbios de Cantidad",
+        pregunta: "¿Qué expresan los adverbios de cantidad?",
+        opciones: [
+          "Una duda o incertidumbre.",
+          "Cantidad o proporción.",
+          "Una afirmación de la verdad."
+        ],
+        correcta: 1,
+        explicacion: "¡Muy bien! Los adverbios de cantidad señalan intensidad, número o proporción."
+      },
+      {
+        clasificacion: "Adverbios de Cantidad",
+        pregunta: "En la oración: «Tengo bastante calor», la palabra 'bastante' funciona como adverbio de:",
+        opciones: [
+          "Cantidad",
+          "Negación",
+          "Tiempo"
+        ],
+        correcta: 0,
+        explicacion: "¡Eso es! 'Bastante' indica la cantidad o grado de calor."
+      },
+      {
+        clasificacion: "Adverbios de Cantidad",
+        pregunta: "Identifica el adverbio en: «Él quiere menos comida»:",
+        opciones: [
+          "Él",
+          "comida",
+          "menos"
+        ],
+        correcta: 2,
+        explicacion: "¡Correcto! 'Menos' es un adverbio de cantidad que modifica la proporción."
+      },
+      {
+        clasificacion: "Adverbios de Afirmación",
+        pregunta: "Los adverbios de afirmación se usan para:",
+        opciones: [
+          "Afirmar algo o expresar que algo es verdadero.",
+          "Negar rotundamente una acción.",
+          "Expresar duda o indecisión."
+        ],
+        correcta: 0,
+        explicacion: "¡Excelente! Afirman una idea o dan certeza de que es verdad."
+      },
+      {
+        clasificacion: "Adverbios de Afirmación",
+        pregunta: "En la oración: «Ciertamente, mi mamá es bella», ¿cuál es el adverbio de afirmación?",
+        opciones: [
+          "Ciertamente",
+          "mamá",
+          "bella"
+        ],
+        correcta: 0,
+        explicacion: "¡Muy bien! 'Ciertamente' confirma con seguridad la afirmación."
+      },
+      {
+        clasificacion: "Adverbios de Negación",
+        pregunta: "¿Cuál de estos ejemplos corresponde a un adverbio de negación?",
+        opciones: [
+          "quizás",
+          "nunca",
+          "pronto"
+        ],
+        correcta: 1,
+        explicacion: "¡Exacto! 'No, nunca, jamás y tampoco' son adverbios de negación."
+      },
+      {
+        clasificacion: "Adverbios de Negación",
+        pregunta: "En: «Él tampoco quiere bailar», ¿qué tipo de adverbio es 'tampoco'?",
+        opciones: [
+          "De Negación",
+          "De Duda",
+          "De Cantidad"
+        ],
+        correcta: 0,
+        explicacion: "¡Correcto! 'Tampoco' expresa rechazo o negación en la oración."
+      },
+      {
+        clasificacion: "Adverbios de Duda",
+        pregunta: "Los adverbios de duda indican:",
+        opciones: [
+          "Incertidumbre o posibilidad.",
+          "Una hora exacta del día.",
+          "Un lugar dentro de la casa."
+        ],
+        correcta: 0,
+        explicacion: "¡Así se hace! Expresan que algo no es 100% seguro, sino una posibilidad."
+      },
+      {
+        clasificacion: "Adverbios de Duda",
+        pregunta: "En la oración: «Tal vez llueva esta tarde», ¿cuál es el adverbio que expresa duda?",
+        opciones: [
+          "esta tarde",
+          "llueva",
+          "Tal vez"
+        ],
+        correcta: 2,
+        explicacion: "¡Brillante! 'Tal vez' (junto a quizás, acaso, posiblemente) es un adverbio de duda."
+      }
+    ];
+
+    // Variables de Estado
+    let indiceActual = 0;
+    let puntajeAcumulado = 0;
+    let respuestasCorrectas = 0;
+    let yaRespondio = false;
+
+    // Inicialización
+    function iniciarTest() {
+      indiceActual = 0;
+      puntajeAcumulado = 0;
+      respuestasCorrectas = 0;
+      yaRespondio = false;
+
+      document.getElementById('pantalla-inicio').classList.add('hidden');
+      document.getElementById('pantalla-resultados').classList.add('hidden');
+      document.getElementById('pantalla-quiz').classList.remove('hidden');
+
+      cargarPregunta();
+    }
+
+    function cargarPregunta() {
+      yaRespondio = false;
+      const q = bancoPreguntas[indiceActual];
+
+      // Actualizar Encabezados y Barra
+      document.getElementById('badge-clasificacion').innerText = q.clasificacion;
+      document.getElementById('contador-pregunta').innerText = `Pregunta ${indiceActual + 1} de ${bancoPreguntas.length}`;
+      document.getElementById('puntos-actuales').innerText = `${puntajeAcumulado} pts`;
+
+      const porcentajeProgreso = ((indiceActual + 1) / bancoPreguntas.length) * 100;
+      document.getElementById('barra-progreso').style.width = `${porcentajeProgreso}%`;
+
+      // Texto de la pregunta
+      document.getElementById('texto-pregunta').innerText = q.pregunta;
+
+      // Opciones
+      const contOpciones = document.getElementById('contenedor-opciones');
+      contOpciones.innerHTML = '';
+
+      q.opciones.forEach((opcion, i) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-200 bg-white hover:border-blue-400 hover:bg-blue-50/40 text-slate-800 font-semibold text-base transition-all flex items-center space-x-3 active:scale-[0.99] cursor-pointer";
+        btn.id = `opcion-${i}`;
+        btn.innerHTML = `
+          <span class="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 font-bold flex items-center justify-center text-sm border border-slate-200 shrink-0">
+            ${String.fromCharCode(65 + i)}
+          </span>
+          <span class="flex-1 leading-snug">${opcion}</span>
+        `;
+        btn.onclick = () => seleccionarOpcion(i);
+        contOpciones.appendChild(btn);
+      });
+
+      // Ocultar feedback y botón siguiente
+      document.getElementById('caja-feedback').className = "hidden p-4 rounded-2xl mb-5 text-sm transition-all border";
+      document.getElementById('btn-siguiente').classList.add('hidden');
+    }
+
+    function seleccionarOpcion(indiceSeleccionado) {
+      if (yaRespondio) return;
+      yaRespondio = true;
+
+      const q = bancoPreguntas[indiceActual];
+      const esCorrecta = indiceSeleccionado === q.correcta;
+      const cajaFeedback = document.getElementById('caja-feedback');
+      const iconoFeedback = document.getElementById('icono-feedback');
+      const tituloFeedback = document.getElementById('titulo-feedback');
+      const textoExplicacion = document.getElementById('texto-explicacion');
+
+      // Deshabilitar botones y pintar colores
+      for (let i = 0; i < q.opciones.length; i++) {
+        const btn = document.getElementById(`opcion-${i}`);
+        btn.disabled = true;
+        btn.classList.remove('hover:border-blue-400', 'hover:bg-blue-50/40', 'cursor-pointer');
+
+        if (i === q.correcta) {
+          btn.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-900');
+          btn.querySelector('span').classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+        } else if (i === indiceSeleccionado && !esCorrecta) {
+          btn.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-900');
+          btn.querySelector('span').classList.add('bg-rose-500', 'text-white', 'border-rose-600');
+        } else {
+          btn.classList.add('opacity-40');
+        }
+      }
+
+      if (esCorrecta) {
+        puntajeAcumulado += 5;
+        respuestasCorrectas++;
+        document.getElementById('puntos-actuales').innerText = `${puntajeAcumulado} pts`;
+
+        cajaFeedback.className = "p-4 rounded-2xl mb-5 text-sm transition-all border border-emerald-200 bg-emerald-50 text-emerald-950";
+        iconoFeedback.innerText = "🌟";
+        tituloFeedback.innerText = "¡Correcto! (+5 pts)";
+        textoExplicacion.innerText = q.explicacion;
+      } else {
+        cajaFeedback.className = "p-4 rounded-2xl mb-5 text-sm transition-all border border-rose-200 bg-rose-50 text-rose-950";
+        iconoFeedback.innerText = "💡";
+        tituloFeedback.innerText = "¡Ojo con este detalle!";
+        textoExplicacion.innerText = q.explicacion;
+      }
+
+      cajaFeedback.classList.remove('hidden');
+
+      // Modificar texto del botón si es la última pregunta
+      const btnSig = document.getElementById('btn-siguiente');
+      if (indiceActual === bancoPreguntas.length - 1) {
+        btnSig.innerHTML = `<span>Ver Mi Calificación Final</span> 🏆`;
+      } else {
+        btnSig.innerHTML = `<span>Siguiente Pregunta</span> <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>`;
+      }
+      btnSig.classList.remove('hidden');
+    }
+
+    function siguientePregunta() {
+      if (indiceActual < bancoPreguntas.length - 1) {
+        indiceActual++;
+        cargarPregunta();
+      } else {
+        mostrarResultados();
+      }
+    }
+
+    function mostrarResultados() {
+      document.getElementById('pantalla-quiz').classList.add('hidden');
+      document.getElementById('pantalla-resultados').classList.remove('hidden');
+
+      // Fecha y hora actual formateada
+      const ahora = new Date();
+      const fechaStr = ahora.toLocaleDateString('es-PA', { 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric' 
+      }) + ' • ' + ahora.toLocaleTimeString('es-PA', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+      document.getElementById('fecha-resultado').innerText = fechaStr;
+
+      // Asignar Puntajes
+      document.getElementById('nota-final').innerText = puntajeAcumulado;
+      document.getElementById('aciertos-total').innerText = `${respuestasCorrectas} de 20`;
+      const porcentaje = Math.round((puntajeAcumulado / 100) * 100);
+      document.getElementById('porcentaje-total').innerText = `${porcentaje}%`;
+
+      // Mensaje y Medalla según el desempeño
+      const medalla = document.getElementById('medalla-resultado');
+      const msg = document.getElementById('mensaje-motivacional');
+
+      if (puntajeAcumulado === 100) {
+        medalla.innerText = "🥇";
+        msg.innerText = "¡IMPECABLE MATI! 100/100: Dominio absoluto de los adverbios.";
+        msg.className = "mt-4 px-4 py-2 bg-emerald-50 text-emerald-800 rounded-xl inline-block text-xs sm:text-sm font-bold border border-emerald-200";
+      } else if (puntajeAcumulado >= 85) {
+        medalla.innerText = "🌟";
+        msg.innerText = "¡Muy bien hecho! Tienes muy claros los adverbios. ¡Sigue así!";
+        msg.className = "mt-4 px-4 py-2 bg-blue-50 text-blue-800 rounded-xl inline-block text-xs sm:text-sm font-bold border border-blue-200";
+      } else if (puntajeAcumulado >= 70) {
+        medalla.innerText = "👍";
+        msg.innerText = "¡Buen esfuerzo! Repasa un poquito los ejemplos antes de la prueba real.";
+        msg.className = "mt-4 px-4 py-2 bg-amber-50 text-amber-800 rounded-xl inline-block text-xs sm:text-sm font-bold border border-amber-200";
+      } else {
+        medalla.innerText = "📚";
+        msg.innerText = "Hagamos un repaso con las fichas y volvemos a intentarlo.";
+        msg.className = "mt-4 px-4 py-2 bg-slate-100 text-slate-700 rounded-xl inline-block text-xs sm:text-sm font-bold border border-slate-300";
+      }
+
+      // Guardar en el Historial de localStorage
+      guardarIntento(puntajeAcumulado, respuestasCorrectas, fechaStr);
+    }
+
+    // DESCARGAR REPORTE COMO IMAGEN CON HTML2CANVAS
+    function descargarComprobante() {
+      const tarjeta = document.getElementById('reporte-card');
+      const btn = document.getElementById('btn-descargar-foto');
+      const textoOriginal = btn.innerHTML;
+
+      btn.disabled = true;
+      btn.innerHTML = `<span class="animate-spin text-xl">⏳</span> <span>Generando foto...</span>`;
+
+      // Configuración de captura nítida para pantallas retina/iPad
+      html2canvas(tarjeta, {
+        scale: 2.5,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false
+      }).then(canvas => {
+        const image = canvas.toDataURL("image/png");
+        const enlace = document.createElement('a');
+        enlace.download = `Mati_Adverbios_${puntajeAcumulado}pts.png`;
+        enlace.href = image;
+        document.body.appendChild(enlace);
+        enlace.click();
+        document.body.removeChild(enlace);
+
+        btn.disabled = false;
+        btn.innerHTML = textoOriginal;
+        mostrarToast("📸 ¡Foto guardada en descargas! Ya puedes enviarla por WhatsApp.", "emerald");
+      }).catch(err => {
+        console.error(err);
+        btn.disabled = false;
+        btn.innerHTML = textoOriginal;
+        mostrarToast("No se pudo generar la imagen. Intenta con captura de pantalla.", "rose");
+      });
+    }
+
+    // MANEJO DE HISTORIAL EN LOCALSTORAGE
+    function guardarIntento(puntos, aciertos, fecha) {
+      try {
+        const historial = JSON.parse(localStorage.getItem('mati_historial_adverbios') || '[]');
+        historial.unshift({
+          fecha: fecha,
+          puntos: puntos,
+          aciertos: aciertos
+        });
+        // Guardar hasta 15 intentos
+        if (historial.length > 15) historial.pop();
+        localStorage.setItem('mati_historial_adverbios', JSON.stringify(historial));
+      } catch (e) {
+        console.warn("localStorage no disponible");
+      }
+    }
+
+    function verHistorialModal() {
+      const lista = document.getElementById('lista-historial');
+      lista.innerHTML = '';
+      let historial = [];
+
+      try {
+        historial = JSON.parse(localStorage.getItem('mati_historial_adverbios') || '[]');
+      } catch (e) {
+        historial = [];
+      }
+
+      if (historial.length === 0) {
+        lista.innerHTML = `
+          <div class="text-center py-8 text-slate-400">
+            <div class="text-4xl mb-2">📂</div>
+            <p class="text-sm">Aún no hay intentos registrados en este dispositivo.</p>
+          </div>
+        `;
+      } else {
+        historial.forEach((item, index) => {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = "flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200/80";
+          itemDiv.innerHTML = `
+            <div>
+              <div class="text-xs font-bold text-slate-700">${item.fecha}</div>
+              <div class="text-[11px] text-slate-400 font-semibold">${item.aciertos} de 20 aciertos</div>
+            </div>
+            <div class="text-right">
+              <span class="text-base font-black ${item.puntos >= 90 ? 'text-emerald-600' : item.puntos >= 70 ? 'text-blue-600' : 'text-amber-600'}">
+                ${item.puntos} pts
+              </span>
+            </div>
+          `;
+          lista.appendChild(itemDiv);
+        });
+      }
+
+      document.getElementById('modal-historial').classList.remove('hidden');
+    }
+
+    function cerrarHistorialModal() {
+      document.getElementById('modal-historial').classList.add('hidden');
+    }
+
+    function borrarHistorial() {
+      localStorage.removeItem('mati_historial_adverbios');
+      verHistorialModal();
+      mostrarToast("Historial borrado", "slate");
+    }
+
+    function reiniciarTest() {
+      iniciarTest();
+    }
+
+    function mostrarToast(mensaje, color) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      toastMsg.innerText = mensaje;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
