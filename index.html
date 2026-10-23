@@ -1,21 +1,235 @@
-<!-- Botón flotante: Regresar al menú principal -->
-<a href="index.html" style="
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  background-color: #6b1426;
-  color: #ffffff;
-  padding: 10px 16px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-family: system-ui, sans-serif;
-  font-size: 0.9rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  z-index: 9999;
-">
-  ← Volver al menú
-</a>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colegio Internacional Saint George | Portal de Pruebas</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --card-bg: #6b1426;         /* Rojo vino / borgoña */
+      --card-hover: #500d1b;      /* Tono más oscuro al pasar cursor */
+      --text-main: #1f2937;
+      --text-sub: #4b5563;
+      --card-text: #ffffff;
+      --card-subtext: #fecdd3;
+      --border-soft: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      max-width: 750px;
+    }
+
+    .school-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--card-bg);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      font-size: 2.1rem;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .grade-badge {
+      display: inline-block;
+      background: #fdf2f4;
+      color: var(--card-bg);
+      border: 1px solid #fecdd3;
+      padding: 4px 14px;
+      border-radius: 9999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-top: 6px;
+      margin-bottom: 16px;
+    }
+
+    p.subtitle {
+      color: var(--text-sub);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    /* Grid de tarjetas */
+    .grid {
+      width: 100%;
+      max-width: 960px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 14px;
+      padding: 24px;
+      text-decoration: none;
+      color: var(--card-text);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 150px;
+      box-shadow: 0 4px 12px rgba(107, 20, 38, 0.15);
+      transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      background-color: var(--card-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 10px 20px rgba(107, 20, 38, 0.25);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      line-height: 1;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 10px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.35;
+      text-transform: capitalize;
+      color: var(--card-text);
+    }
+
+    .card-action {
+      margin-top: 18px;
+      align-self: flex-end;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--card-subtext);
+    }
+
+    .card:hover .card-action {
+      color: #ffffff;
+    }
+
+    .status-box {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      background: #f9fafb;
+      border-radius: 14px;
+      border: 1px dashed var(--border-soft);
+      color: var(--text-sub);
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="school-name">Colegio Internacional Saint George de Panamá</div>
+    <h1>Portal de pruebas de repaso virtuales de Os Matías</h1>
+    <div class="grade-badge">Tercer Grado: Último Trimestre</div>
+    <p class="subtitle">Selecciona la prueba que quieres desarrollar hoy</p>
+  </header>
+
+  <main class="grid" id="contenedor-pruebas">
+    <div class="status-box">Cargando pruebas disponibles...</div>
+  </main>
+
+  <script>
+    const GITHUB_USER = 'osv927';
+    const GITHUB_REPO = 'pruebas';
+    const FOLDER_PATH = '';
+
+    function obtenerIcono(nombre) {
+      const n = nombre.toLowerCase();
+      if (n.includes('mate') || n.includes('suma') || n.includes('resta') || n.includes('fraccion') || n.includes('multiplica') || n.includes('divis')) return '📐';
+      if (n.includes('esp') || n.includes('lengua') || n.includes('acento') || n.includes('lectura') || n.includes('palabra')) return '📚';
+      if (n.includes('cien') || n.includes('insecto') || n.includes('animal') || n.includes('planta') || n.includes('cuerpo')) return '🔬';
+      if (n.includes('soc') || n.includes('historia') || n.includes('mapa') || n.includes('geografia')) return '🌍';
+      if (n.includes('ing') || n.includes('english')) return '🗣️';
+      return '📝';
+    }
+
+    async function listarRetos() {
+      const grid = document.getElementById('contenedor-pruebas');
+      const endpoint = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${FOLDER_PATH}`;
+
+      try {
+        const respuesta = await fetch(endpoint);
+        if (!respuesta.ok) throw new Error('Error al conectar con GitHub');
+
+        const items = await respuesta.json();
+
+        const pruebas = items.filter(archivo => 
+          archivo.type === 'file' &&
+          archivo.name.endsWith('.html') &&
+          archivo.name.toLowerCase() !== 'index.html'
+        );
+
+        if (pruebas.length === 0) {
+          grid.innerHTML = '<div class="status-box">No se encontraron pruebas cargadas aún.</div>';
+          return;
+        }
+
+        pruebas.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+        grid.innerHTML = pruebas.map(prueba => {
+          const limpio = prueba.name.replace('.html', '').replace(/[-_]/g, ' ');
+          const icono = obtenerIcono(prueba.name);
+          
+          return `
+            <a class="card" href="${prueba.name}">
+              <div class="card-top">
+                <div class="card-icon">${icono}</div>
+                <div class="card-title">${limpio}</div>
+              </div>
+              <div class="card-action">
+                Empezar <span>→</span>
+              </div>
+            </a>
+          `;
+        }).join('');
+
+      } catch (e) {
+        grid.innerHTML = `
+          <div class="status-box">
+            No se pudieron cargar las pruebas.<br>
+            Verifica que el repositorio <code>osv927/pruebas</code> esté configurado como público.
+          </div>
+        `;
+      }
+    }
+
+    listarRetos();
+  </script>
+</body>
+</html>
