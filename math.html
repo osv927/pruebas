@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saint George - 3E Math Interactive Practice</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap');
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      touch-action: manipulation;
+    }
+
+    .math-font {
+      font-family: 'Comic Neue', cursive, monospace, sans-serif;
+    }
+
+    /* Print styles for parent scorecard */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .print-break {
+        page-break-after: always;
+      }
+      .card-box {
+        box-shadow: none !important;
+        border: 1px solid #cbd5e1 !important;
+      }
+    }
+
+    .print-only {
+      display: none;
+    }
+
+    /* Animated pulse badge */
+    @keyframes gentlePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    .badge-pulse {
+      animation: gentlePulse 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col pb-12">
+
+  <!-- Top Navigation & Sticky Status Bar -->
+  <header class="no-print sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- School Branding -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-700 flex items-center justify-center text-white shadow-md">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5m0 0v5m0-5h4m-4 0H8"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold text-slate-800 leading-tight">Saint George International School</h1>
+          <p class="text-xs font-semibold text-blue-700">3E Elementary Math • Regrouping & Borrowing Practice</p>
+        </div>
+      </div>
+
+      <!-- Live Student Bar & Controls -->
+      <div class="flex items-center flex-wrap gap-2 sm:gap-4">
+        <!-- Live Score -->
+        <div class="flex items-center gap-1.5 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-xl">
+          <span class="text-xs font-bold text-blue-700 uppercase tracking-wider">Score:</span>
+          <span id="liveScore" class="font-extrabold text-blue-900 text-lg">0 / 10</span>
+        </div>
+
+        <!-- Timer -->
+        <div class="flex items-center gap-1.5 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-xl text-slate-700 text-xs font-medium">
+          <span>⏱️</span>
+          <span id="timerDisplay">00:00</span>
+        </div>
+
+        <!-- Scratchpad Toggle Button -->
+        <button id="toggleCanvasBtn" onclick="toggleScratchpad()" class="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow-sm transition active:scale-95">
+          <span>✏️</span>
+          <span class="hidden sm:inline">Scratchpad</span>
+        </button>
+
+        <!-- Final Report Trigger -->
+        <button onclick="openScorecardModal()" class="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs shadow-sm transition active:scale-95">
+          <span>📋</span>
+          <span>View Report</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Scratchpad Floating Drawer (Interactive touch stylus area for tablets) -->
+  <div id="scratchpadDrawer" class="no-print fixed inset-x-0 bottom-0 z-50 bg-white border-t-4 border-amber-500 shadow-2xl rounded-t-3xl transition-transform duration-300 transform translate-y-full max-w-4xl mx-auto">
+    <div class="p-3 bg-amber-50 flex items-center justify-between border-b border-amber-200 rounded-t-3xl">
+      <div class="flex items-center gap-2">
+        <span class="text-lg">✏️</span>
+        <span class="text-xs font-bold text-amber-900 uppercase tracking-wider">Osvaldo's Math Scratchpad (Draw Carrying & Borrowing)</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="clearScratchpad()" class="px-2.5 py-1 text-xs bg-white text-rose-600 font-bold border border-rose-200 rounded-lg hover:bg-rose-50">Clear</button>
+        <button onclick="toggleScratchpad()" class="px-2.5 py-1 text-xs bg-slate-800 text-white font-bold rounded-lg hover:bg-slate-700">Close ✕</button>
+      </div>
+    </div>
+    <div class="p-2 relative bg-amber-50/40">
+      <canvas id="scratchCanvas" class="w-full h-48 bg-white border-2 border-dashed border-amber-300 rounded-xl cursor-crosshair touch-none"></canvas>
+      <div class="absolute bottom-4 right-4 pointer-events-none text-[11px] text-slate-400 font-semibold bg-white/80 px-2 py-0.5 rounded">
+        Use finger or pencil to draft regrouping
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Practice View -->
+  <main class="max-w-4xl mx-auto w-full px-4 pt-6 flex-grow">
+    
+    <!-- Student Header & Motivational Card -->
+    <section class="no-print bg-white p-5 rounded-2xl shadow-sm border border-slate-200 mb-6">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Student Name</label>
+          <input type="text" id="studentNameInput" value="Osvaldo Matías Obregón" class="w-full text-sm font-bold text-slate-800 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 focus:bg-white focus:ring-2 focus:ring-blue-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Classroom</label>
+          <input type="text" value="3E - Elementary Science & Math" disabled class="w-full text-sm font-medium text-slate-600 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 cursor-not-allowed">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Topic</label>
+          <div class="text-xs font-semibold text-blue-800 bg-blue-50 border border-blue-200 rounded-xl px-3 py-2.5 flex items-center justify-between">
+            <span>2 & 3 Digits Regrouping</span>
+            <span class="text-sm">🔬</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Strategy Helper Banner -->
+      <div class="mt-4 p-3 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-900 flex items-start gap-2.5">
+        <span class="text-base">💡</span>
+        <div>
+          <strong>Saint George Strategy Tips:</strong>
+          <span class="block text-indigo-700 mt-0.5">
+            • <strong>Addition (+):</strong> When ones add up to 10 or more, write the ones and carry (+1) to the top tens box!
+            <br>• <strong>Subtraction (-):</strong> If the top digit is smaller than the bottom digit, borrow from the neighbour! Watch out for <strong>zeros</strong> (400 becomes 3 hundreds, 9 tens, and 10 ones).
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Problems Container -->
+    <div id="problemsContainer" class="space-y-6">
+      <!-- Dynamic Problem Cards will be populated here -->
+    </div>
+
+    <!-- Final Submission Banner -->
+    <div class="no-print mt-10 bg-gradient-to-r from-blue-700 to-indigo-800 text-white rounded-2xl p-6 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <h3 class="text-lg font-extrabold">Ready to review your final results?</h3>
+        <p class="text-xs text-blue-100 mt-0.5">Make sure you have answered all 10 word problems and written complete sentences.</p>
+      </div>
+      <button onclick="finishTestAndShowReport()" class="w-full sm:w-auto px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-slate-900 font-extrabold text-sm rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
+        <span>🎓</span>
+        <span>Finish & Generate Grade</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Complete Scorecard & Certificate Modal -->
+  <div id="scoreModal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden my-auto">
+      
+      <!-- Header banner -->
+      <div class="bg-blue-800 text-white p-6 relative">
+        <button onclick="closeScorecardModal()" class="no-print absolute top-4 right-4 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 p-2 rounded-xl text-xs font-bold transition">
+          ✕ Close
+        </button>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center text-2xl">
+            🏆
+          </div>
+          <div>
+            <h2 class="text-xl font-black tracking-tight">Academic Performance Report</h2>
+            <p class="text-xs text-blue-200">Saint George International School of Panama • Grade 3E</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6">
+        <!-- Results stats -->
+        <div class="grid grid-cols-3 gap-3 mb-6 text-center">
+          <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl">
+            <span class="block text-xs text-slate-500 font-semibold uppercase">Total Score</span>
+            <span id="finalScoreVal" class="text-2xl font-black text-blue-700">0 / 10</span>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl">
+            <span class="block text-xs text-slate-500 font-semibold uppercase">Grade</span>
+            <span id="letterGradeVal" class="text-2xl font-black text-emerald-600">-</span>
+          </div>
+          <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl">
+            <span class="block text-xs text-slate-500 font-semibold uppercase">Time Taken</span>
+            <span id="totalTimeVal" class="text-2xl font-black text-slate-800">0m 0s</span>
+          </div>
+        </div>
+
+        <!-- Student details badge -->
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 mb-5 flex items-center justify-between text-xs text-blue-900">
+          <div>
+            <span class="font-bold">Student:</span> <span id="reportStudentName" class="font-black">Osvaldo Matías Obregón</span>
+          </div>
+          <div>
+            <span class="font-bold">Date:</span> <span id="reportDate" class="font-semibold"></span>
+          </div>
+        </div>
+
+        <!-- Breakdown List -->
+        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-600 mb-2">Item-by-Item Mastery Check:</h4>
+        <div id="reportItemsContainer" class="max-h-60 overflow-y-auto space-y-2 pr-1 text-xs">
+          <!-- Populated by JS -->
+        </div>
+
+        <!-- Modal Actions -->
+        <div class="no-print mt-6 pt-4 border-t border-slate-200 flex flex-wrap items-center justify-end gap-3">
+          <button onclick="closeScorecardModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-xl">
+            Back to Practice
+          </button>
+          <button onclick="window.print()" class="px-5 py-2.5 bg-blue-700 hover:bg-blue-800 text-white font-extrabold text-xs rounded-xl shadow flex items-center gap-2 transition active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+            Print / Save Report PDF
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /* =========================================================================
+       1. EXAM DATA SOURCE (Curated directly for 3rd Grade Saint George School)
+       ========================================================================= */
+    const testProblems = [
+      {
+        id: 1,
+        title: "1. Addition – Science Supplies",
+        operation: "addition",
+        num1: 147,
+        num2: 138,
+        expectedAnswer: 285,
+        unit: "test tubes",
+        prompt: "The teacher prepared 147 test tubes on Monday and 138 test tubes on Tuesday. How many test tubes did the teacher prepare altogether?",
+        sentenceStart: "The teacher prepared",
+        sentenceEnd: "test tubes altogether.",
+        explanation: "1) Ones column: 7 + 8 = 15. Write 5 in ones, carry 1 to tens.\n2) Tens column: 1 (carried) + 4 + 3 = 8.\n3) Hundreds column: 1 + 1 = 2.\nTotal: 285 test tubes."
+      },
+      {
+        id: 2,
+        title: "2. Subtraction – Microscope Slides",
+        operation: "subtraction",
+        num1: 350,
+        num2: 126,
+        expectedAnswer: 224,
+        unit: "glass slides",
+        prompt: "The laboratory had 350 glass slides. Students used 126 slides during the experiment. How many glass slides were left?",
+        sentenceStart: "There were",
+        sentenceEnd: "glass slides left.",
+        explanation: "1) Ones column: 0 is smaller than 6! Borrow 1 ten from 5. The 5 becomes 4, and 0 becomes 10.\n2) Ones: 10 - 6 = 4.\n3) Tens: 4 - 2 = 2.\n4) Hundreds: 3 - 1 = 2.\nTotal: 224 slides."
+      },
+      {
+        id: 3,
+        title: "3. Addition – Water Droplets",
+        operation: "addition",
+        num1: 156,
+        num2: 145,
+        expectedAnswer: 301,
+        unit: "drops of water",
+        prompt: "Group A dropped 156 drops of water on wax paper, and Group B dropped 145 drops. How many water drops did both groups drop in total?",
+        sentenceStart: "Both groups dropped",
+        sentenceEnd: "drops of water in total.",
+        explanation: "1) Ones: 6 + 5 = 11. Write 1, carry 1 to tens.\n2) Tens: 1 (carried) + 5 + 4 = 10. Write 0, carry 1 to hundreds.\n3) Hundreds: 1 (carried) + 1 + 1 = 3.\nTotal: 301 drops."
+      },
+      {
+        id: 4,
+        title: "4. Subtraction – Plant Seeds (Borrowing across Zeros)",
+        operation: "subtraction",
+        num1: 400,
+        num2: 235,
+        expectedAnswer: 165,
+        unit: "seeds",
+        prompt: "There were 400 seeds prepared for the Science activity. Students planted 235 seeds in soil cups. How many seeds were left?",
+        sentenceStart: "There were",
+        sentenceEnd: "seeds left for the project.",
+        explanation: "CRUCIAL SKILL: Borrowing across zero!\n1) Ones cannot borrow from 0 tens. Go to hundreds!\n2) 4 hundreds becomes 3 hundreds and gives 10 tens.\n3) Tens now gives 1 to ones: 10 tens becomes 9 tens, and ones becomes 10.\n4) Now subtract: Ones: 10 - 5 = 5. Tens: 9 - 3 = 6. Hundreds: 3 - 2 = 1.\nTotal: 165 seeds."
+      },
+      {
+        id: 5,
+        title: "5. Addition – Food Samples",
+        operation: "addition",
+        num1: 148,
+        num2: 126,
+        expectedAnswer: 274,
+        unit: "food samples",
+        prompt: "One group tested 148 food samples, and another group tested 126 food samples. How many food samples did the two groups test altogether?",
+        sentenceStart: "The two groups tested",
+        sentenceEnd: "food samples altogether.",
+        explanation: "1) Ones: 8 + 6 = 14. Write 4 in ones, carry 1 to tens.\n2) Tens: 1 (carried) + 4 + 2 = 7.\n3) Hundreds: 1 + 1 = 2.\nTotal: 274 food samples."
+      },
+      {
+        id: 6,
+        title: "6. Subtraction – Starch Results",
+        operation: "subtraction",
+        num1: 325,
+        num2: 187,
+        expectedAnswer: 138,
+        unit: "results",
+        prompt: "Students recorded 325 food results. Of these, 187 results showed starch. How many results did not show starch?",
+        sentenceStart: "There were",
+        sentenceEnd: "results that did not show starch.",
+        explanation: "Double Borrowing:\n1) Ones: 5 - 7 cannot be done. Borrow from 2 tens (becomes 1). 15 - 7 = 8.\n2) Tens: 1 - 8 cannot be done. Borrow from 3 hundreds (becomes 2). 11 - 8 = 3.\n3) Hundreds: 2 - 1 = 1.\nTotal: 138 results."
+      },
+      {
+        id: 7,
+        title: "7. Addition – Laboratory Observations",
+        operation: "addition",
+        num1: 135,
+        num2: 158,
+        expectedAnswer: 293,
+        unit: "observations",
+        prompt: "During the experiment, students made 135 observations on the first day and 158 observations on the second day. How many observations did they make altogether?",
+        sentenceStart: "The students made",
+        sentenceEnd: "observations altogether.",
+        explanation: "1) Ones: 5 + 8 = 13. Write 3, carry 1 to tens.\n2) Tens: 1 (carried) + 3 + 5 = 9.\n3) Hundreds: 1 + 1 = 2.\nTotal: 293 observations."
+      },
+      {
+        id: 8,
+        title: "8. Subtraction – Iodine Drops",
+        operation: "subtraction",
+        num1: 350,
+        num2: 178,
+        expectedAnswer: 172,
+        unit: "drops of iodine",
+        prompt: "The class had 350 drops of iodine. They used 178 drops during the experiment. How many drops of iodine were left?",
+        sentenceStart: "There were",
+        sentenceEnd: "drops of iodine left.",
+        explanation: "1) Ones: 0 - 8 cannot be done. Borrow from 5 (becomes 4). 10 - 8 = 2.\n2) Tens: 4 - 7 cannot be done. Borrow from 3 hundreds (becomes 2). 14 - 7 = 7.\n3) Hundreds: 2 - 1 = 1.\nTotal: 172 drops."
+      },
+      {
+        id: 9,
+        title: "9. Addition – Experiment Groups",
+        operation: "addition",
+        num1: 115,
+        num2: 128,
+        expectedAnswer: 243,
+        unit: "food samples",
+        prompt: "The first group used 115 food samples, and the second group used 128 food samples. How many food samples were used by both groups?",
+        sentenceStart: "Both groups used",
+        sentenceEnd: "food samples.",
+        explanation: "1) Ones: 5 + 8 = 13. Write 3, carry 1 to tens.\n2) Tens: 1 (carried) + 1 + 2 = 4.\n3) Hundreds: 1 + 1 = 2.\nTotal: 243 food samples."
+      },
+      {
+        id: 10,
+        title: "10. Subtraction – Comparing Results",
+        operation: "subtraction",
+        num1: 296,
+        num2: 174,
+        expectedAnswer: 122,
+        unit: "observations",
+        prompt: "The class recorded 296 observations. Another group recorded 174 observations. How many more observations did the first class record?",
+        sentenceStart: "The first class recorded",
+        sentenceEnd: "more observations.",
+        explanation: "Direct subtraction:\n1) Ones: 6 - 4 = 2.\n2) Tens: 9 - 7 = 2.\n3) Hundreds: 2 - 1 = 1.\nTotal: 122 observations."
+      }
+    ];
+
+    // State
+    const userAnswers = {};
+    let score = 0;
+    let secondsElapsed = 0;
+    let timerInterval = null;
+
+    /* =========================================================================
+       2. WEB AUDIO API SYNTHESIZER (Friendly Sound Effects, Zero URLs)
+       ========================================================================= */
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playSuccessChime() {
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (Major arpeggio)
+        notes.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          gain.gain.setValueAtTime(0.18, now + idx * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + idx * 0.08);
+          osc.stop(now + idx * 0.08 + 0.36);
+        });
+      } catch(e) {}
+    }
+
+    function playHintBoop() {
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(220, now + 0.25);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.26);
+      } catch(e) {}
+    }
+
+    /* =========================================================================
+       3. RENDER PROBLEM CARDS WITH PLACE VALUE GRIDS
+       ========================================================================= */
+    function renderProblems() {
+      const container = document.getElementById('problemsContainer');
+      container.innerHTML = '';
+
+      testProblems.forEach((p) => {
+        const opSymbol = p.operation === 'addition' ? '+' : '-';
+        const opColor = p.operation === 'addition' ? 'text-emerald-700 bg-emerald-50' : 'text-blue-700 bg-blue-50';
+
+        // Split digits for rows
+        const s1 = String(p.num1).padStart(3, ' ');
+        const s2 = String(p.num2).padStart(3, ' ');
+
+        const card = document.createElement('div');
+        card.className = "card-box bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200 transition-all";
+        card.id = `card-${p.id}`;
+
+        card.innerHTML = `
+          <!-- Problem Top Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3 mb-4">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-1 rounded-lg text-xs font-black uppercase ${opColor}">
+                ${p.operation}
+              </span>
+              <h3 class="text-sm sm:text-base font-extrabold text-slate-800">${p.title}</h3>
+            </div>
+            <div id="badge-${p.id}" class="text-xs font-bold text-slate-400">
+              Not checked yet
+            </div>
+          </div>
+
+          <!-- Question Prompt -->
+          <p class="text-sm text-slate-700 leading-relaxed mb-5">
+            ${p.prompt}
+          </p>
+
+          <!-- Interactive Workspace Grid (Two column on medium devices) -->
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            <!-- LEFT: Math Column Place Value Grid -->
+            <div class="lg:col-span-5 flex flex-col items-center sm:items-start bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Column Place-Value Grid</span>
+              
+              <div class="inline-block bg-white p-3 rounded-2xl shadow-sm border border-slate-300 math-font">
+                
+                <!-- Headers: Hundreds, Tens, Ones -->
+                <div class="grid grid-cols-4 gap-1 text-center text-xs font-bold text-slate-400 mb-1">
+                  <div></div>
+                  <div title="Hundreds">H</div>
+                  <div title="Tens">T</div>
+                  <div title="Ones">O</div>
+                </div>
+
+                <!-- Carry / Borrow Row -->
+                <div class="grid grid-cols-4 gap-1 mb-1.5 items-center">
+                  <div class="text-[10px] text-amber-700 font-bold text-center leading-none">Carry/Borrow:</div>
+                  <div>
+                    <input type="text" maxlength="2" placeholder="" class="w-10 h-7 text-center text-xs font-bold text-amber-800 bg-amber-50 border border-amber-300 rounded focus:bg-amber-100 outline-none" title="Carried or Borrowed Digit">
+                  </div>
+                  <div>
+                    <input type="text" maxlength="2" placeholder="" class="w-10 h-7 text-center text-xs font-bold text-amber-800 bg-amber-50 border border-amber-300 rounded focus:bg-amber-100 outline-none" title="Carried or Borrowed Digit">
+                  </div>
+                  <div>
+                    <input type="text" maxlength="2" placeholder="" class="w-10 h-7 text-center text-xs font-bold text-amber-800 bg-amber-50 border border-amber-300 rounded focus:bg-amber-100 outline-none" title="Carried or Borrowed Digit">
+                  </div>
+                </div>
+
+                <!-- First Operand Row -->
+                <div class="grid grid-cols-4 gap-1 text-center text-xl font-bold text-slate-800 py-0.5">
+                  <div class="text-slate-300 text-sm"></div>
+                  <div class="w-10 h-8 flex items-center justify-center">${s1[0] === ' ' ? '' : s1[0]}</div>
+                  <div class="w-10 h-8 flex items-center justify-center">${s1[1]}</div>
+                  <div class="w-10 h-8 flex items-center justify-center">${s1[2]}</div>
+                </div>
+
+                <!-- Second Operand Row with Operation Symbol -->
+                <div class="grid grid-cols-4 gap-1 text-center text-xl font-bold text-slate-800 py-0.5">
+                  <div class="w-10 h-8 flex items-center justify-center text-2xl font-black ${p.operation === 'addition' ? 'text-emerald-600' : 'text-blue-600'}">${opSymbol}</div>
+                  <div class="w-10 h-8 flex items-center justify-center">${s2[0] === ' ' ? '' : s2[0]}</div>
+                  <div class="w-10 h-8 flex items-center justify-center">${s2[1]}</div>
+                  <div class="w-10 h-8 flex items-center justify-center">${s2[2]}</div>
+                </div>
+
+                <!-- Solid Divider Bar -->
+                <div class="w-full h-1 bg-slate-900 rounded my-1.5"></div>
+
+                <!-- Calculation Result Inputs (Digit by digit or direct) -->
+                <div class="grid grid-cols-4 gap-1 items-center">
+                  <div class="text-xs font-bold text-slate-400 text-center">=</div>
+                  <div>
+                    <input type="tel" maxlength="1" id="h-digit-${p.id}" oninput="syncTotalInput(${p.id})" class="w-10 h-10 text-center text-lg font-bold text-blue-900 bg-blue-50 border-2 border-blue-200 rounded-lg focus:bg-white focus:border-blue-600 outline-none">
+                  </div>
+                  <div>
+                    <input type="tel" maxlength="1" id="t-digit-${p.id}" oninput="syncTotalInput(${p.id})" class="w-10 h-10 text-center text-lg font-bold text-blue-900 bg-blue-50 border-2 border-blue-200 rounded-lg focus:bg-white focus:border-blue-600 outline-none">
+                  </div>
+                  <div>
+                    <input type="tel" maxlength="1" id="o-digit-${p.id}" oninput="syncTotalInput(${p.id})" class="w-10 h-10 text-center text-lg font-bold text-blue-900 bg-blue-50 border-2 border-blue-200 rounded-lg focus:bg-white focus:border-blue-600 outline-none">
+                  </div>
+                </div>
+
+              </div>
+              <p class="text-[11px] text-slate-400 mt-2 italic">Fill Hundreds, Tens, and Ones above.</p>
+            </div>
+
+            <!-- RIGHT: Complete Sentence Answer & Actions -->
+            <div class="lg:col-span-7 flex flex-col justify-between h-full space-y-4">
+              
+              <!-- Complete Sentence Construction -->
+              <div class="bg-slate-50 border border-slate-200 p-4 rounded-2xl">
+                <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                  📝 Complete Sentence Answer:
+                </label>
+                <div class="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm font-medium text-slate-800 leading-relaxed">
+                  <span class="font-bold text-slate-900">${p.sentenceStart}</span>
+                  <input type="number" id="num-answer-${p.id}" placeholder="?" oninput="syncGridDigits(${p.id})" class="w-20 text-center font-black text-blue-700 bg-white border-2 border-blue-300 rounded-xl px-2 py-1 text-sm focus:border-blue-600 outline-none shadow-sm">
+                  <span class="font-bold text-slate-900">${p.sentenceEnd}</span>
+                </div>
+              </div>
+
+              <!-- Feedback box (Hidden by default) -->
+              <div id="feedback-${p.id}" class="hidden p-3.5 rounded-2xl text-xs font-medium leading-relaxed"></div>
+
+              <!-- Step-by-Step Explanation Drawer (Toggled if incorrect or requested) -->
+              <div id="step-box-${p.id}" class="hidden p-3 bg-amber-50 border border-amber-200 rounded-2xl text-xs text-amber-900 whitespace-pre-line font-mono">
+                <div class="font-bold text-amber-800 mb-1 flex items-center gap-1">
+                  <span>💡</span> Step-by-Step Breakdown:
+                </div>
+                ${p.explanation}
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
+                <button type="button" onclick="toggleExplanation(${p.id})" class="text-xs font-bold text-slate-500 hover:text-blue-700 underline flex items-center gap-1">
+                  <span>🔍</span> How to solve this step-by-step
+                </button>
+
+                <button type="button" onclick="checkProblem(${p.id})" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-xs rounded-xl shadow-md transition active:scale-95 flex items-center gap-1.5">
+                  <span>Check Answer</span>
+                  <span>➜</span>
+                </button>
+              </div>
+
+            </div>
+
+          </div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    /* =========================================================================
+       4. INPUT TWO-WAY SYNC (Column inputs <-> sentence box)
+       ========================================================================= */
+    function syncTotalInput(id) {
+      const h = document.getElementById(`h-digit-${id}`).value.trim();
+      const t = document.getElementById(`t-digit-${id}`).value.trim();
+      const o = document.getElementById(`o-digit-${id}`).value.trim();
+
+      const combined = `${h}${t}${o}`.trim();
+      const sentenceInput = document.getElementById(`num-answer-${id}`);
+      if (sentenceInput) {
+        sentenceInput.value = combined ? parseInt(combined, 10) || '' : '';
+      }
+    }
+
+    function syncGridDigits(id) {
+      const val = document.getElementById(`num-answer-${id}`).value.trim();
+      const hInput = document.getElementById(`h-digit-${id}`);
+      const tInput = document.getElementById(`t-digit-${id}`);
+      const oInput = document.getElementById(`o-digit-${id}`);
+
+      if (!val) {
+        hInput.value = '';
+        tInput.value = '';
+        oInput.value = '';
+        return;
+      }
+
+      const padded = val.padStart(3, ' ');
+      hInput.value = padded[0] === ' ' ? '' : padded[0];
+      tInput.value = padded[1] === ' ' ? '' : padded[1];
+      oInput.value = padded[2] === ' ' ? '' : padded[2];
+    }
+
+    /* =========================================================================
+       5. VERIFICATION & LIVE FEEDBACK LOGIC
+       ========================================================================= */
+    function checkProblem(id) {
+      const p = testProblems.find(item => item.id === id);
+      const answerInput = document.getElementById(`num-answer-${id}`);
+      const feedback = document.getElementById(`feedback-${id}`);
+      const badge = document.getElementById(`badge-${id}`);
+      const card = document.getElementById(`card-${id}`);
+
+      const userVal = parseInt(answerInput.value, 10);
+
+      if (isNaN(userVal)) {
+        feedback.className = "p-3 rounded-2xl text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 block";
+        feedback.innerHTML = "⚠️ Please write an answer number before checking!";
+        playHintBoop();
+        return;
+      }
+
+      const isCorrect = (userVal === p.expectedAnswer);
+      userAnswers[id] = {
+        userVal: userVal,
+        correct: isCorrect,
+        expected: p.expectedAnswer,
+        title: p.title
+      };
+
+      if (isCorrect) {
+        // Correct State
+        feedback.className = "p-3.5 rounded-2xl text-xs font-medium bg-emerald-50 text-emerald-900 border border-emerald-200 block";
+        feedback.innerHTML = `<strong>🎉 Excellent job, Osvaldo!</strong> Correct answer: <strong>${p.expectedAnswer} ${p.unit}</strong>. Your full sentence is complete!`;
+        
+        badge.className = "text-xs font-black text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1";
+        badge.innerHTML = "✓ Correct (+1)";
+
+        card.classList.remove('border-rose-300', 'bg-rose-50/20');
+        card.classList.add('border-emerald-300', 'bg-emerald-50/20');
+
+        playSuccessChime();
+      } else {
+        // Incorrect State with Guided hint
+        feedback.className = "p-3.5 rounded-2xl text-xs font-medium bg-rose-50 text-rose-900 border border-rose-200 block";
+        let tip = p.operation === 'addition'
+          ? "Double check your ones or tens column carrying (did you add the +1 on top?)."
+          : "Check your borrowing! If top number is smaller, borrow 1 from the next column.";
+
+        feedback.innerHTML = `<strong>❌ Not quite yet!</strong> You entered <strong>${userVal}</strong>. ${tip} Click <em>'How to solve step-by-step'</em> below if you need help.`;
+
+        badge.className = "text-xs font-black text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full flex items-center gap-1";
+        badge.innerHTML = "✗ Review needed";
+
+        card.classList.remove('border-emerald-300', 'bg-emerald-50/20');
+        card.classList.add('border-rose-300', 'bg-rose-50/20');
+
+        playHintBoop();
+      }
+
+      updateLiveScore();
+    }
+
+    function toggleExplanation(id) {
+      const box = document.getElementById(`step-box-${id}`);
+      box.classList.toggle('hidden');
+    }
+
+    function updateLiveScore() {
+      let currentScore = 0;
+      Object.keys(userAnswers).forEach(key => {
+        if (userAnswers[key].correct) currentScore++;
+      });
+      score = currentScore;
+      document.getElementById('liveScore').innerText = `${score} / 10`;
+    }
+
+    /* =========================================================================
+       6. SCORECARD MODAL & FINAL REPORT
+       ========================================================================= */
+    function finishTestAndShowReport() {
+      // Check each problem that has a value if not checked yet
+      testProblems.forEach(p => {
+        const val = document.getElementById(`num-answer-${p.id}`).value;
+        if (val && !userAnswers[p.id]) {
+          checkProblem(p.id);
+        }
+      });
+      openScorecardModal();
+    }
+
+    function openScorecardModal() {
+      updateLiveScore();
+      
+      const modal = document.getElementById('scoreModal');
+      const studentName = document.getElementById('studentNameInput').value.trim() || "Osvaldo Matías Obregón";
+      
+      document.getElementById('reportStudentName').innerText = studentName;
+      document.getElementById('reportDate').innerText = new Date().toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+      document.getElementById('finalScoreVal').innerText = `${score} / 10`;
+
+      // Grade calculation
+      let grade = "C";
+      let gradeColor = "text-amber-600";
+      if (score >= 9) { grade = "A"; gradeColor = "text-emerald-600"; }
+      else if (score >= 7) { grade = "B"; gradeColor = "text-blue-600"; }
+      else if (score >= 5) { grade = "C+"; gradeColor = "text-amber-600"; }
+      else { grade = "Needs Review"; gradeColor = "text-rose-600"; }
+
+      const gradeEl = document.getElementById('letterGradeVal');
+      gradeEl.innerText = grade;
+      gradeEl.className = `text-2xl font-black ${gradeColor}`;
+
+      // Time taken
+      const mins = Math.floor(secondsElapsed / 60);
+      const secs = secondsElapsed % 60;
+      document.getElementById('totalTimeVal').innerText = `${mins}m ${secs}s`;
+
+      // Build breakdown table
+      const listContainer = document.getElementById('reportItemsContainer');
+      listContainer.innerHTML = '';
+
+      testProblems.forEach(p => {
+        const record = userAnswers[p.id];
+        const row = document.createElement('div');
+        row.className = "flex items-center justify-between p-2 rounded-xl border border-slate-200 bg-slate-50";
+
+        if (record && record.correct) {
+          row.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="text-emerald-600 font-bold">✓</span>
+              <span class="font-bold text-slate-800">${p.title}</span>
+            </div>
+            <span class="font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded text-[11px]">Correct (${record.userVal})</span>
+          `;
+        } else if (record && !record.correct) {
+          row.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="text-rose-600 font-bold">✗</span>
+              <span class="font-bold text-slate-800">${p.title}</span>
+            </div>
+            <span class="font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded text-[11px]">Answered: ${record.userVal} | Correct: ${p.expectedAnswer}</span>
+          `;
+        } else {
+          row.innerHTML = `
+            <div class="flex items-center gap-2">
+              <span class="text-slate-400 font-bold">○</span>
+              <span class="font-medium text-slate-500">${p.title}</span>
+            </div>
+            <span class="text-slate-500 italic text-[11px]">Not answered yet</span>
+          `;
+        }
+
+        listContainer.appendChild(row);
+      });
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeScorecardModal() {
+      document.getElementById('scoreModal').classList.add('hidden');
+    }
+
+    /* =========================================================================
+       7. INTERACTIVE TOUCH SCRATCHPAD CANVAS (Stylus / Finger Draw)
+       ========================================================================= */
+    let canvas, ctx;
+    let isDrawing = false;
+
+    function initCanvas() {
+      canvas = document.getElementById('scratchCanvas');
+      if (!canvas) return;
+      ctx = canvas.getContext('2d');
+
+      function resizeCanvas() {
+        const rect = canvas.getBoundingClientRect();
+        canvas.width = rect.width * window.devicePixelRatio;
+        canvas.height = rect.height * window.devicePixelRatio;
+        ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#1e3a8a'; // Dark blue ink
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      // Mouse events
+      canvas.addEventListener('mousedown', (e) => {
+        isDrawing = true;
+        const rect = canvas.getBoundingClientRect();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+      });
+      window.addEventListener('mouseup', () => { isDrawing = false; });
+      canvas.addEventListener('mousemove', (e) => {
+        if (!isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+      });
+
+      // Touch events (iPads / Android tablets)
+      canvas.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        isDrawing = true;
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        ctx.beginPath();
+        ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+      }, { passive: false });
+
+      canvas.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        isDrawing = false;
+      }, { passive: false });
+
+      canvas.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        if (!isDrawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const touch = e.touches[0];
+        ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        ctx.stroke();
+      }, { passive: false });
+    }
+
+    function toggleScratchpad() {
+      const drawer = document.getElementById('scratchpadDrawer');
+      drawer.classList.toggle('translate-y-full');
+      // Refit canvas size upon opening
+      setTimeout(() => {
+        if (canvas) {
+          const rect = canvas.getBoundingClientRect();
+          canvas.width = rect.width * window.devicePixelRatio;
+          canvas.height = rect.height * window.devicePixelRatio;
+          ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.lineWidth = 2.5;
+          ctx.strokeStyle = '#1e3a8a';
+        }
+      }, 350);
+    }
+
+    function clearScratchpad() {
+      if (ctx && canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    /* =========================================================================
+       8. TIMER & INIT
+       ========================================================================= */
+    function startTimer() {
+      const display = document.getElementById('timerDisplay');
+      timerInterval = setInterval(() => {
+        secondsElapsed++;
+        const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+        const secs = String(secondsElapsed % 60).padStart(2, '0');
+        display.innerText = `${mins}:${secs}`;
+      }, 1000);
+    }
+
+    window.onload = function() {
+      renderProblems();
+      initCanvas();
+      startTimer();
+    };
+  </script>
+</body>
+</html>
