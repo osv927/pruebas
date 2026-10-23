@@ -3,165 +3,215 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Colegio Internacional Saint George | Portal de Pruebas</title>
+  <title>Servidor Personal Osvaldo Matías | Repaso Escolar</title>
+  <!-- Fuentes estilo Roblox / Bloques -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #ffffff;
-      --card-bg: #6b1426;         /* Rojo vino / borgoña */
-      --card-hover: #500d1b;      /* Tono más oscuro al pasar cursor */
-      --text-main: #1f2937;
-      --text-sub: #4b5563;
-      --card-text: #ffffff;
-      --card-subtext: #fecdd3;
-      --border-soft: #e5e7eb;
+      --bg-sky: #4aa3df;
+      --stud-pattern: #3b8ec4;
+      --card-bg: #232527;
+      --card-border: #111215;
+      --roblox-green: #00b06f;
+      --roblox-green-shadow: #007a4d;
+      --roblox-yellow: #f5a623;
+      --text: #ffffff;
+      --text-muted: #abb1b8;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: var(--bg);
-      color: var(--text-main);
+      font-family: 'Fredoka', cursive, system-ui, sans-serif;
+      /* Textura tipo studs / bloques en el fondo */
+      background-color: var(--bg-sky);
+      background-image: 
+        radial-gradient(circle, var(--stud-pattern) 18%, transparent 19%),
+        radial-gradient(circle, var(--stud-pattern) 18%, transparent 19%);
+      background-size: 32px 32px;
+      background-position: 0 0, 16px 16px;
+      color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px;
+      padding: 30px 16px;
     }
 
+    /* Header estilo Roblox Top Bar */
     header {
       text-align: center;
-      margin-bottom: 40px;
-      max-width: 750px;
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 820px;
+      background: rgba(35, 37, 39, 0.94);
+      border: 4px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 10px 0px rgba(0, 0, 0, 0.25);
     }
 
-    .school-name {
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--card-bg);
-      letter-spacing: 0.04em;
+    .badge-lobby {
+      display: inline-block;
+      background: var(--roblox-yellow);
+      color: #111;
+      padding: 4px 18px;
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 800;
       text-transform: uppercase;
-      margin-bottom: 6px;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+      border: 2px solid #000;
+      box-shadow: 0 3px 0 #000;
     }
 
     h1 {
-      font-size: 2.1rem;
-      font-weight: 800;
-      line-height: 1.25;
-      color: #111827;
-      margin-bottom: 8px;
-    }
-
-    .grade-badge {
-      display: inline-block;
-      background: #fdf2f4;
-      color: var(--card-bg);
-      border: 1px solid #fecdd3;
-      padding: 4px 14px;
-      border-radius: 9999px;
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-top: 6px;
-      margin-bottom: 16px;
+      font-family: 'Lilita One', cursive;
+      font-size: 2.5rem;
+      letter-spacing: 0.03em;
+      color: #ffffff;
+      text-shadow: 
+        -2px -2px 0 #000,  
+         2px -2px 0 #000,
+        -2px  2px 0 #000,
+         2px  2px 0 #000,
+         0 6px 0 rgba(0,0,0,0.4);
+      margin-bottom: 6px;
     }
 
     p.subtitle {
-      color: var(--text-sub);
-      font-size: 1.1rem;
-      font-weight: 500;
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      font-weight: 600;
     }
 
-    /* Grid de tarjetas */
+    /* Grid de Portales / Pads */
     .grid {
       width: 100%;
       max-width: 960px;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 22px;
     }
 
+    /* Tarjeta estilo Bloque 3D */
     .card {
-      background-color: var(--card-bg);
-      border-radius: 14px;
-      padding: 24px;
+      background: var(--card-bg);
+      border: 4px solid var(--card-border);
+      border-radius: 20px;
+      padding: 22px;
       text-decoration: none;
-      color: var(--card-text);
+      color: inherit;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 150px;
-      box-shadow: 0 4px 12px rgba(107, 20, 38, 0.15);
-      transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
-      cursor: pointer;
+      min-height: 190px;
+      box-shadow: 0 8px 0px #111215;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      position: relative;
+      overflow: hidden;
     }
 
     .card:hover {
-      background-color: var(--card-hover);
       transform: translateY(-4px);
-      box-shadow: 0 10px 20px rgba(107, 20, 38, 0.25);
+      box-shadow: 0 12px 0px #111215;
     }
 
-    .card-top {
+    .card:active {
+      transform: translateY(4px);
+      box-shadow: 0 4px 0px #111215;
+    }
+
+    /* Tag de la tarjeta */
+    .card-zone {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 8px;
+      color: var(--roblox-yellow);
+      text-transform: uppercase;
+    }
+
+    .card-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 14px;
+      margin-top: 8px;
     }
 
     .card-icon {
-      font-size: 2rem;
-      line-height: 1;
-      background: rgba(255, 255, 255, 0.15);
+      font-size: 2.2rem;
+      background: #111215;
+      border: 3px solid #3b3f46;
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 14px;
+      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.5);
       flex-shrink: 0;
     }
 
     .card-title {
-      font-size: 1.15rem;
-      font-weight: 700;
-      line-height: 1.35;
+      font-family: 'Lilita One', cursive;
+      font-size: 1.35rem;
+      line-height: 1.2;
+      color: #fff;
       text-transform: capitalize;
-      color: var(--card-text);
     }
 
-    .card-action {
-      margin-top: 18px;
-      align-self: flex-end;
-      display: inline-flex;
+    /* Botón verde 3D de Spawn */
+    .btn-spawn {
+      margin-top: 20px;
+      background: var(--roblox-green);
+      border: 3px solid #000;
+      border-radius: 12px;
+      color: #fff;
+      font-family: 'Lilita One', cursive;
+      font-size: 1.15rem;
+      letter-spacing: 0.05em;
+      padding: 10px 16px;
+      display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--card-subtext);
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 5px 0 var(--roblox-green-shadow);
+      text-transform: uppercase;
     }
 
-    .card:hover .card-action {
-      color: #ffffff;
+    .card:hover .btn-spawn {
+      background: #00c97e;
     }
 
+    /* Mensajes de estado */
     .status-box {
       grid-column: 1 / -1;
       text-align: center;
       padding: 60px 20px;
-      background: #f9fafb;
-      border-radius: 14px;
-      border: 1px dashed var(--border-soft);
-      color: var(--text-sub);
-      font-size: 1rem;
+      background: var(--card-bg);
+      border: 4px dashed #3b3f46;
+      border-radius: 20px;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      box-shadow: 0 8px 0 #111215;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="school-name">Colegio Internacional Saint George de Panamá</div>
-    <h1>Portal de pruebas de repaso virtuales de Os Matías</h1>
-    <div class="grade-badge">Tercer Grado: Último Trimestre</div>
-    <p class="subtitle">Selecciona la prueba que quieres desarrollar hoy</p>
+    <div class="badge-lobby">⭐ BIENVENIDO A LA ZONA DE REPASO</div>
+    <h1>OSVALDO MATIAS, ESPERO ESTES LISTO</h1>
+    <p class="subtitle">Entra a cualquier portal para entrenar. ¡Puedes repetir las veces que quieras!</p>
   </header>
 
   <main class="grid" id="contenedor-pruebas">
-    <div class="status-box">Cargando pruebas disponibles...</div>
+    <div class="status-box">Buscando portales activos en el servidor...</div>
   </main>
 
   <script>
@@ -169,14 +219,21 @@
     const GITHUB_REPO = 'pruebas';
     const FOLDER_PATH = '';
 
-    function obtenerIcono(nombre) {
+    function categorizar(nombre) {
       const n = nombre.toLowerCase();
-      if (n.includes('mate') || n.includes('suma') || n.includes('resta') || n.includes('fraccion') || n.includes('multiplica') || n.includes('divis')) return '📐';
-      if (n.includes('esp') || n.includes('lengua') || n.includes('acento') || n.includes('lectura') || n.includes('palabra')) return '📚';
-      if (n.includes('cien') || n.includes('insecto') || n.includes('animal') || n.includes('planta') || n.includes('cuerpo')) return '🔬';
-      if (n.includes('soc') || n.includes('historia') || n.includes('mapa') || n.includes('geografia')) return '🌍';
-      if (n.includes('ing') || n.includes('english')) return '🗣️';
-      return '📝';
+      if (n.includes('mate') || n.includes('suma') || n.includes('resta') || n.includes('fraccion') || n.includes('multiplica') || n.includes('divis')) {
+        return { icono: '⚡', tag: 'Prueba tu conocimiento' };
+      }
+      if (n.includes('esp') || n.includes('lengua') || n.includes('acento') || n.includes('lectura') || n.includes('palabra')) {
+        return { icono: '📖', tag: 'Prueba tu conocimiento' };
+      }
+      if (n.includes('cien') || n.includes('insecto') || n.includes('animal') || n.includes('planta') || n.includes('cuerpo')) {
+        return { icono: '🧪', tag: 'Prueba tu conocimiento' };
+      }
+      if (n.includes('soc') || n.includes('historia') || n.includes('mapa') || n.includes('geografia')) {
+        return { icono: '🗺️', tag: 'Prueba tu conocimiento' };
+      }
+      return { icono: '🎮', tag: 'Prueba tu conocimiento' };
     }
 
     async function listarRetos() {
@@ -184,46 +241,46 @@
       const endpoint = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${FOLDER_PATH}`;
 
       try {
-        const respuesta = await fetch(endpoint);
-        if (!respuesta.ok) throw new Error('Error al conectar con GitHub');
+        const res = await fetch(endpoint);
+        if (!res.ok) throw new Error('Error al conectar');
+        const items = await res.json();
 
-        const items = await respuesta.json();
-
-        const pruebas = items.filter(archivo => 
-          archivo.type === 'file' &&
-          archivo.name.endsWith('.html') &&
-          archivo.name.toLowerCase() !== 'index.html'
+        const pruebas = items.filter(f => 
+          f.type === 'file' &&
+          f.name.endsWith('.html') &&
+          f.name.toLowerCase() !== 'index.html'
         );
 
         if (pruebas.length === 0) {
-          grid.innerHTML = '<div class="status-box">No se encontraron pruebas cargadas aún.</div>';
+          grid.innerHTML = '<div class="status-box">No hay pruebas disponibles en este momento.</div>';
           return;
         }
 
         pruebas.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 
-        grid.innerHTML = pruebas.map(prueba => {
-          const limpio = prueba.name.replace('.html', '').replace(/[-_]/g, ' ');
-          const icono = obtenerIcono(prueba.name);
-          
+        grid.innerHTML = pruebas.map(p => {
+          const limpio = p.name.replace('.html', '').replace(/[-_]/g, ' ');
+          const { icono, tag } = categorizar(p.name);
+
           return `
-            <a class="card" href="${prueba.name}">
-              <div class="card-top">
+            <a class="card" href="${p.name}">
+              <span class="card-zone">${tag}</span>
+              <div class="card-header">
                 <div class="card-icon">${icono}</div>
                 <div class="card-title">${limpio}</div>
               </div>
-              <div class="card-action">
-                Empezar <span>→</span>
+              <div class="btn-spawn">
+                ▶ SPAWN
               </div>
             </a>
           `;
         }).join('');
 
-      } catch (e) {
+      } catch (err) {
         grid.innerHTML = `
           <div class="status-box">
-            No se pudieron cargar las pruebas.<br>
-            Verifica que el repositorio <code>osv927/pruebas</code> esté configurado como público.
+            No se pudo conectar con el servidor.<br>
+            Asegúrate de que <code>osv927/pruebas</code> sea público.
           </div>
         `;
       }
