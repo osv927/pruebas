@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roblox Science Quest - Topic 4: Life Cycles and Traits</title>
+  <!-- Google Fonts: Fredoka & Montserrat for Authentic Roblox Typographic Look -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700;800&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --rbx-red: #E2231A;
+      --rbx-dark-red: #8B0E09;
+      --rbx-yellow: #F1C40F;
+      --rbx-dark-yellow: #A68007;
+      --rbx-green: #2ECC71;
+      --rbx-dark-green: #197B40;
+      --rbx-blue: #00A2FF;
+      --rbx-dark-blue: #005F99;
+      --rbx-purple: #9B59B6;
+      --rbx-dark-purple: #5A276E;
+      --rbx-bg-dark: #191B1D;
+      --rbx-panel: #232527;
+      --rbx-panel-light: #2E3236;
+      --rbx-border: #3A3F45;
+    }
+
+    body {
+      font-family: 'Fredoka', 'Montserrat', -apple-system, sans-serif;
+      background: radial-gradient(circle at 50% 12%, #2B3139 0%, #191B1D 65%, #101214 100%);
+      color: #FFFFFF;
+      user-select: none;
+      -webkit-user-select: none;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Roblox studs texture effect */
+    .studs-bg {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.07) 16%, transparent 17%);
+      background-size: 20px 20px;
+    }
+
+    /* Mechanical 3D Button Bevels & Click Physics */
+    .btn-3d {
+      position: relative;
+      transition: all 0.08s ease-in-out;
+      transform: translateY(0);
+      cursor: pointer;
+    }
+    .btn-3d:active {
+      transform: translateY(4px);
+    }
+
+    .btn-red {
+      background-color: var(--rbx-red);
+      box-shadow: 0 6px 0 var(--rbx-dark-red), 0 10px 18px rgba(0,0,0,0.45);
+    }
+    .btn-red:active {
+      box-shadow: 0 2px 0 var(--rbx-dark-red), 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    .btn-green {
+      background-color: var(--rbx-green);
+      box-shadow: 0 6px 0 var(--rbx-dark-green), 0 10px 18px rgba(0,0,0,0.45);
+    }
+    .btn-green:active {
+      box-shadow: 0 2px 0 var(--rbx-dark-green), 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    .btn-blue {
+      background-color: var(--rbx-blue);
+      box-shadow: 0 6px 0 var(--rbx-dark-blue), 0 10px 18px rgba(0,0,0,0.45);
+    }
+    .btn-blue:active {
+      box-shadow: 0 2px 0 var(--rbx-dark-blue), 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    .btn-yellow {
+      background-color: var(--rbx-yellow);
+      color: #171A21;
+      box-shadow: 0 6px 0 var(--rbx-dark-yellow), 0 10px 18px rgba(0,0,0,0.45);
+    }
+    .btn-yellow:active {
+      box-shadow: 0 2px 0 var(--rbx-dark-yellow), 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    .btn-panel {
+      background-color: var(--rbx-panel-light);
+      border: 2px solid var(--rbx-border);
+      box-shadow: 0 5px 0 #141618, 0 8px 12px rgba(0,0,0,0.3);
+    }
+    .btn-panel:active {
+      box-shadow: 0 1px 0 #141618;
+    }
+
+    /* Option Cards */
+    .opt-card {
+      background: var(--rbx-panel);
+      border: 3px solid var(--rbx-border);
+      box-shadow: 0 5px 0 #131416, 0 8px 14px rgba(0,0,0,0.35);
+      transition: all 0.1s ease;
+      cursor: pointer;
+    }
+    .opt-card:hover {
+      background: var(--rbx-panel-light);
+      border-color: var(--rbx-blue);
+      transform: translateY(-2px);
+    }
+    .opt-card:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #131416;
+    }
+    .opt-card.correct {
+      background: #104C28 !important;
+      border-color: #2ECC71 !important;
+      box-shadow: 0 5px 0 #0A2E19 !important;
+      color: #FFFFFF !important;
+    }
+    .opt-card.wrong {
+      background: #691C16 !important;
+      border-color: #E74C3C !important;
+      box-shadow: 0 5px 0 #3D100C !important;
+      color: #FFFFFF !important;
+    }
+
+    /* Modal animation */
+    .fade-enter {
+      animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.92); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body class="studs-bg flex flex-col justify-between p-3 sm:p-5 md:p-6 min-h-screen">
+
+  <!-- TOP GAMER BANNER -->
+  <header class="w-full max-w-4xl mx-auto flex items-center justify-between bg-[#232527] p-3 md:p-4 rounded-2xl border-4 border-[#3A3F45] shadow-2xl mb-4">
+    <div class="flex items-center gap-3">
+      <!-- Roblox Cube Icon -->
+      <div class="w-10 h-10 md:w-12 md:h-12 bg-[#E2231A] rounded-xl flex items-center justify-center shadow-lg transform rotate-[-6deg] border-2 border-white/30 flex-shrink-0">
+        <div class="w-4 h-4 bg-white rounded-sm transform rotate-[45deg]"></div>
+      </div>
+      <div>
+        <h1 class="text-base sm:text-xl md:text-2xl font-black tracking-wide text-white uppercase leading-none drop-shadow">
+          Roblox Science Quest
+        </h1>
+        <p class="text-[11px] sm:text-xs font-semibold text-gray-300">
+          Savvas 3rd Grade • Topic 4: Life Cycles &amp; Traits
+        </p>
+      </div>
+    </div>
+
+    <!-- Right Controls: Audio & Player Tag -->
+    <div class="flex items-center gap-2">
+      <button id="btnSoundToggle" onclick="toggleSound()" class="bg-[#191B1D] hover:bg-[#2E3236] p-2.5 rounded-xl border border-[#3A3F45] text-lg btn-3d" title="Sound Effects Toggle">
+        <span id="soundIcon">🔊</span>
+      </button>
+
+      <div class="flex items-center gap-2 bg-[#191B1D] px-3 py-1.5 rounded-xl border-2 border-[#3A3F45]">
+        <span class="text-lg">🎮</span>
+        <div class="text-right">
+          <div class="text-[9px] text-gray-400 uppercase font-black tracking-wider">Student</div>
+          <div id="playerNameHeader" class="text-xs md:text-sm font-black text-yellow-400 leading-tight">
+            Osvaldo Matias Obregon
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN QUEST CONTAINER -->
+  <main class="w-full max-w-4xl mx-auto flex-1 flex flex-col justify-center">
+
+    <!-- ==========================================
+         SCREEN 1: LOBBY & LEVEL SELECTOR
+         ========================================== -->
+    <div id="screenLobby" class="bg-[#232527]/95 backdrop-blur rounded-3xl border-4 border-[#3A3F45] p-5 sm:p-7 md:p-8 shadow-2xl">
+      <div class="text-center mb-6">
+        <span class="inline-block bg-yellow-400 text-black font-extrabold text-xs px-4 py-1 rounded-full uppercase tracking-widest shadow mb-2">
+          ⚡ Select Challenge Tier ⚡
+        </span>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black uppercase text-white drop-shadow-md">
+          Ready to Ace Science, Osvaldo?
+        </h2>
+        <p class="text-gray-300 text-xs sm:text-sm mt-1 max-w-xl mx-auto">
+          Every level is strictly graded on the <span class="text-yellow-400 font-extrabold">100-POINT STANDARD</span>. All tests are in English with a neutral <strong class="text-cyan-400">"🌐 Understand the Question"</strong> tool for language clarity!
+        </p>
+      </div>
+
+      <!-- Student Name Bar -->
+      <div class="max-w-md mx-auto mb-6 bg-[#191B1D] p-3 rounded-2xl border-2 border-[#3A3F45] flex flex-col gap-1.5">
+        <label for="inputPlayerName" class="text-[10px] font-black text-gray-400 uppercase tracking-wider">Player Name (Certificate Badge):</label>
+        <div class="flex gap-2">
+          <input id="inputPlayerName" type="text" value="Osvaldo Matias Obregon" maxlength="32"
+            class="flex-1 bg-[#2B3139] text-white px-3 py-2 rounded-xl border border-gray-600 focus:outline-none focus:border-yellow-400 font-bold text-sm">
+          <button onclick="updatePlayerName()" class="btn-3d btn-yellow px-4 py-2 rounded-xl font-black text-xs uppercase">
+            Save
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 Difficulty Tiers Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- LEVEL 1 -->
+        <div class="bg-[#191B1D] rounded-2xl p-5 border-4 border-[#2ECC71] flex flex-col justify-between shadow-xl relative overflow-hidden">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-3xl">🌱</span>
+              <span class="bg-[#197B40] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase">Tier 1</span>
+            </div>
+            <h3 class="text-lg font-black text-green-400 uppercase">Rookie Checkpoint</h3>
+            <p class="text-gray-300 text-xs mt-2 leading-relaxed">
+              Diagnostic test to evaluate everyday classroom retention without prior studying. Direct and foundational.
+            </p>
+          </div>
+          <div class="mt-4">
+            <div class="bg-[#262A30] p-2.5 rounded-xl border border-gray-700 space-y-1 text-xs mb-4">
+              <div class="flex justify-between font-bold text-gray-300">
+                <span>Questions:</span> <span class="text-white">10 Questions</span>
+              </div>
+              <div class="flex justify-between font-bold text-gray-300">
+                <span>Points Each:</span> <span class="text-green-400 font-black">10 pts</span>
+              </div>
+              <div class="flex justify-between font-bold text-gray-300">
+                <span>Max Score:</span> <span class="text-yellow-400 font-black">100 POINTS</span>
+              </div>
+            </div>
+            <button onclick="startGame(1)" class="w-full py-3 rounded-xl font-black text-sm uppercase text-white btn-3d btn-green">
+              Start Level 1 🚀
+            </button>
+          </div>
+        </div>
+
+        <!-- LEVEL 2 -->
+        <div class="bg-[#191B1D] rounded-2xl p-5 border-4 border-[#00A2FF] flex flex-col justify-between shadow-xl relative overflow-hidden">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-3xl">⚔️</span>
+              <span class="bg-[#005F99] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase">Tier 2</span>
+            </div>
+            <h3 class="text-lg font-black text-cyan-400 uppercase">Pro Grinding</h3>
+            <p class="text-gray-300 text-xs mt-2 leading-relaxed">
+              Intensive drill with 20 questions. Constant repetition of Savvas vocabulary, sequences, and Venn comparisons to solidify mastery.
+            </p>
+          </div>
+          <div class="mt-4">
+            <div class="bg-[#262A30] p-2.5 rounded-xl border border-gray-700 space-y-1 text-xs mb-4">
+              <div class="flex justify-between font-bold text-gray-300">
+                <span>Questions:</span> <span class="text-white">20 Questions</span>
+              </div>
+              <div class="flex justify-between font-bold text-gray-300">
+                <span>Points Each:</span> <span class="text-cyan-400 font-black">5 pts</span>
+              </div>
+              <div class="flex justify-between font-bold text-gray-300">
+                <span>Max Score:</span> <span class="text-yellow-400 font-black">100 POINTS</span>
+              </div>
+            </div>
+            <button onclick="startGame(2)" class="w-full py-3 rounded-xl font-black text-sm uppercase text-white btn-3d btn-blue">
+              Start Level 2 ⚡
+            </button>
+          </div>
+        </div>
+
+        <!-- LEVEL 3 -->
+        <div class="bg-[#191B1D] rounded-2xl p-5 border-4 border-[#E2231A] flex flex-col justify-between shadow-xl relative overflow-hidden">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-3xl">👑</span>
+              <span class="bg-[#8B0E09] text-white text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase">Tier 3</span>
+            </div>
+            <h3 class="text-lg font-black text-red-400 uppercase">Boss Battle</h3>
+            <p class="text-gray-300 text-xs mt-2 leading-relaxed">
+              Elite critical thinking: ecological extinction scenarios, seed-inhibiting chemicals, and embryo biology analysis.
+            </p>
+          </div>
+          <div class="mt-4">
+            <div class="bg-[#262A30] p-2.5 rounded-xl border border-gray-700 space-y-1 text-xs mb-4">
+              <div class="flex justify-between font-bold text-gray-300">
+                <span>Questions:</span> <span class="text-white">5 Questions</span>
+              </div>
+              <div class="flex justify-between font-bold text-gray-300">
+                <span>Points Each:</span> <span class="text-red-400 font-black">20 pts</span>
+              </div>
+              <div class="flex justify-between font-bold text-gray-300">
+                <span>Max Score:</span> <span class="text-yellow-400 font-black">100 POINTS</span>
+              </div>
+            </div>
+            <button onclick="startGame(3)" class="w-full py-3 rounded-xl font-black text-sm uppercase text-white btn-3d btn-red">
+              Start Level 3 🔥
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 2: IN-GAME HUD & TEST ARENA
+         ========================================== -->
+    <div id="screenGame" class="hidden flex-col gap-4">
+      
+      <!-- TOP HUD BAR -->
+      <div class="bg-[#232527] p-3 md:p-4 rounded-2xl border-4 border-[#3A3F45] shadow-xl flex flex-wrap items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span id="hudLevelBadge" class="bg-blue-600 text-white font-extrabold text-xs px-3 py-1 rounded-full uppercase">
+            Level 1: Rookie
+          </span>
+          <span class="font-bold text-gray-200 text-xs sm:text-sm">
+            Question <span id="hudCurrentQ" class="text-yellow-400 font-black text-base md:text-lg">1</span>/<span id="hudTotalQ">10</span>
+          </span>
+        </div>
+
+        <!-- XP Health/Progress Bar -->
+        <div class="flex-1 min-w-[140px] max-w-xs bg-[#191B1D] h-4 md:h-5 rounded-full overflow-hidden p-1 border-2 border-gray-700">
+          <div id="hudProgressBar" class="h-full bg-gradient-to-r from-yellow-500 to-green-500 rounded-full transition-all duration-300" style="width: 10%;"></div>
+        </div>
+
+        <!-- Streak & Score Trackers -->
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1.5 bg-[#191B1D] px-3 py-1 rounded-xl border border-gray-700">
+            <span class="text-orange-500 text-sm">🔥</span>
+            <span class="text-[10px] font-bold text-gray-400 uppercase">Streak:</span>
+            <span id="hudStreak" class="font-black text-orange-400 text-sm">0</span>
+          </div>
+
+          <div class="flex items-center gap-1.5 bg-[#191B1D] px-3 py-1 rounded-xl border border-gray-700">
+            <span class="text-yellow-400 text-sm">🪙</span>
+            <span class="text-[10px] font-bold text-gray-400 uppercase">Score:</span>
+            <span id="hudScore" class="font-black text-yellow-400 text-base md:text-lg">0</span>
+            <span class="text-[10px] text-gray-400">/ 100</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN QUESTION CARD -->
+      <div class="bg-[#232527]/95 rounded-3xl border-4 border-[#3A3F45] p-5 sm:p-6 md:p-7 shadow-2xl flex flex-col justify-between min-h-[400px]">
+        
+        <div>
+          <!-- Category & Language Helper Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div class="flex items-center gap-2">
+              <span id="qCategory" class="text-[10px] md:text-xs font-black uppercase tracking-wider text-cyan-400 bg-cyan-950/70 px-3 py-1 rounded-lg border border-cyan-800">
+                Vocabulary
+              </span>
+              <span id="qPointsBadge" class="text-[10px] md:text-xs font-black text-yellow-400 bg-yellow-950/70 px-2.5 py-1 rounded-lg border border-yellow-800">
+                +10 pts
+              </span>
+            </div>
+
+            <!-- ZERO-SPOILER Language Helper Button -->
+            <button onclick="toggleLangHelper()" class="btn-3d btn-panel px-3 py-1.5 rounded-xl text-yellow-300 text-xs font-black flex items-center gap-2 hover:border-yellow-400">
+              <span class="text-base">🌐</span>
+              <span id="btnLangLabel">Understand the Question / Entender la pregunta</span>
+            </button>
+          </div>
+
+          <!-- PURE LANGUAGE TRANSLATION/PARAPHRASE CARD (NO SPOILERS) -->
+          <div id="langHelperCard" class="hidden mb-4 p-4 bg-[#191B1D] border-2 border-cyan-500/80 rounded-2xl fade-enter">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-gray-700">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+                <span>📘</span> Language Clarification (Comprensión de Lectura)
+              </span>
+              <button onclick="toggleLangHelper()" class="text-gray-400 hover:text-white text-xs font-bold px-2 py-0.5 rounded bg-gray-800">
+                ✕ Close
+              </button>
+            </div>
+            
+            <div class="space-y-2 text-xs">
+              <div>
+                <span class="font-extrabold text-blue-300 uppercase tracking-wide text-[10px]">Simple English:</span>
+                <p id="helperSimpleEn" class="text-gray-200 mt-0.5 italic">Simplified English meaning...</p>
+              </div>
+              <div class="pt-1 border-t border-gray-800">
+                <span class="font-extrabold text-yellow-400 uppercase tracking-wide text-[10px]">En Español (¿Qué te pide la pregunta?):</span>
+                <p id="helperEsTrans" class="text-gray-200 mt-0.5">Traducción neutra en español...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- English Question Title -->
+          <h2 id="qText" class="text-base sm:text-lg md:text-xl font-extrabold text-white leading-snug drop-shadow-sm mb-5">
+            Loading question text...
+          </h2>
+        </div>
+
+        <!-- 4 Option Cards Grid -->
+        <div id="optionsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+          <!-- Dynamically filled with English options -->
+        </div>
+
+        <!-- Post-answer Feedback Panel -->
+        <div id="feedbackBox" class="hidden p-4 rounded-2xl border-2 flex flex-col md:flex-row items-center justify-between gap-3 mt-1">
+          <div class="flex items-center gap-3">
+            <span id="feedbackIcon" class="text-2xl md:text-3xl">✅</span>
+            <div>
+              <h4 id="feedbackTitle" class="font-black text-sm md:text-base uppercase">Correct!</h4>
+              <p id="feedbackExplanation" class="text-xs text-gray-200">Explanation...</p>
+            </div>
+          </div>
+          <button id="btnNext" onclick="nextQuestion()" class="w-full md:w-auto px-6 py-2.5 rounded-xl font-black text-sm uppercase btn-3d btn-yellow text-black whitespace-nowrap">
+            Next Question ➔
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==========================================
+         SCREEN 3: RESULTS & CANVAS CERTIFICATE
+         ========================================== -->
+    <div id="screenResults" class="hidden bg-[#232527]/95 rounded-3xl border-4 border-[#3A3F45] p-5 sm:p-7 md:p-8 shadow-2xl flex flex-col items-center">
+      <div class="text-center mb-3">
+        <span class="inline-block bg-yellow-400 text-black font-extrabold text-xs px-4 py-1 rounded-full uppercase tracking-widest shadow mb-2">
+          🏆 MISSION COMPLETE! 🏆
+        </span>
+        <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-white uppercase drop-shadow">
+          Official Performance Report
+        </h2>
+      </div>
+
+      <!-- High-Res HTML5 Canvas Certificate -->
+      <div class="w-full flex justify-center mb-5">
+        <canvas id="certCanvas" width="900" height="520" class="w-full max-w-xl rounded-2xl border-4 border-yellow-400 shadow-2xl bg-[#191B1D]"></canvas>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-wrap justify-center gap-3 w-full max-w-xl">
+        <button onclick="downloadCertificate()" class="flex-1 min-w-[200px] py-3.5 px-4 rounded-xl font-black text-sm uppercase text-white btn-3d btn-green flex items-center justify-center gap-2">
+          <span>📥</span> Download Badge (PNG)
+        </button>
+
+        <button onclick="shareScore()" class="flex-1 min-w-[190px] py-3.5 px-4 rounded-xl font-black text-sm uppercase text-white btn-3d btn-blue flex items-center justify-center gap-2">
+          <span id="shareBtnIcon">📤</span> <span id="shareBtnText">Share Result</span>
+        </button>
+
+        <button onclick="backToLobby()" class="w-full py-3 px-4 rounded-xl font-black text-sm uppercase text-black btn-3d btn-yellow flex items-center justify-center gap-2">
+          <span>🔄</span> Play Another Tier
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="w-full max-w-4xl mx-auto text-center text-gray-500 text-[11px] font-semibold mt-4">
+    Roblox Science Academy • Savvas Interactive Science Topic 4 • Exact 100-Point Grading Standard
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    /* ==========================================================================
+       1. PROCEDURAL SOUND FX (Web Audio API - Self-Contained)
+       ========================================================================== */
+    let isSoundOn = true;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function toggleSound() {
+      isSoundOn = !isSoundOn;
+      document.getElementById('soundIcon').textContent = isSoundOn ? '🔊' : '🔇';
+      if (isSoundOn) playTone(440, 'triangle', 0.08);
+    }
+
+    function playTone(freq, type, duration, delay = 0) {
+      if (!isSoundOn) return;
+      setTimeout(() => {
+        try {
+          initAudio();
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+          gain.gain.setValueAtTime(0.18, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch (e) {
+          console.warn('Audio note issue:', e);
+        }
+      }, delay);
+    }
+
+    function soundClick() { playTone(420, 'triangle', 0.07); }
+    function soundCorrect() {
+      playTone(523.25, 'sine', 0.1, 0);   // C5
+      playTone(659.25, 'sine', 0.1, 80);  // E5
+      playTone(783.99, 'sine', 0.2, 160); // G5
+      playTone(1046.5, 'triangle', 0.35, 240); // C6
+    }
+    function soundWrong() {
+      playTone(200, 'sawtooth', 0.2, 0);
+      playTone(160, 'sawtooth', 0.3, 130);
+    }
+    function soundWin() {
+      [523, 659, 784, 1046, 784, 1046].forEach((f, idx) => {
+        playTone(f, 'square', 0.16, idx * 105);
+      });
+    }
+
+    /* ==========================================================================
+       2. CURRICULUM QUESTIONS WITH ZERO-SPOILER BILINGUAL TRANSLATION AIDS
+       ========================================================================== */
+
+    // LEVEL 1: ROOKIE CHECKPOINT (10 Questions x 10 pts = 100 pts)
+    const questionsLvl1 = [
+      {
+        category: "Vocabulary",
+        q: "What is an organism?",
+        options: [
+          "A living thing",
+          "A non-living rock",
+          "A type of water",
+          "A kind of weather"
+        ],
+        correct: 0,
+        simpleEn: "The question is asking you to pick the scientific meaning of the word 'organism'.",
+        esTrans: "La pregunta te pide elegir la definición científica de la palabra 'organismo'.",
+        expEn: "In Savvas Science, an organism is defined as any living thing."
+      },
+      {
+        category: "Vocabulary",
+        q: "What is a life cycle?",
+        options: [
+          "A series of stages an organism goes through during its life",
+          "A bicycle with large wheels",
+          "The way animals run",
+          "The time when plants sleep"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what happens during a 'life cycle' from beginning to end.",
+        esTrans: "La pregunta te pide identificar qué significa el término 'ciclo de vida'.",
+        expEn: "A life cycle is a series of stages an organism goes through during its life."
+      },
+      {
+        category: "Vocabulary",
+        q: "What is growth?",
+        options: [
+          "A period of getting larger",
+          "Becoming smaller over time",
+          "Changing colors in winter",
+          "Moving to another place"
+        ],
+        correct: 0,
+        simpleEn: "The question asks for the workbook definition of the word 'growth'.",
+        esTrans: "La pregunta te pide seleccionar el significado de la palabra 'crecimiento' (growth).",
+        expEn: "Growth is the biological period of getting larger and developing."
+      },
+      {
+        category: "Vocabulary",
+        q: "What is reproduction?",
+        options: [
+          "Making a new organism of the same kind",
+          "Eating food to get energy",
+          "Sleeping during the night",
+          "Growing new roots"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what living things do when they undergo 'reproduction'.",
+        esTrans: "La pregunta te pide señalar qué significa el proceso de 'reproducción'.",
+        expEn: "Reproduction means to make a new organism of the same kind."
+      },
+      {
+        category: "Animal Stages",
+        q: "Where does a frog begin its life?",
+        options: [
+          "From an egg",
+          "From a seed",
+          "From milk",
+          "From a flower"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what object or stage starts a frog's life cycle.",
+        esTrans: "La pregunta te pide indicar de dónde nace o comienza la vida una rana.",
+        expEn: "A frog begins its life cycle as an egg laid in the water."
+      },
+      {
+        category: "Plant Stages",
+        q: "Where does a flowering plant or tree begin its life cycle?",
+        options: [
+          "From a seed",
+          "From an animal egg",
+          "From a stone",
+          "From a tadpole"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what structure marks the first stage of a plant's life cycle.",
+        esTrans: "La pregunta te pide identificar con qué estructura inicia el ciclo de vida una planta con flores o un árbol.",
+        expEn: "A flowering plant starts its life cycle from a seed."
+      },
+      {
+        category: "Venn Diagram",
+        q: "In the Venn diagram comparing plants and animals, which stage do BOTH share?",
+        options: [
+          "Growth, reproduction, and death",
+          "Germination",
+          "Laying eggs",
+          "Making seeds"
+        ],
+        correct: 0,
+        simpleEn: "The question asks which life processes happen in BOTH plants and animals in the middle section.",
+        esTrans: "La pregunta pide señalar qué etapas o procesos ocurren TANTO en plantas como en animales en la sección central del diagrama.",
+        expEn: "Both plants and animals experience growth, reproduction, and death."
+      },
+      {
+        category: "Venn Diagram",
+        q: "In the Venn diagram, which stage belongs ONLY to plants?",
+        options: [
+          "Germination",
+          "Growth",
+          "Death",
+          "Reproduction"
+        ],
+        correct: 0,
+        simpleEn: "The question asks which stage happens ONLY in plant life cycles, not animals.",
+        esTrans: "La pregunta te pide encontrar la etapa que pertenece ÚNICAMENTE a las plantas.",
+        expEn: "Germination (sprouting from a seed) occurs only in plants."
+      },
+      {
+        category: "Venn Diagram",
+        q: "In the Venn diagram, which stage belongs ONLY to animals?",
+        options: [
+          "Birth",
+          "Death",
+          "Growth",
+          "Reproduction"
+        ],
+        correct: 0,
+        simpleEn: "The question asks which term is placed only in the animal category in your workbook.",
+        esTrans: "La pregunta te pide identificar la palabra del recuadro que pertenece ÚNICAMENTE a los animales.",
+        expEn: "Birth belongs in the animals category of the workbook Venn diagram."
+      },
+      {
+        category: "Everyday Phenomenon",
+        q: "What does a healthy dog need to stay fit and energetic?",
+        options: [
+          "Healthy food and regular exercise",
+          "Only sleeping all day",
+          "Eating unhealthy food with no exercise",
+          "Living in the dark"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what environmental care and habits keep a pet dog healthy.",
+        esTrans: "La pregunta te pide indicar qué necesita un perro para mantenerse saludable y en buena forma física.",
+        expEn: "Healthy nutrition and regular physical exercise keep dogs energetic and in good condition."
+      }
+    ];
+
+    // LEVEL 2: PRO GRINDING (20 Questions x 5 pts = 100 pts)
+    const questionsLvl2 = [
+      {
+        category: "Vocabulary Drill",
+        q: "Which word describes any living thing, like a plant, an animal, or a person?",
+        options: [
+          "Organism",
+          "Mineral",
+          "Weather",
+          "Machine"
+        ],
+        correct: 0,
+        simpleEn: "The question asks for the scientific vocabulary word used for any living being.",
+        esTrans: "La pregunta te pide cuál es la palabra científica que nombra a cualquier ser vivo (planta, animal o persona).",
+        expEn: "An organism is any individual living thing."
+      },
+      {
+        category: "Vocabulary Drill",
+        q: "Which scientific term describes all the stages an organism passes through from start to end of life?",
+        options: [
+          "Life cycle",
+          "Food chain",
+          "Water cycle",
+          "Rock cycle"
+        ],
+        correct: 0,
+        simpleEn: "The question asks for the term that covers every developmental step from birth to death.",
+        esTrans: "La pregunta pide el término científico que describe todas las etapas que vive un ser vivo de inicio a fin.",
+        expEn: "A life cycle encompasses all developmental stages of an organism's existence."
+      },
+      {
+        category: "Vocabulary Drill",
+        q: "When a young puppy gets taller and heavier over time, which biological process is happening?",
+        options: [
+          "Growth",
+          "Germination",
+          "Metamorphosis",
+          "Hibernation"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what process describes getting larger in size and weight over time.",
+        esTrans: "La pregunta te pide identificar qué proceso biológico ocurre cuando un cachorro aumenta de peso y tamaño.",
+        expEn: "Growth is the period in which an organism gets larger and develops."
+      },
+      {
+        category: "Vocabulary Drill",
+        q: "When adult frogs lay eggs that hatch into new offspring of their kind, what process is this?",
+        options: [
+          "Reproduction",
+          "Evaporation",
+          "Respiration",
+          "Digestion"
+        ],
+        correct: 0,
+        simpleEn: "The question asks for the term used when parents make new young of their same species.",
+        esTrans: "La pregunta te pide el nombre del proceso por el cual los adultos producen nuevas crías de su misma especie.",
+        expEn: "Reproduction is making a new organism of the same kind."
+      },
+      {
+        category: "Plant Conditions",
+        q: "What essential conditions does a plant seed need to start germinating?",
+        options: [
+          "Water, warm soil, and air",
+          "Soda and total ice",
+          "Sand with zero water",
+          "Darkness and salt"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what natural resources a seed must have to begin sprouting.",
+        esTrans: "La pregunta te pide cuáles son las condiciones y elementos necesarios para que una semilla comience a germinar.",
+        expEn: "Seeds require moisture (water), oxygen from air, and proper warmth to germinate."
+      },
+      {
+        category: "Plant Sequence",
+        q: "What is the correct sequence of stages in a flowering plant's life cycle?",
+        options: [
+          "Seed -> Germination -> Seedling/Growth -> Adult with flowers -> Death",
+          "Flower -> Seed -> Root -> Leaf",
+          "Adult -> Seedling -> Seed -> Germination",
+          "Sprout -> Flower -> Seedling -> Seed"
+        ],
+        correct: 0,
+        simpleEn: "The question asks you to put the stages of a flowering plant in the right chronological order.",
+        esTrans: "La pregunta te pide ordenar cronológicamente las etapas del ciclo de vida de una planta con flor.",
+        expEn: "Plants begin as seeds, germinate into seedlings, grow into mature adults with flowers, and eventually die."
+      },
+      {
+        category: "Seed Anatomy",
+        q: "When a seed germinates in the soil, which part typically grows downward first?",
+        options: [
+          "Roots grow down into soil to take in water",
+          "Flowers bloom immediately",
+          "Leaves turn into fruit",
+          "Stems shrink"
+        ],
+        correct: 0,
+        simpleEn: "The question asks which organ breaks out first from the seed and travels down into the earth.",
+        esTrans: "La pregunta pide qué parte de la planta brota primero hacia abajo en la tierra al germinar.",
+        expEn: "The embryonic root emerges first to anchor the sprout and absorb water."
+      },
+      {
+        category: "Frog Stages",
+        q: "What is a tadpole?",
+        options: [
+          "The young aquatic swimming stage of a frog with a tail and gills",
+          "A baby sea turtle",
+          "An adult insect",
+          "A plant seed"
+        ],
+        correct: 0,
+        simpleEn: "The question asks you to define what a tadpole is in nature.",
+        esTrans: "La pregunta te pide la descripción de qué es un renacuajo (tadpole).",
+        expEn: "A tadpole is the aquatic larval stage of a frog that swims with a tail and breathes through gills."
+      },
+      {
+        category: "Sea Turtle Habitat",
+        q: "Where do mother sea turtles travel to lay their eggs?",
+        options: [
+          "On sandy beaches on land",
+          "Deep underwater on the ocean floor",
+          "High up in trees",
+          "Inside freshwater rivers"
+        ],
+        correct: 0,
+        simpleEn: "The question asks which geographical location mother sea turtles go to when laying eggs.",
+        esTrans: "La pregunta pide a qué lugar específico viajan las tortugas marinas hembras para poner sus huevos.",
+        expEn: "Female sea turtles come ashore onto dry sandy beaches to dig nests and lay eggs."
+      },
+      {
+        category: "Frog Habitat",
+        q: "In what environment do frogs lay their jelly-coated eggs?",
+        options: [
+          "In calm freshwater ponds or lakes",
+          "In high dry mountain sand",
+          "Under desert rocks",
+          "Inside bird nests"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what type of habitat frogs choose to lay their eggs.",
+        esTrans: "La pregunta te pide en qué tipo de ambiente acuático depositan sus huevos las ranas.",
+        expEn: "Frogs deposit soft, jelly-coated eggs in freshwater environments such as ponds, marshes, and lakes."
+      },
+      {
+        category: "Egg Comparison",
+        q: "How are frog eggs and sea turtle eggs DIFFERENT?",
+        options: [
+          "Frog eggs are small and soft in water; sea turtle eggs have leathery shells and are laid on land",
+          "Frog eggs have hard rock shells",
+          "Sea turtle eggs hatch in trees",
+          "They are identical in shape and location"
+        ],
+        correct: 0,
+        simpleEn: "The question asks you to contrast the differences between frog eggs and sea turtle eggs.",
+        esTrans: "La pregunta te pide comparar las diferencias entre los huevos de rana y los huevos de tortuga marina.",
+        expEn: "Frog eggs lack shells and require water; sea turtle eggs possess flexible leathery shells buried in beach sand."
+      },
+      {
+        category: "Life Cycle Similarity",
+        q: "How are the life cycles of a frog and a sea turtle SIMILAR?",
+        options: [
+          "Both begin as eggs and go through different life stages",
+          "Both grow into amphibians",
+          "Both breathe underwater their entire adult lives",
+          "Both germinate from plant seeds"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what common feature is shared by both a frog and a sea turtle's development.",
+        esTrans: "La pregunta te pide señalar qué característica tienen en común el ciclo de vida de la rana y el de la tortuga marina.",
+        expEn: "Both organisms start life by hatching from eggs and progress through growth, reproduction, and death."
+      },
+      {
+        category: "Seed Purpose",
+        q: "What is the primary role of a seed in a plant's life cycle?",
+        options: [
+          "To protect the plant embryo and store food to grow a new plant",
+          "To fly away in the clouds",
+          "To catch small insects",
+          "To absorb sunlight directly"
+        ],
+        correct: 0,
+        simpleEn: "The question asks for the main biological function of a plant seed.",
+        esTrans: "La pregunta pide cuál es la función principal que cumple la semilla en el ciclo de vida vegetal.",
+        expEn: "A seed contains a protected plant embryo with stored food nourishment to establish a new plant."
+      },
+      {
+        category: "Seed vs Egg",
+        q: "How are a seed and an egg ALIKE?",
+        options: [
+          "Both can develop into a new living organism of their kind",
+          "Both have hard green shells",
+          "Both only grow underwater",
+          "Both are produced by adult reptiles"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what major similarity exists between an animal egg and a plant seed.",
+        esTrans: "La pregunta pide en qué se parecen fundamentalmente una semilla y un huevo animal.",
+        expEn: "Both seeds and eggs house developing embryos that can produce a new living organism."
+      },
+      {
+        category: "Seed vs Egg",
+        q: "How are a seed and an egg DIFFERENT?",
+        options: [
+          "Seeds grow into plants, while eggs hatch into animals",
+          "Seeds come from birds; eggs come from trees",
+          "Seeds are always squares; eggs are liquid",
+          "There is no biological difference"
+        ],
+        correct: 0,
+        simpleEn: "The question asks how to tell apart what a seed becomes compared to what an egg becomes.",
+        esTrans: "La pregunta pide cuál es la diferencia principal entre lo que produce una semilla y lo que produce un huevo.",
+        expEn: "Seeds produce plants, whereas eggs hatch into animals."
+      },
+      {
+        category: "Venn Sorting",
+        q: "In the Venn diagram from your workbook, which two words belong ONLY to Plants?",
+        options: [
+          "Seed and Germinate",
+          "Growth and Death",
+          "Birth and Egg",
+          "Reproduction and Growth"
+        ],
+        correct: 0,
+        simpleEn: "The question asks which pair of words from the word bank is classified only under plants.",
+        esTrans: "La pregunta te pide cuáles dos términos del banco de palabras corresponden únicamente a las plantas.",
+        expEn: "'Seed' and 'Germinate' are exclusive to the plant kingdom in this lesson."
+      },
+      {
+        category: "Venn Sorting",
+        q: "In the Venn diagram from your workbook, which two words belong ONLY to Animals?",
+        options: [
+          "Egg and Birth",
+          "Seed and Germinate",
+          "Growth and Reproduction",
+          "Death and Germinate"
+        ],
+        correct: 0,
+        simpleEn: "The question asks which pair of words from the word bank is classified only under animals.",
+        esTrans: "La pregunta te pide cuáles dos términos corresponden únicamente a los animales.",
+        expEn: "'Egg' and 'Birth' are placed under animals in the workbook Venn sorting exercise."
+      },
+      {
+        category: "Venn Sorting",
+        q: "In the Venn diagram, which three stages belong in the 'Both' intersection for plants and animals?",
+        options: [
+          "Growth, Reproduction, and Death",
+          "Egg, Seed, and Birth",
+          "Germinate, Birth, and Growth",
+          "Death, Egg, and Seed"
+        ],
+        correct: 0,
+        simpleEn: "The question asks which three words are placed in the shared center of the Venn diagram.",
+        esTrans: "La pregunta pide cuáles tres términos van colocados en la intersección central ('Both') del diagrama.",
+        expEn: "Growth, reproduction, and death are shared stages experienced by all living organisms."
+      },
+      {
+        category: "Anchoring Activity",
+        q: "In the textbook activity comparing two adopted dogs, why did one dog look energetic and fit while the other looked lazy and unhealthy?",
+        options: [
+          "One received healthy food and exercise; the other had poor food and no activity",
+          "One was a cat",
+          "One lived on Mars",
+          "Colors only"
+        ],
+        correct: 0,
+        simpleEn: "The question asks why the two adopted golden retrievers had different physical conditions.",
+        esTrans: "La pregunta te pide la causa de por qué los dos perros adoptados terminaron con apariencias y estados de salud distintos.",
+        expEn: "Nutrition and exercise habits provided by their owners directly affected the dogs' body conditions."
+      },
+      {
+        category: "Plant Development",
+        q: "Why does a plant look different at different times during its development?",
+        options: [
+          "Because it grows, changes shape, and develops new structures like roots, stems, and flowers",
+          "Because someone paints it",
+          "Because it shrinks as it gets older",
+          "Because it never changes"
+        ],
+        correct: 0,
+        simpleEn: "The question asks why a plant's physical appearance changes as it advances through its life stages.",
+        esTrans: "La pregunta pide explicar por qué una planta cambia de apariencia física en las distintas etapas de su vida.",
+        expEn: "Plants physically transform as they sprout roots, produce vegetative stems/leaves, and bloom flowers."
+      }
+    ];
+
+    // LEVEL 3: BOSS BATTLE (5 Questions x 20 pts = 100 pts)
+    const questionsLvl3 = [
+      {
+        category: "Ecological Impact",
+        q: "Ecological Impact: Suppose a bird species completely loses its ability to lay eggs. What will happen to that bird population over time?",
+        options: [
+          "The birds cannot reproduce, causing their population to decrease and eventually become extinct",
+          "The birds will start growing from seeds in the dirt",
+          "The birds will immediately double their lifespan",
+          "Other animals will start laying bird eggs"
+        ],
+        correct: 0,
+        simpleEn: "The question asks you to predict the long-term population outcome if a bird species cannot lay eggs anymore.",
+        esTrans: "La pregunta te pide predecir qué le ocurrirá a la población de esa especie de ave a lo largo del tiempo si pierde la capacidad de poner huevos.",
+        expEn: "Without laying eggs, reproduction ceases; as current adults die of age or predation, the population faces extinction."
+      },
+      {
+        category: "Cause & Effect",
+        q: "Cause and Effect: A farmer discovers a chemical in the water that stops pumpkin plants from making seeds. What will happen to the farmer's pumpkin crop in the future?",
+        options: [
+          "The current crop cannot produce seeds, so the farmer will have no seeds to grow next year's crop",
+          "The pumpkins will magically become watermelon plants",
+          "The pumpkins will grow twice as fast next year",
+          "The plants will produce seeds without flowers"
+        ],
+        correct: 0,
+        simpleEn: "The question asks how a chemical that blocks seed formation will impact the farmer's next planting season.",
+        esTrans: "La pregunta te pide explicar qué consecuencia sufrirá el cultivo de calabazas del agricultor a futuro si las plantas no producen semillas.",
+        expEn: "While current pumpkins may ripen, the loss of viable seeds means no future crops can be planted."
+      },
+      {
+        category: "Metamorphosis Analysis",
+        q: "Metamorphosis vs Direct Development: Why is the frog's life cycle considered a major metamorphosis compared to the sea turtle's development?",
+        options: [
+          "The frog completely transforms body structures from a water-dwelling tadpole with gills to a land-capable frog with lungs and legs",
+          "Turtles change into birds",
+          "Frogs start as adults and shrink into tadpoles",
+          "Sea turtles grow fur as they mature"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what anatomical changes make a frog's life cycle an example of true metamorphosis compared to a turtle.",
+        esTrans: "La pregunta pide la razón científica por la cual el ciclo de la rana se considera una metamorfosis drástica en comparación con el de la tortuga marina.",
+        expEn: "Metamorphosis involves extensive physical transformation from gill-bearing aquatic larvae to lung-breathing terrestrial adults."
+      },
+      {
+        category: "Environmental Phenomenon",
+        q: "Environmental Phenomenon: Two identical bean seeds are planted in the same soil. Seed A gets adequate sunlight and water. Seed B gets water but is sealed in total darkness. What will happen to Seed B over time?",
+        options: [
+          "Seed B may sprout using stored seed energy, but without light for photosynthesis, it will turn pale, weak, and eventually die",
+          "Seed B will turn bright green",
+          "Seed B will grow giant healthy flowers in the dark",
+          "Seed A will not sprout at all"
+        ],
+        correct: 0,
+        simpleEn: "The question asks what will happen to a plant that receives water but has zero access to sunlight over time.",
+        esTrans: "La pregunta te pide predecir qué le ocurrirá con el paso del tiempo a la semilla B si recibe agua pero está en total oscuridad.",
+        expEn: "Stored seed energy allows initial germination, but lack of sunlight prevents chlorophyll production and photosynthesis, causing death."
+      },
+      {
+        category: "Scientific Models",
+        q: "Scientific Models: Why do scientists draw life cycles as a repeating circle with arrows rather than a straight line with an end?",
+        options: [
+          "Because reproduction produces new offspring or seeds that restart the cycle for the next generation",
+          "Because circles look nicer on paper",
+          "Because living things never die",
+          "Because seeds can only roll in circles"
+        ],
+        correct: 0,
+        simpleEn: "The question asks why a circular diagram with arrows is the scientific model chosen to represent a life cycle.",
+        esTrans: "La pregunta te pide explicar por qué los científicos representan los ciclos de vida como un círculo continuo con flechas y no como una línea recta.",
+        expEn: "Reproduction ensures continuity: mature adults produce new seeds or eggs that begin the entire cycle anew for subsequent generations."
+      }
+    ];
+
+    /* ==========================================================================
+       3. APP STATE & CONTROLLER
+       ========================================================================== */
+    let currentTier = 1;
+    let questionsPool = [];
+    let currentQIndex = 0;
+    let userScore = 0;
+    let pointsPerQ = 10;
+    let streakCount = 0;
+    let isQuestionActive = false;
+    let playerName = "Osvaldo Matias Obregon";
+    let isLangHelperOpen = false;
+
+    // DOM Elements
+    const screenLobby = document.getElementById('screenLobby');
+    const screenGame = document.getElementById('screenGame');
+    const screenResults = document.getElementById('screenResults');
+
+    const hudLevelBadge = document.getElementById('hudLevelBadge');
+    const hudCurrentQ = document.getElementById('hudCurrentQ');
+    const hudTotalQ = document.getElementById('hudTotalQ');
+    const hudProgressBar = document.getElementById('hudProgressBar');
+    const hudStreak = document.getElementById('hudStreak');
+    const hudScore = document.getElementById('hudScore');
+
+    const qCategory = document.getElementById('qCategory');
+    const qPointsBadge = document.getElementById('qPointsBadge');
+    const qText = document.getElementById('qText');
+    const optionsContainer = document.getElementById('optionsContainer');
+
+    const langHelperCard = document.getElementById('langHelperCard');
+    const helperSimpleEn = document.getElementById('helperSimpleEn');
+    const helperEsTrans = document.getElementById('helperEsTrans');
+    const btnLangLabel = document.getElementById('btnLangLabel');
+
+    const feedbackBox = document.getElementById('feedbackBox');
+    const feedbackIcon = document.getElementById('feedbackIcon');
+    const feedbackTitle = document.getElementById('feedbackTitle');
+    const feedbackExplanation = document.getElementById('feedbackExplanation');
+    const btnNext = document.getElementById('btnNext');
+
+    const playerNameHeader = document.getElementById('playerNameHeader');
+    const inputPlayerName = document.getElementById('inputPlayerName');
+
+    function updatePlayerName() {
+      const val = inputPlayerName.value.trim();
+      if (val) {
+        playerName = val;
+        playerNameHeader.textContent = playerName;
+        soundClick();
+      }
+    }
+
+    function toggleLangHelper() {
+      soundClick();
+      isLangHelperOpen = !isLangHelperOpen;
+      if (isLangHelperOpen) {
+        langHelperCard.classList.remove('hidden');
+        btnLangLabel.textContent = "Close Language Aid / Ocultar";
+      } else {
+        langHelperCard.classList.add('hidden');
+        btnLangLabel.textContent = "Understand the Question / Entender la pregunta";
+      }
+    }
+
+    function startGame(tier) {
+      soundClick();
+      currentTier = tier;
+      userScore = 0;
+      currentQIndex = 0;
+      streakCount = 0;
+
+      if (tier === 1) {
+        questionsPool = [...questionsLvl1];
+        pointsPerQ = 10;
+        hudLevelBadge.textContent = "Tier 1: Rookie Checkpoint";
+        hudLevelBadge.className = "bg-green-600 text-white font-extrabold text-xs px-3 py-1 rounded-full uppercase";
+      } else if (tier === 2) {
+        questionsPool = [...questionsLvl2];
+        pointsPerQ = 5;
+        hudLevelBadge.textContent = "Tier 2: Pro Grinding";
+        hudLevelBadge.className = "bg-blue-600 text-white font-extrabold text-xs px-3 py-1 rounded-full uppercase";
+      } else {
+        questionsPool = [...questionsLvl3];
+        pointsPerQ = 20;
+        hudLevelBadge.textContent = "Tier 3: Boss Battle";
+        hudLevelBadge.className = "bg-red-600 text-white font-extrabold text-xs px-3 py-1 rounded-full uppercase";
+      }
+
+      // Shuffle question order
+      questionsPool.sort(() => Math.random() - 0.5);
+
+      hudTotalQ.textContent = questionsPool.length;
+      hudScore.textContent = userScore;
+      hudStreak.textContent = streakCount;
+
+      screenLobby.classList.add('hidden');
+      screenResults.classList.add('hidden');
+      screenGame.classList.remove('hidden');
+
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      isQuestionActive = true;
+      feedbackBox.classList.add('hidden');
+
+      // Close language helper modal on new question
+      isLangHelperOpen = false;
+      langHelperCard.classList.add('hidden');
+      btnLangLabel.textContent = "Understand the Question / Entender la pregunta";
+
+      const q = questionsPool[currentQIndex];
+      hudCurrentQ.textContent = currentQIndex + 1;
+
+      // Update progress bar
+      const progress = ((currentQIndex) / questionsPool.length) * 100;
+      hudProgressBar.style.width = `${Math.max(8, progress)}%`;
+
+      qCategory.textContent = q.category;
+      qPointsBadge.textContent = `+${pointsPerQ} pts`;
+      qText.textContent = q.q;
+
+      // Set neutral language clarifications
+      helperSimpleEn.textContent = q.simpleEn;
+      helperEsTrans.textContent = q.esTrans;
+
+      // Render English options
+      optionsContainer.innerHTML = '';
+      q.options.forEach((optText, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "opt-card p-3 sm:p-4 rounded-2xl text-left font-bold text-xs sm:text-sm text-gray-100 flex items-center gap-3 w-full btn-3d";
+        btn.innerHTML = `
+          <span class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#191B1D] text-yellow-400 border border-gray-600 flex items-center justify-center font-black flex-shrink-0 text-xs sm:text-sm">
+            ${String.fromCharCode(65 + idx)}
+          </span>
+          <span class="flex-1 leading-snug">${optText}</span>
+        `;
+        btn.onclick = () => handleAnswer(idx, btn);
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(selectedIdx, btnElement) {
+      if (!isQuestionActive) return;
+      isQuestionActive = false;
+
+      const q = questionsPool[currentQIndex];
+      const allButtons = optionsContainer.querySelectorAll('button');
+
+      if (selectedIdx === q.correct) {
+        soundCorrect();
+        userScore += pointsPerQ;
+        streakCount++;
+        hudScore.textContent = userScore;
+        hudStreak.textContent = streakCount;
+
+        btnElement.classList.add('correct');
+        feedbackBox.className = "p-4 rounded-2xl border-2 flex flex-col md:flex-row items-center justify-between gap-3 mt-1 bg-green-950/80 border-green-500 text-green-200";
+        feedbackIcon.textContent = "🌟";
+        feedbackTitle.textContent = `CORRECT! +${pointsPerQ} POINTS`;
+        feedbackExplanation.textContent = q.expEn;
+      } else {
+        soundWrong();
+        streakCount = 0;
+        hudStreak.textContent = streakCount;
+
+        btnElement.classList.add('wrong');
+        allButtons[q.correct].classList.add('correct');
+
+        feedbackBox.className = "p-4 rounded-2xl border-2 flex flex-col md:flex-row items-center justify-between gap-3 mt-1 bg-red-950/80 border-red-500 text-red-200";
+        feedbackIcon.textContent = "❌";
+        feedbackTitle.textContent = "INCORRECT!";
+        feedbackExplanation.textContent = q.expEn;
+      }
+
+      feedbackBox.classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      soundClick();
+      currentQIndex++;
+      if (currentQIndex < questionsPool.length) {
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    /* ==========================================================================
+       4. HTML5 CANVAS BADGE CERTIFICATE (900x520)
+       ========================================================================== */
+    function showResults() {
+      soundWin();
+      screenGame.classList.add('hidden');
+      screenResults.classList.remove('hidden');
+      renderCanvasCertificate();
+    }
+
+    function renderCanvasCertificate() {
+      const canvas = document.getElementById('certCanvas');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      // Background gradient
+      const bg = ctx.createLinearGradient(0, 0, w, h);
+      bg.addColorStop(0, '#191B1D');
+      bg.addColorStop(0.5, '#232527');
+      bg.addColorStop(1, '#101214');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, w, h);
+
+      // Studs dots
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
+      for (let x = 16; x < w; x += 22) {
+        for (let y = 16; y < h; y += 22) {
+          ctx.beginPath();
+          ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Gold Outer Frame
+      ctx.lineWidth = 8;
+      ctx.strokeStyle = '#F1C40F';
+      ctx.strokeRect(16, 16, w - 32, h - 32);
+
+      // Secondary Inner Frame
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#3A3F45';
+      ctx.strokeRect(26, 26, w - 52, h - 52);
+
+      // Corner Rivets
+      const corners = [[36, 36], [w - 36, 36], [36, h - 36], [w - 36, h - 36]];
+      corners.forEach(([cx, cy]) => {
+        ctx.fillStyle = '#E2231A';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+
+      // Header Roblox Red Banner
+      ctx.fillStyle = '#E2231A';
+      ctx.beginPath();
+      ctx.roundRect(w / 2 - 225, 34, 450, 42, 10);
+      ctx.fill();
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.font = '900 19px Fredoka, Montserrat, sans-serif';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.textAlign = 'center';
+      ctx.fillText('★ ROBLOX SCIENCE ACADEMY - OFFICIAL BADGE ★', w / 2, 63);
+
+      // Subtitle
+      ctx.font = '700 13px Fredoka, sans-serif';
+      ctx.fillStyle = '#A0AEC0';
+      ctx.fillText('SAVVAS INTERACTIVE SCIENCE • TOPIC 4: LIFE CYCLES AND TRAITS', w / 2, 102);
+
+      ctx.font = '800 20px Fredoka, sans-serif';
+      ctx.fillStyle = '#00A2FF';
+      ctx.fillText('EXPERIENCE 1: LIFE CYCLE MODELS & ENVIRONMENTS', w / 2, 128);
+
+      // Student Card
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+      ctx.beginPath();
+      ctx.roundRect(80, 146, w - 160, 62, 12);
+      ctx.fill();
+      ctx.strokeStyle = '#4A5568';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.font = '600 11px Fredoka, sans-serif';
+      ctx.fillStyle = '#CBD5E0';
+      ctx.fillText('STUDENT RECOGNITION (SAINT GEORGE SCHOOL - 3RD GRADE):', w / 2, 168);
+
+      ctx.font = '900 24px Fredoka, Montserrat, sans-serif';
+      ctx.fillStyle = '#F1C40F';
+      ctx.fillText(playerName.toUpperCase(), w / 2, 196);
+
+      // Determine Rank
+      let rankTitle = "ROOKIE EXPLORER 🔍";
+      let rankColor = "#E2231A";
+
+      if (userScore === 100) {
+        rankTitle = "LEGENDARY BLOX MASTER (100/100) 👑";
+        rankColor = "#2ECC71";
+      } else if (userScore >= 80) {
+        rankTitle = "PRO BIOLOGIST ⚡";
+        rankColor = "#00A2FF";
+      } else if (userScore >= 60) {
+        rankTitle = "APPRENTICE SCIENTIST 🛡️";
+        rankColor = "#F1C40F";
+      }
+
+      // Left Box: Score Panel
+      ctx.fillStyle = '#191B1D';
+      ctx.beginPath();
+      ctx.roundRect(70, 226, 340, 178, 16);
+      ctx.fill();
+      ctx.strokeStyle = rankColor;
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.font = '700 12px Fredoka, sans-serif';
+      ctx.fillStyle = '#A0AEC0';
+      ctx.fillText('EXACT STANDARD SCORE', 240, 256);
+
+      ctx.font = '900 66px Fredoka, Montserrat, sans-serif';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText(userScore, 205, 328);
+
+      ctx.font = '700 22px Fredoka, sans-serif';
+      ctx.fillStyle = '#F1C40F';
+      ctx.fillText('/ 100', 315, 328);
+
+      // Rank Badge Pill
+      ctx.fillStyle = rankColor;
+      ctx.beginPath();
+      ctx.roundRect(90, 352, 300, 34, 8);
+      ctx.fill();
+
+      ctx.font = '900 13px Fredoka, sans-serif';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText(rankTitle, 240, 374);
+
+      // Right Box: Challenge Details
+      ctx.fillStyle = '#191B1D';
+      ctx.beginPath();
+      ctx.roundRect(435, 226, 395, 178, 16);
+      ctx.fill();
+      ctx.strokeStyle = '#4A5568';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.textAlign = 'left';
+      ctx.font = '700 12px Fredoka, sans-serif';
+      ctx.fillStyle = '#A0AEC0';
+      ctx.fillText('MISSION AUDIT DETAILS:', 460, 256);
+
+      const tierNames = {
+        1: "Tier 1: Rookie Checkpoint (10 Qs)",
+        2: "Tier 2: Pro Grinding (20 Qs)",
+        3: "Tier 3: Boss Battle (5 Qs)"
+      };
+
+      ctx.font = '600 13px Fredoka, sans-serif';
+      ctx.fillStyle = '#E2E8F0';
+      ctx.fillText('• Challenge Level:', 460, 290);
+      ctx.font = '800 13px Fredoka, sans-serif';
+      ctx.fillStyle = '#00A2FF';
+      ctx.fillText(tierNames[currentTier], 595, 290);
+
+      ctx.font = '600 13px Fredoka, sans-serif';
+      ctx.fillStyle = '#E2E8F0';
+      ctx.fillText('• Test Language:', 460, 320);
+      ctx.font = '800 13px Fredoka, sans-serif';
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillText('English (with Neutral ES Aid)', 595, 320);
+
+      const today = new Date();
+      const dateStr = today.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      ctx.font = '600 13px Fredoka, sans-serif';
+      ctx.fillStyle = '#E2E8F0';
+      ctx.fillText('• Date Completed:', 460, 350);
+      ctx.font = '800 13px Fredoka, sans-serif';
+      ctx.fillStyle = '#F1C40F';
+      ctx.fillText(dateStr, 595, 350);
+
+      ctx.font = '800 12px Fredoka, sans-serif';
+      ctx.fillStyle = '#2ECC71';
+      ctx.fillText('✔ Verified Academic Standard • 100 Points Max', 460, 382);
+
+      // Bottom Bar
+      ctx.textAlign = 'center';
+      ctx.font = '600 10px Fredoka, sans-serif';
+      ctx.fillStyle = '#718096';
+      ctx.fillText('CODE: RBX-SCI-3RD-OSVALDO-2026 • ROBLOX SCIENCE QUEST REPOSITORY', w / 2, 480);
+    }
+
+    /* ==========================================================================
+       5. DOWNLOAD & SHARE
+       ========================================================================== */
+    function downloadCertificate() {
+      soundClick();
+      const canvas = document.getElementById('certCanvas');
+      const link = document.createElement('a');
+      link.download = `Roblox_Science_Certificate_${playerName.replace(/\s+/g, '_')}_Tier${currentTier}_${userScore}pts.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    async function shareScore() {
+      soundClick();
+      const canvas = document.getElementById('certCanvas');
+      const shareTitle = `Roblox Science Quest - ${playerName}`;
+      const shareText = `🎮 ${playerName} scored ${userScore}/100 POINTS on 3rd Grade Science (Topic 4: Life Cycles - Tier ${currentTier})! 🏆 Verified by Roblox Science Quest!`;
+
+      const shareBtnText = document.getElementById('shareBtnText');
+      const shareBtnIcon = document.getElementById('shareBtnIcon');
+
+      if (navigator.share) {
+        try {
+          canvas.toBlob(async (blob) => {
+            const file = new File([blob], `Score_${playerName}.png`, { type: 'image/png' });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                title: shareTitle,
+                text: shareText,
+                files: [file]
+              });
+            } else {
+              await navigator.share({
+                title: shareTitle,
+                text: shareText
+              });
+            }
+          });
+        } catch (err) {
+          console.warn('Share modal dismissed:', err);
+        }
+      } else {
+        // Fallback: Clipboard Copy
+        const temp = document.createElement('textarea');
+        temp.value = shareText;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+
+        shareBtnIcon.textContent = "✅";
+        shareBtnText.textContent = "Copied to Clipboard!";
+        setTimeout(() => {
+          shareBtnIcon.textContent = "📤";
+          shareBtnText.textContent = "Share Result";
+        }, 2200);
+      }
+    }
+
+    function backToLobby() {
+      soundClick();
+      screenResults.classList.add('hidden');
+      screenGame.classList.add('hidden');
+      screenLobby.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
