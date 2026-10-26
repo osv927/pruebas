@@ -1,0 +1,1296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROBLOX ACADEMY: Thunder Rose - Grammar Quest</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fredoka & Nunito -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            fredoka: ['"Fredoka"', 'sans-serif'],
+            nunito: ['"Nunito"', 'sans-serif']
+          },
+          colors: {
+            roblox: {
+              red: '#E2231A',
+              darkRed: '#B01812',
+              cyan: '#00A2FF',
+              darkCyan: '#0070B8',
+              green: '#2ECC71',
+              darkGreen: '#219653',
+              yellow: '#F1C40F',
+              darkYellow: '#D4AC0D',
+              dark: '#111216',
+              card: '#1D2027',
+              surface: '#262A34',
+              accent: '#393F4E'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Nunito', sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .font-blox {
+      font-family: 'Fredoka', cursive, sans-serif;
+    }
+    /* Roblox Stud Pattern Background */
+    .stud-bg {
+      background-color: #111216;
+      background-image: radial-gradient(circle at 50% 50%, #262a34 14%, transparent 16%),
+                        radial-gradient(circle at 0% 0%, #1d2027 12%, transparent 14%);
+      background-size: 28px 28px;
+    }
+    /* 3D Roblox Button Press Effect */
+    .btn-3d {
+      transition: all 0.08s ease-in-out;
+      transform: translateY(0);
+    }
+    .btn-3d:active:not(:disabled) {
+      transform: translateY(4px);
+    }
+    .btn-3d-red {
+      box-shadow: 0 6px 0 #9c1510;
+    }
+    .btn-3d-red:active:not(:disabled) {
+      box-shadow: 0 2px 0 #9c1510;
+    }
+    .btn-3d-green {
+      box-shadow: 0 6px 0 #1e824c;
+    }
+    .btn-3d-green:active:not(:disabled) {
+      box-shadow: 0 2px 0 #1e824c;
+    }
+    .btn-3d-cyan {
+      box-shadow: 0 6px 0 #0070b8;
+    }
+    .btn-3d-cyan:active:not(:disabled) {
+      box-shadow: 0 2px 0 #0070b8;
+    }
+    .btn-3d-yellow {
+      box-shadow: 0 6px 0 #b7950b;
+    }
+    .btn-3d-yellow:active:not(:disabled) {
+      box-shadow: 0 2px 0 #b7950b;
+    }
+    .btn-3d-dark {
+      box-shadow: 0 6px 0 #0d0e12;
+    }
+    .btn-3d-dark:active:not(:disabled) {
+      box-shadow: 0 2px 0 #0d0e12;
+    }
+    /* Pulse animations */
+    @keyframes pulse-glow {
+      0%, 100% { filter: drop-shadow(0 0 10px rgba(0, 162, 255, 0.4)); }
+      50% { filter: drop-shadow(0 0 22px rgba(0, 162, 255, 0.9)); }
+    }
+    .glow-cyan {
+      animation: pulse-glow 2.5s infinite;
+    }
+  </style>
+</head>
+<body class="stud-bg text-white min-h-screen flex flex-col justify-between selection:bg-roblox-cyan selection:text-white">
+
+  <!-- TOP ROBLOX APP BAR -->
+  <header class="w-full bg-roblox-card border-b-4 border-black/40 px-4 py-3 flex items-center justify-between shadow-xl sticky top-0 z-40">
+    <div class="flex items-center space-x-3">
+      <!-- Roblox Cube Icon -->
+      <div class="w-10 h-10 bg-roblox-red rounded-lg flex items-center justify-center border-2 border-white shadow-md transform rotate-[-6deg] hover:rotate-0 transition-transform">
+        <div class="w-4 h-4 bg-white rounded-sm transform rotate-45"></div>
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-blox font-bold tracking-wider text-white drop-shadow">ROBLOX ACADEMY</h1>
+        <p class="text-xs text-roblox-cyan font-bold tracking-wide uppercase">Thunder Rose: Grammar Mastery</p>
+      </div>
+    </div>
+
+    <!-- Student Tag & Audio Mute -->
+    <div class="flex items-center space-x-2 md:space-x-4">
+      <div class="bg-roblox-surface border-2 border-roblox-accent px-3 py-1.5 rounded-xl flex items-center space-x-2">
+        <span class="w-3 h-3 rounded-full bg-roblox-green animate-ping"></span>
+        <span class="text-xs md:text-sm font-bold text-gray-200">Cadet: <span class="text-roblox-yellow">Osvaldo</span></span>
+      </div>
+
+      <button id="btn-sound" onclick="SoundFX.toggle()" class="w-10 h-10 bg-roblox-surface border-2 border-roblox-accent hover:border-roblox-cyan rounded-xl flex items-center justify-center text-lg btn-3d" title="Toggle Sound">
+        🔊
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN VIEWPORT CONTAINER -->
+  <main class="w-full max-w-4xl mx-auto p-4 md:p-6 flex-grow flex items-center justify-center">
+
+    <!-- SCREEN 1: LEVEL SELECTION / HOME -->
+    <div id="screen-home" class="w-full space-y-6">
+      
+      <!-- HERO BANNER -->
+      <div class="bg-gradient-to-r from-roblox-red via-red-600 to-roblox-cyan p-6 md:p-8 rounded-3xl border-4 border-white/20 shadow-2xl relative overflow-hidden text-center md:text-left flex flex-col md:flex-row items-center justify-between">
+        <div class="z-10 max-w-lg mb-6 md:mb-0">
+          <span class="inline-block bg-black/40 text-roblox-yellow font-blox text-xs md:text-sm px-3 py-1 rounded-full uppercase tracking-widest mb-3 border border-roblox-yellow/40">
+            ★ 3rd Grade Language Arts Mission ★
+          </span>
+          <h2 class="text-3xl md:text-5xl font-blox font-extrabold text-white leading-tight drop-shadow-md">
+            BECOME A GRAMMAR MASTER!
+          </h2>
+          <p class="mt-2 text-sm md:text-base text-gray-100 font-semibold leading-relaxed">
+            Master the 20 sentences of tall tale hero <span class="text-yellow-300 underline font-bold">Thunder Rose</span>. Underline the <b class="text-roblox-cyan">Subject</b>, circle the <b class="text-purple-300">Predicate</b>, and box the <b class="text-roblox-green">Adjective</b>!
+          </p>
+        </div>
+
+        <div class="z-10 flex flex-col items-center">
+          <div class="w-24 h-24 md:w-32 md:h-32 bg-white/10 backdrop-blur-md rounded-2xl border-4 border-white/30 flex items-center justify-center text-5xl md:text-6xl shadow-inner glow-cyan">
+            🤠⚡
+          </div>
+          <span class="text-xs font-bold text-white mt-2 uppercase tracking-wide">Target: 100/100 Pts</span>
+        </div>
+      </div>
+
+      <!-- LEVEL SELECTION CARDS -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        
+        <!-- LEVEL 1: ROOKIE -->
+        <div class="bg-roblox-card border-4 border-roblox-green rounded-2xl p-5 flex flex-col justify-between shadow-xl relative overflow-hidden group hover:border-white transition-all">
+          <div class="absolute top-2 right-2 bg-roblox-green text-black font-blox text-xs px-2.5 py-0.5 rounded-full font-bold">
+            100 PTS
+          </div>
+          <div>
+            <div class="text-4xl mb-2">🌱</div>
+            <h3 class="text-xl font-blox font-bold text-roblox-green">Level 1: Rookie</h3>
+            <p class="text-xs text-gray-400 mt-1 mb-4">Checkpoint Basics: 10 questions (10 pts each). Learn to spot the core sentence parts.</p>
+            <div class="space-y-1.5 text-xs text-gray-300">
+              <div class="flex items-center"><span class="text-roblox-green mr-2">✔</span> Identify Subject vs Predicate</div>
+              <div class="flex items-center"><span class="text-roblox-green mr-2">✔</span> Spot Descriptive Adjectives</div>
+              <div class="flex items-center"><span class="text-roblox-green mr-2">✔</span> Fast 4-Choice Format</div>
+            </div>
+          </div>
+          <button onclick="Game.startLevel(1)" class="mt-6 w-full py-3 bg-roblox-green text-white font-blox font-bold rounded-xl btn-3d btn-3d-green text-base uppercase tracking-wider flex items-center justify-center space-x-2">
+            <span>Play Level 1</span> <span>▶</span>
+          </button>
+        </div>
+
+        <!-- LEVEL 2: PRO (The Complete Worksheet) -->
+        <div class="bg-roblox-card border-4 border-roblox-cyan rounded-2xl p-5 flex flex-col justify-between shadow-xl relative overflow-hidden group hover:border-white transition-all">
+          <div class="absolute top-2 right-2 bg-roblox-cyan text-black font-blox text-xs px-2.5 py-0.5 rounded-full font-bold">
+            100 PTS
+          </div>
+          <div>
+            <div class="text-4xl mb-2">⚡</div>
+            <h3 class="text-xl font-blox font-bold text-roblox-cyan">Level 2: Pro Grinding</h3>
+            <p class="text-xs text-gray-400 mt-1 mb-4">Complete Worksheet: All 20 official sentences (5 pts each). Reclaim that perfect 100/100 score!</p>
+            <div class="space-y-1.5 text-xs text-gray-300">
+              <div class="flex items-center"><span class="text-roblox-cyan mr-2">✔</span> All 20 Worksheet Sentences</div>
+              <div class="flex items-center"><span class="text-roblox-cyan mr-2">✔</span> Underline, Circle & Box logic</div>
+              <div class="flex items-center"><span class="text-roblox-cyan mr-2">✔</span> Sentence Grammar Dissection</div>
+            </div>
+          </div>
+          <button onclick="Game.startLevel(2)" class="mt-6 w-full py-3 bg-roblox-cyan text-white font-blox font-bold rounded-xl btn-3d btn-3d-cyan text-base uppercase tracking-wider flex items-center justify-center space-x-2">
+            <span>Play Level 2</span> <span>▶</span>
+          </button>
+        </div>
+
+        <!-- LEVEL 3: MASTER BOSS BATTLE -->
+        <div class="bg-roblox-card border-4 border-roblox-red rounded-2xl p-5 flex flex-col justify-between shadow-xl relative overflow-hidden group hover:border-white transition-all">
+          <div class="absolute top-2 right-2 bg-roblox-red text-white font-blox text-xs px-2.5 py-0.5 rounded-full font-bold">
+            100 PTS
+          </div>
+          <div>
+            <div class="text-4xl mb-2">👑</div>
+            <h3 class="text-xl font-blox font-bold text-roblox-red">Level 3: Boss Battle</h3>
+            <p class="text-xs text-gray-400 mt-1 mb-4">Master Challenge: 5 deep grammar trials (20 pts each). Avoid tricky sentence traps!</p>
+            <div class="space-y-1.5 text-xs text-gray-300">
+              <div class="flex items-center"><span class="text-roblox-red mr-2">✔</span> Exact Subject/Predicate splits</div>
+              <div class="flex items-center"><span class="text-roblox-red mr-2">✔</span> Modifiers inside Predicates</div>
+              <div class="flex items-center"><span class="text-roblox-red mr-2">✔</span> Earn Master Roblox Diploma</div>
+            </div>
+          </div>
+          <button onclick="Game.startLevel(3)" class="mt-6 w-full py-3 bg-roblox-red text-white font-blox font-bold rounded-xl btn-3d btn-3d-red text-base uppercase tracking-wider flex items-center justify-center space-x-2">
+            <span>Play Level 3</span> <span>▶</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- HOW TO PLAY REMINDER PILL -->
+      <div class="bg-roblox-surface/80 border-2 border-roblox-accent rounded-2xl p-4 flex flex-col md:flex-row items-center justify-around text-center md:text-left gap-3">
+        <div class="flex items-center space-x-3">
+          <span class="text-2xl">📝</span>
+          <div>
+            <span class="text-xs text-gray-400 font-bold block uppercase">Grammar Rule #1</span>
+            <span class="text-sm font-extrabold text-roblox-cyan">Subject: Who or what the sentence is about.</span>
+          </div>
+        </div>
+        <div class="h-8 w-px bg-gray-600 hidden md:block"></div>
+        <div class="flex items-center space-x-3">
+          <span class="text-2xl">⭕</span>
+          <div>
+            <span class="text-xs text-gray-400 font-bold block uppercase">Grammar Rule #2</span>
+            <span class="text-sm font-extrabold text-purple-300">Predicate: What the subject is or does.</span>
+          </div>
+        </div>
+        <div class="h-8 w-px bg-gray-600 hidden md:block"></div>
+        <div class="flex items-center space-x-3">
+          <span class="text-2xl">📦</span>
+          <div>
+            <span class="text-xs text-gray-400 font-bold block uppercase">Grammar Rule #3</span>
+            <span class="text-sm font-extrabold text-roblox-green">Adjective: Describes a noun (tells what kind).</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SCREEN 2: GAMEPLAY QUIZ INTERFACE -->
+    <div id="screen-quiz" class="w-full hidden space-y-5">
+      
+      <!-- QUIZ HEADER STATS BAR -->
+      <div class="bg-roblox-card border-3 border-roblox-accent rounded-2xl p-4 flex items-center justify-between shadow-lg">
+        <div class="flex items-center space-x-3">
+          <button onclick="Game.exitToHome()" class="px-3 py-1.5 bg-roblox-surface hover:bg-gray-700 text-gray-300 rounded-lg text-xs font-blox font-bold border border-gray-600">
+            ⬅ Exit
+          </button>
+          <div>
+            <span id="quiz-level-badge" class="px-2.5 py-0.5 rounded-full text-xs font-blox font-bold uppercase tracking-wider bg-roblox-cyan text-black">
+              Level 1: Rookie
+            </span>
+            <span id="quiz-question-counter" class="text-sm font-bold text-gray-300 ml-2">Question 1 / 10</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <div class="text-right">
+            <span class="text-xs uppercase font-bold text-gray-400 block">Score</span>
+            <span id="quiz-current-score" class="text-lg md:text-xl font-blox font-extrabold text-roblox-yellow">0 / 100</span>
+          </div>
+          <div class="text-2xl">💎</div>
+        </div>
+      </div>
+
+      <!-- PROGRESS BAR -->
+      <div class="w-full bg-roblox-card h-4 rounded-full overflow-hidden border-2 border-roblox-accent p-0.5">
+        <div id="quiz-progress-bar" class="bg-gradient-to-r from-roblox-cyan to-roblox-green h-full rounded-full transition-all duration-300" style="width: 10%;"></div>
+      </div>
+
+      <!-- QUESTION CONTAINER CARD -->
+      <div class="bg-roblox-card border-4 border-roblox-accent rounded-3xl p-6 md:p-8 shadow-2xl relative">
+        
+        <!-- Target Sentence Pill -->
+        <div class="mb-4">
+          <span class="text-xs uppercase tracking-wider font-bold text-gray-400 block mb-1">Sentence from Thunder Rose:</span>
+          <div class="p-4 bg-roblox-dark rounded-2xl border-2 border-gray-700 font-mono text-base md:text-xl text-yellow-300 font-bold leading-relaxed tracking-wide shadow-inner" id="question-sentence">
+            "Thunder Rose was a strong girl."
+          </div>
+        </div>
+
+        <!-- Question Prompt -->
+        <div class="my-4">
+          <h3 class="text-lg md:text-2xl font-blox font-bold text-white tracking-wide leading-snug" id="question-prompt">
+            What is the Adjective in this sentence?
+          </h3>
+        </div>
+
+        <!-- BILINGUAL SCAFFOLDING BUTTON ("Understand the Question") -->
+        <div class="mb-6">
+          <button id="btn-scaffold" onclick="Game.toggleScaffolding()" class="w-full py-2.5 px-4 bg-roblox-surface hover:bg-[#2d323e] border-2 border-dashed border-roblox-cyan/70 hover:border-roblox-cyan text-roblox-cyan font-bold rounded-xl text-xs md:text-sm flex items-center justify-between transition-all">
+            <span class="flex items-center space-x-2">
+              <span>💡</span>
+              <span class="font-blox">Understand the Question / Entender la pregunta</span>
+            </span>
+            <span id="scaffold-arrow" class="text-xs transform transition-transform">▼ Click to see hint</span>
+          </button>
+
+          <!-- Collapsible Scaffolding Box -->
+          <div id="scaffold-box" class="hidden mt-2 p-4 bg-roblox-dark/95 border-2 border-roblox-cyan rounded-2xl text-xs md:text-sm text-gray-200 space-y-2.5 shadow-xl transition-all">
+            <div class="flex items-start space-x-2">
+              <span class="text-roblox-cyan font-bold">🇬🇧 English Breakdown:</span>
+              <p id="scaffold-en" class="font-medium text-gray-300">Look for the describing word that tells what kind of girl Thunder Rose was.</p>
+            </div>
+            <div class="border-t border-gray-700 pt-2 flex items-start space-x-2">
+              <span class="text-roblox-yellow font-bold">🇪🇸 Español Neutro:</span>
+              <p id="scaffold-es" class="font-medium text-gray-300">Busca la palabra que describe cómo es o qué cualidad tiene la niña en la oración.</p>
+            </div>
+            <div class="text-[10px] text-gray-400 italic text-right">
+              * Recordatorio: El andamiaje te ayuda a razonar la pregunta sin darte la respuesta directa.
+            </div>
+          </div>
+        </div>
+
+        <!-- ANSWER CHOICES CONTAINER -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5" id="options-container">
+          <!-- Options dynamically rendered here -->
+        </div>
+
+        <!-- INLINE FEEDBACK CONTAINER -->
+        <div id="feedback-container" class="hidden mt-6 p-4 rounded-2xl border-2 flex items-center justify-between transition-all">
+          <div class="flex items-center space-x-3">
+            <span id="feedback-icon" class="text-3xl">🎉</span>
+            <div>
+              <p id="feedback-title" class="font-blox font-bold text-lg text-white">CORRECT!</p>
+              <p id="feedback-reason" class="text-xs md:text-sm text-gray-200 font-medium">"strong" describes the noun "girl". Excellent job!</p>
+            </div>
+          </div>
+          <button id="btn-next-question" onclick="Game.nextQuestion()" class="px-5 py-2.5 bg-white text-black font-blox font-bold rounded-xl btn-3d hover:bg-gray-200 uppercase tracking-wider text-sm">
+            Next ➜
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- SCREEN 3: RESULTS & CERTIFICATE HUB -->
+    <div id="screen-results" class="w-full hidden space-y-6">
+      
+      <!-- SCORE BANNER -->
+      <div class="bg-roblox-card border-4 border-roblox-yellow rounded-3xl p-6 md:p-8 text-center shadow-2xl relative overflow-hidden">
+        <div class="text-6xl mb-2" id="results-avatar">🏆</div>
+        <span class="inline-block bg-roblox-yellow/20 text-roblox-yellow font-blox font-bold text-xs uppercase px-3 py-1 rounded-full mb-2">
+          Mission Finished
+        </span>
+        <h2 class="text-3xl md:text-5xl font-blox font-extrabold text-white" id="results-rank-title">
+          LEGENDARY GRAMMAR MASTER!
+        </h2>
+        <p class="text-gray-300 text-sm md:text-base mt-2" id="results-subtitle">
+          Outstanding work, Osvaldo! You demonstrated deep mastery over Subject, Predicate & Adjectives.
+        </p>
+
+        <!-- Final Score Pill -->
+        <div class="mt-6 inline-flex items-center space-x-4 bg-roblox-dark px-6 py-3 rounded-2xl border-2 border-roblox-yellow">
+          <div>
+            <span class="text-xs uppercase font-bold text-gray-400 block">Final Score</span>
+            <span id="results-final-score" class="text-3xl md:text-4xl font-blox font-black text-roblox-yellow">100 / 100</span>
+          </div>
+          <div class="h-8 w-px bg-gray-700"></div>
+          <div>
+            <span class="text-xs uppercase font-bold text-gray-400 block">Accuracy</span>
+            <span id="results-accuracy" class="text-3xl md:text-4xl font-blox font-black text-roblox-green">100%</span>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <button onclick="Game.replayLevel()" class="px-6 py-3 bg-roblox-cyan text-white font-blox font-bold rounded-xl btn-3d btn-3d-cyan uppercase tracking-wider text-sm flex items-center space-x-2">
+            <span>🔄 Replay Level</span>
+          </button>
+          <button onclick="Game.exitToHome()" class="px-6 py-3 bg-roblox-surface text-gray-200 font-blox font-bold rounded-xl btn-3d btn-3d-dark border border-gray-600 uppercase tracking-wider text-sm flex items-center space-x-2">
+            <span>🏠 Main Menu</span>
+          </button>
+          <button onclick="Game.shareResults()" class="px-6 py-3 bg-roblox-green text-white font-blox font-bold rounded-xl btn-3d btn-3d-green uppercase tracking-wider text-sm flex items-center space-x-2">
+            <span>📢 Share Score</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- DIPLOMA / CERTIFICATE GENERATOR (CANVAS) -->
+      <div class="bg-roblox-card border-4 border-roblox-accent rounded-3xl p-6 shadow-2xl">
+        <div class="flex flex-col md:flex-row items-center justify-between mb-4 gap-2">
+          <div>
+            <h3 class="text-xl font-blox font-bold text-white flex items-center space-x-2">
+              <span>📜</span>
+              <span>Official Roblox Academy Diploma</span>
+            </h3>
+            <p class="text-xs text-gray-400">Awarded to Osvaldo Matías Obregón for 3rd Grade Grammar Excellence</p>
+          </div>
+
+          <button onclick="Game.downloadCertificate()" class="px-5 py-2.5 bg-roblox-red text-white font-blox font-bold rounded-xl btn-3d btn-3d-red text-xs md:text-sm uppercase tracking-wider flex items-center space-x-2 shadow-lg">
+            <span>💾 Download Certificate (PNG)</span>
+          </button>
+        </div>
+
+        <!-- Responsive Canvas Container -->
+        <div class="w-full overflow-hidden rounded-2xl border-4 border-black/60 shadow-2xl bg-black flex justify-center">
+          <canvas id="certCanvas" width="800" height="500" class="w-full max-w-full h-auto block"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- POPUP NOTIFICATION / TOAST (No native alert) -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none bg-roblox-surface border-2 border-roblox-green text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-3">
+    <span id="toast-icon" class="text-2xl">✅</span>
+    <span id="toast-message" class="font-blox text-sm">Action successful!</span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="w-full bg-roblox-dark border-t border-gray-800 py-3 text-center text-xs text-gray-500">
+    Roblox Academy Educational Interactive • Thunder Rose Reading Comprehension & Syntax Mastery
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    /* =====================================================================
+       1. PROCEDURAL SOUND SYNTHESIZER (WEB AUDIO API - ZERO EXTERNAL ASSETS)
+       ===================================================================== */
+    const SoundFX = {
+      ctx: null,
+      enabled: true,
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+      },
+
+      toggle() {
+        this.enabled = !this.enabled;
+        const btn = document.getElementById('btn-sound');
+        btn.innerText = this.enabled ? '🔊' : '🔇';
+        btn.title = this.enabled ? 'Sound Enabled' : 'Sound Muted';
+      },
+
+      playClick() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.05);
+      },
+
+      playCorrect() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        // Roblox style high double-chime
+        const now = this.ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+        notes.forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.07);
+          gain.gain.setValueAtTime(0, now + i * 0.07);
+          gain.gain.linearRampToValueAtTime(0.22, now + i * 0.07 + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.28);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.07);
+          osc.stop(now + i * 0.07 + 0.3);
+        });
+      },
+
+      playWrong() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.linearRampToValueAtTime(95, now + 0.25);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.25);
+      },
+
+      playFanfare() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const arpeggio = [
+          { f: 523.25, t: 0.0, d: 0.12 },
+          { f: 659.25, t: 0.14, d: 0.12 },
+          { f: 783.99, t: 0.28, d: 0.14 },
+          { f: 1046.50, t: 0.44, d: 0.45 }
+        ];
+        arpeggio.forEach(note => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(note.f, now + note.t);
+          gain.gain.setValueAtTime(0.25, now + note.t);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + note.t + note.d);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + note.t);
+          osc.stop(now + note.t + note.d + 0.05);
+        });
+      }
+    };
+
+    /* =====================================================================
+       2. CURRICULUM QUESTIONS DATABASE (CALIBRATED TO 100 PTS PER LEVEL)
+       ===================================================================== */
+    const QUESTION_BANK = {
+      // LEVEL 1: ROOKIE (10 Qs x 10 pts = 100 pts)
+      1: [
+        {
+          sentence: "Thunder Rose was a strong girl.",
+          prompt: "Which word in the sentence is the ADJECTIVE describing the girl?",
+          options: ["strong", "girl", "Thunder Rose", "was"],
+          correct: 0,
+          explanation: "'strong' is the adjective because it describes what kind of girl she was.",
+          scaffoldEn: "An adjective tells what kind or describes a noun. Ask: What word tells what kind of girl she is?",
+          scaffoldEs: "Un adjetivo describe a un sustantivo. Pregúntate: ¿Qué palabra nos dice cómo es la niña?"
+        },
+        {
+          sentence: "The young girl lived on a ranch.",
+          prompt: "What is the complete SUBJECT of this sentence?",
+          options: ["The young girl", "lived on a ranch", "a ranch", "lived"],
+          correct: 0,
+          explanation: "'The young girl' is the complete subject because it tells who the sentence is about.",
+          scaffoldEn: "The subject tells WHO the sentence is about before the action verb.",
+          scaffoldEs: "El sujeto dice QUIÉN realiza la acción o de quién habla la oración."
+        },
+        {
+          sentence: "Thunder Rose had a powerful voice.",
+          prompt: "What is the PREDICATE in this sentence?",
+          options: ["Thunder Rose", "had a powerful voice", "powerful", "a voice"],
+          correct: 1,
+          explanation: "'had a powerful voice' is the predicate because it tells what Thunder Rose had (verb + object).",
+          scaffoldEn: "The predicate starts with the verb and tells what the subject did or had.",
+          scaffoldEs: "El predicado comienza con el verbo y explica qué hizo o qué tenía el sujeto."
+        },
+        {
+          sentence: "The brave girl helped her family.",
+          prompt: "Which word is the ADJECTIVE?",
+          options: ["helped", "family", "brave", "The"],
+          correct: 2,
+          explanation: "'brave' is the adjective that describes the noun 'girl'.",
+          scaffoldEn: "Look for the word right before 'girl' that tells her personality or quality.",
+          scaffoldEs: "Busca la palabra que está justo antes de 'girl' y que dice una cualidad de ella."
+        },
+        {
+          sentence: "The huge storm came across the land.",
+          prompt: "What is the SUBJECT of this sentence?",
+          options: ["came across", "The huge storm", "the land", "storm came"],
+          correct: 1,
+          explanation: "'The huge storm' is the subject that came across the land.",
+          scaffoldEn: "Ask: WHAT came across the land?",
+          scaffoldEs: "Pregúntate: ¿QUÉ cosa vino a través de la tierra?"
+        },
+        {
+          sentence: "Thunder Rose faced the dangerous storm.",
+          prompt: "Which word is the ADJECTIVE in the predicate?",
+          options: ["storm", "dangerous", "faced", "Rose"],
+          correct: 1,
+          explanation: "'dangerous' is the adjective describing what kind of storm it was.",
+          scaffoldEn: "Find the word describing the storm.",
+          scaffoldEs: "Encuentra la palabra que nos describe cómo era la tormenta."
+        },
+        {
+          sentence: "The strong wind blew across the ranch.",
+          prompt: "What is the PREDICATE of this sentence?",
+          options: ["The strong wind", "blew across the ranch", "the ranch", "wind blew"],
+          correct: 1,
+          explanation: "'blew across the ranch' is the complete action performed by the wind.",
+          scaffoldEn: "Find the verb 'blew' and everything that follows it telling where it blew.",
+          scaffoldEs: "Ubica el verbo 'blew' (sopló) y todo lo que sigue que describe la acción."
+        },
+        {
+          sentence: "Thunder Rose rode her fast horse.",
+          prompt: "Which word is the ADJECTIVE describing the horse?",
+          options: ["fast", "rode", "horse", "her"],
+          correct: 0,
+          explanation: "'fast' is the adjective showing the speed/quality of the horse.",
+          scaffoldEn: "What word tells what kind of horse she rode?",
+          scaffoldEs: "¿Qué palabra nos dice cómo corría o qué cualidad tenía el caballo?"
+        },
+        {
+          sentence: "The dark clouds covered the sky.",
+          prompt: "Which word is the ADJECTIVE describing the clouds?",
+          options: ["covered", "sky", "dark", "The"],
+          correct: 2,
+          explanation: "'dark' is the adjective telling the color/look of the clouds.",
+          scaffoldEn: "Which word tells how the clouds looked?",
+          scaffoldEs: "¿Qué palabra nos dice el color o apariencia de las nubes?"
+        },
+        {
+          sentence: "Thunder Rose showed a kind heart.",
+          prompt: "What is the PREDICATE of this sentence?",
+          options: ["Thunder Rose", "a kind heart", "showed a kind heart", "kind heart"],
+          correct: 2,
+          explanation: "'showed a kind heart' is the predicate telling what Thunder Rose did.",
+          scaffoldEn: "The predicate begins with the action word 'showed' through to the end.",
+          scaffoldEs: "El predicado comienza con el verbo 'showed' (mostró) hasta el final de la oración."
+        }
+      ],
+
+      // LEVEL 2: PRO (The Complete 20-Sentence Worksheet, 20 Qs x 5 pts = 100 pts)
+      2: [
+        {
+          sentence: "1. Thunder Rose was a strong girl.",
+          prompt: "In Sentence 1: What is the ADJECTIVE that should be inside a BOX?",
+          options: ["strong", "girl", "was", "Thunder Rose"],
+          correct: 0,
+          explanation: "'strong' is the adjective describing the girl.",
+          scaffoldEn: "Remember your worksheet instructions: Box the adjective! Find the descriptive word.",
+          scaffoldEs: "Recuerda las instrucciones: ¡Encierra en una caja el adjetivo descriptivo!"
+        },
+        {
+          sentence: "2. The young girl lived on a ranch.",
+          prompt: "In Sentence 2: What is the PREDICATE that should be CIRCLED?",
+          options: ["The young girl", "lived on a ranch", "on a ranch", "young"],
+          correct: 1,
+          explanation: "'lived on a ranch' tells what the subject did, so it is circled as the predicate.",
+          scaffoldEn: "Which part tells what the young girl did and where?",
+          scaffoldEs: "¿Qué parte de la oración dice qué hizo la niña y dónde?"
+        },
+        {
+          sentence: "3. Thunder Rose had a powerful voice.",
+          prompt: "In Sentence 3: Which word is the boxed ADJECTIVE?",
+          options: ["had", "powerful", "voice", "Thunder Rose"],
+          correct: 1,
+          explanation: "'powerful' describes the noun 'voice'.",
+          scaffoldEn: "Find the word describing what kind of voice Thunder Rose possessed.",
+          scaffoldEs: "Encuentra la palabra que califica cómo era su voz."
+        },
+        {
+          sentence: "4. The brave girl helped her family.",
+          prompt: "In Sentence 4: What is the SUBJECT that should be UNDERLINED?",
+          options: ["helped her family", "The brave girl", "her family", "helped"],
+          correct: 1,
+          explanation: "'The brave girl' is the complete subject performing the help.",
+          scaffoldEn: "Underline WHO is doing the helping.",
+          scaffoldEs: "Subraya QUIÉN es la persona que ayuda a su familia."
+        },
+        {
+          sentence: "5. Thunder Rose was a fearless child.",
+          prompt: "In Sentence 5: Which word is the boxed ADJECTIVE?",
+          options: ["child", "was", "fearless", "Rose"],
+          correct: 2,
+          explanation: "'fearless' means without fear, describing the child.",
+          scaffoldEn: "Which word means having no fear and describes the child?",
+          scaffoldEs: "¿Qué palabra describe que la niña no tenía ningún miedo?"
+        },
+        {
+          sentence: "6. The huge storm came across the land.",
+          prompt: "In Sentence 6: Which part is the CIRCLED PREDICATE?",
+          options: ["came across the land", "The huge storm", "across the land", "huge storm"],
+          correct: 0,
+          explanation: "'came across the land' contains the verb 'came' and completes the action.",
+          scaffoldEn: "Look for the verb 'came' and the rest of the predicate.",
+          scaffoldEs: "Busca la acción que comienza con el verbo 'came' hasta el final."
+        },
+        {
+          sentence: "7. Thunder Rose faced the dangerous storm.",
+          prompt: "In Sentence 7: Which word is the boxed ADJECTIVE?",
+          options: ["faced", "dangerous", "storm", "Rose"],
+          correct: 1,
+          explanation: "'dangerous' describes the hazardous storm.",
+          scaffoldEn: "Find the word telling what kind of storm Thunder Rose faced.",
+          scaffoldEs: "¿Qué adjetivo describe el peligro de la tormenta?"
+        },
+        {
+          sentence: "8. The strong wind blew across the ranch.",
+          prompt: "In Sentence 8: What is the UNDERLINED SUBJECT?",
+          options: ["The strong wind", "blew across the ranch", "the ranch", "wind blew"],
+          correct: 0,
+          explanation: "'The strong wind' is the subject of the action.",
+          scaffoldEn: "Underline the subject doing the blowing.",
+          scaffoldEs: "Subraya el sujeto que realiza la acción de soplar."
+        },
+        {
+          sentence: "9. Thunder Rose used her amazing strength.",
+          prompt: "In Sentence 9: Which word is the boxed ADJECTIVE?",
+          options: ["used", "strength", "amazing", "her"],
+          correct: 2,
+          explanation: "'amazing' describes her incredible strength.",
+          scaffoldEn: "What word describes the strength she used?",
+          scaffoldEs: "¿Qué palabra describe cómo era su fuerza?"
+        },
+        {
+          sentence: "10. The determined girl protected her family.",
+          prompt: "In Sentence 10: Which part is the CIRCLED PREDICATE?",
+          options: ["The determined girl", "protected her family", "her family", "determined"],
+          correct: 1,
+          explanation: "'protected her family' is the action predicate.",
+          scaffoldEn: "Circle what action the determined girl took.",
+          scaffoldEs: "Encierra en un círculo qué acción realizó la niña para cuidar a su familia."
+        },
+        {
+          sentence: "11. Thunder Rose rode her fast horse.",
+          prompt: "In Sentence 11: Which word is the boxed ADJECTIVE?",
+          options: ["fast", "rode", "horse", "her"],
+          correct: 0,
+          explanation: "'fast' tells what kind of horse she rode.",
+          scaffoldEn: "Box the word describing the speed of her horse.",
+          scaffoldEs: "Encuadra la palabra que describe la rapidez de su caballo."
+        },
+        {
+          sentence: "12. The dark clouds covered the sky.",
+          prompt: "In Sentence 12: What is the UNDERLINED SUBJECT?",
+          options: ["The dark clouds", "covered the sky", "the sky", "dark"],
+          correct: 0,
+          explanation: "'The dark clouds' is the complete subject doing the covering.",
+          scaffoldEn: "Underline what covered the sky.",
+          scaffoldEs: "Subraya qué cosas cubrieron el cielo."
+        },
+        {
+          sentence: "13. Thunder Rose heard a loud thunderstorm.",
+          prompt: "In Sentence 13: Which word is the boxed ADJECTIVE?",
+          options: ["heard", "thunderstorm", "loud", "Rose"],
+          correct: 2,
+          explanation: "'loud' describes the high volume of the thunderstorm.",
+          scaffoldEn: "What word describes the sound level of the storm?",
+          scaffoldEs: "¿Qué palabra describe qué tan ruidosa era la tormenta?"
+        },
+        {
+          sentence: "14. The courageous girl saved the ranch.",
+          prompt: "In Sentence 14: What is the CIRCLED PREDICATE?",
+          options: ["The courageous girl", "saved the ranch", "the ranch", "saved"],
+          correct: 1,
+          explanation: "'saved the ranch' is the predicate telling what she accomplished.",
+          scaffoldEn: "Circle the action she performed on the ranch.",
+          scaffoldEs: "Encierra en círculo la acción heroica que hizo con el rancho."
+        },
+        {
+          sentence: "15. Thunder Rose showed a kind heart.",
+          prompt: "In Sentence 15: Which word is the boxed ADJECTIVE?",
+          options: ["showed", "heart", "kind", "Rose"],
+          correct: 2,
+          explanation: "'kind' is the adjective describing the noun 'heart'.",
+          scaffoldEn: "Which word describes the warmth and goodness of her heart?",
+          scaffoldEs: "¿Qué palabra describe la bondad de su corazón?"
+        },
+        {
+          sentence: "16. The terrible storm damaged the land.",
+          prompt: "In Sentence 16: What is the UNDERLINED SUBJECT?",
+          options: ["The terrible storm", "damaged the land", "the land", "damaged"],
+          correct: 0,
+          explanation: "'The terrible storm' is the subject causing the damage.",
+          scaffoldEn: "Underline what caused the damage to the land.",
+          scaffoldEs: "Subraya qué causó el daño en la tierra."
+        },
+        {
+          sentence: "17. Thunder Rose had an incredible idea.",
+          prompt: "In Sentence 17: Which word is the boxed ADJECTIVE?",
+          options: ["had", "idea", "incredible", "Rose"],
+          correct: 2,
+          explanation: "'incredible' describes the quality of her idea.",
+          scaffoldEn: "Which word tells how amazing and unbelievable her idea was?",
+          scaffoldEs: "¿Qué palabra describe lo asombrosa que era su idea?"
+        },
+        {
+          sentence: "18. The strong girl never gave up.",
+          prompt: "In Sentence 18: What is the CIRCLED PREDICATE?",
+          options: ["The strong girl", "never gave up", "gave up", "strong girl"],
+          correct: 1,
+          explanation: "'never gave up' is the complete predicate describing what she persevered through.",
+          scaffoldEn: "Circle the entire phrase that tells what the girl never did.",
+          scaffoldEs: "Encierra la frase verbal completa que dice que ella jamás se rindió."
+        },
+        {
+          sentence: "19. Thunder Rose became a great helper.",
+          prompt: "In Sentence 19: Which word is the boxed ADJECTIVE?",
+          options: ["became", "helper", "great", "Rose"],
+          correct: 2,
+          explanation: "'great' describes what kind of helper she was.",
+          scaffoldEn: "Find the descriptive word modifying 'helper'.",
+          scaffoldEs: "Encuentra la palabra que describe qué clase de ayudante fue."
+        },
+        {
+          sentence: "20. The brave Thunder Rose faced the storm.",
+          prompt: "In Sentence 20: What is the UNDERLINED SUBJECT?",
+          options: ["The brave Thunder Rose", "faced the storm", "the storm", "faced"],
+          correct: 0,
+          explanation: "'The brave Thunder Rose' is the complete noun phrase acting as subject.",
+          scaffoldEn: "Underline the full subject name and its descriptive word before the verb.",
+          scaffoldEs: "Subraya todo el sujeto completo (incluyendo el adjetivo y el nombre) antes del verbo."
+        }
+      ],
+
+      // LEVEL 3: MASTER BOSS BATTLE (5 Qs x 20 pts = 100 pts)
+      3: [
+        {
+          sentence: "The brave girl helped her family.",
+          prompt: "BOSS QUESTION 1: Why is 'brave' considered part of the SUBJECT here, rather than the predicate?",
+          options: [
+            "Because 'brave' modifies 'girl', which is the noun inside the subject phrase.",
+            "Because 'brave' is an action verb.",
+            "Because adjectives can only exist before verbs.",
+            "Because 'helped' is not a real verb."
+          ],
+          correct: 0,
+          explanation: "In 'The brave girl helped her family', 'brave' directly modifies 'girl', forming the complete subject noun phrase.",
+          scaffoldEn: "Think about which noun 'brave' is hugging. Is that noun before or after the verb?",
+          scaffoldEs: "Piensa a qué sustantivo acompaña 'brave'. ¿Ese sustantivo está en el sujeto o en el predicado?"
+        },
+        {
+          sentence: "Thunder Rose had an incredible idea.",
+          prompt: "BOSS QUESTION 2: Look at the phrase 'had an incredible idea'. Where is the adjective located?",
+          options: [
+            "Inside the predicate, modifying the object noun 'idea'.",
+            "Inside the subject, modifying Thunder Rose.",
+            "It is the verb connecting the sentence.",
+            "There is no adjective in this sentence."
+          ],
+          correct: 0,
+          explanation: "'had an incredible idea' is the predicate; inside it, 'incredible' describes the noun 'idea'.",
+          scaffoldEn: "Notice that 'incredible' appears after the verb 'had'. What part of the sentence is after the verb?",
+          scaffoldEs: "Fíjate que 'incredible' aparece después del verbo 'had'. ¿Qué parte de la oración está después del verbo?"
+        },
+        {
+          sentence: "The strong girl never gave up.",
+          prompt: "BOSS QUESTION 3: In sentence 18, why does the predicate include the adverb 'never'?",
+          options: [
+            "Because the predicate contains the full verb phrase and its modifiers ('never gave up').",
+            "Because 'never' is the noun subject.",
+            "Because 'strong' must be separated from 'girl'.",
+            "Because sentences cannot end with prepositions."
+          ],
+          correct: 0,
+          explanation: "The complete predicate includes the entire verb phrase ('never gave up') expressing the negative action.",
+          scaffoldEn: "Does 'never' belong to the girl (subject) or to what she did / didn't do (verb)?",
+          scaffoldEs: "¿La palabra 'never' (nunca) describe a la niña o califica la acción de no rendirse?"
+        },
+        {
+          sentence: "The courageous girl saved the ranch.",
+          prompt: "BOSS QUESTION 4: If you were correcting a test error, what is the EXACT boundary split?",
+          options: [
+            "Subject = [The courageous girl] | Predicate = [saved the ranch]",
+            "Subject = [The courageous] | Predicate = [girl saved the ranch]",
+            "Subject = [The girl] | Predicate = [courageous saved the ranch]",
+            "Subject = [The courageous girl saved] | Predicate = [the ranch]"
+          ],
+          correct: 0,
+          explanation: "The line separates right before the main action verb 'saved'.",
+          scaffoldEn: "The clean cut between subject and predicate is right before the action verb begins.",
+          scaffoldEs: "La división perfecta entre sujeto y predicado se hace justo antes de que empiece el verbo de acción."
+        },
+        {
+          sentence: "The brave Thunder Rose faced the storm.",
+          prompt: "BOSS QUESTION 5: What makes Sentence 20 unique compared to Sentence 1?",
+          options: [
+            "The adjective 'brave' is modifying Thunder Rose directly inside the subject.",
+            "There is no predicate in Sentence 20.",
+            "Thunder Rose is acting as an adjective here.",
+            "The word 'faced' is a noun rather than a verb."
+          ],
+          correct: 0,
+          explanation: "In sentence 20, 'brave' describes 'Thunder Rose' directly within the complete subject, whereas in sentence 1 the adjective was in the predicate.",
+          scaffoldEn: "Look where the adjective is placed: before the name in the subject!",
+          scaffoldEs: "Mira dónde está colocado el adjetivo: ¡antes del nombre propio dentro del sujeto!"
+        }
+      ]
+    };
+
+    /* =====================================================================
+       3. CORE GAME ENGINE CONTROLLER
+       ===================================================================== */
+    const Game = {
+      currentLevel: 1,
+      currentIndex: 0,
+      score: 0,
+      selectedAnswer: null,
+      answered: false,
+      levelPointsPerQ: 10,
+
+      startLevel(levelNum) {
+        SoundFX.playClick();
+        this.currentLevel = levelNum;
+        this.currentIndex = 0;
+        this.score = 0;
+        this.answered = false;
+        this.selectedAnswer = null;
+
+        // Calibrate point weighting per level
+        if (levelNum === 1) this.levelPointsPerQ = 10; // 10 x 10 = 100
+        if (levelNum === 2) this.levelPointsPerQ = 5;  // 20 x 5 = 100
+        if (levelNum === 3) this.levelPointsPerQ = 20; // 5 x 20 = 100
+
+        // Switch screens
+        document.getElementById('screen-home').classList.add('hidden');
+        document.getElementById('screen-results').classList.add('hidden');
+        document.getElementById('screen-quiz').classList.remove('hidden');
+
+        // Update badge styling
+        const badge = document.getElementById('quiz-level-badge');
+        if (levelNum === 1) {
+          badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-blox font-bold uppercase tracking-wider bg-roblox-green text-black';
+          badge.innerText = 'Level 1: Rookie (100 Pts)';
+        } else if (levelNum === 2) {
+          badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-blox font-bold uppercase tracking-wider bg-roblox-cyan text-black';
+          badge.innerText = 'Level 2: Pro Grinding (100 Pts)';
+        } else {
+          badge.className = 'px-2.5 py-0.5 rounded-full text-xs font-blox font-bold uppercase tracking-wider bg-roblox-red text-white';
+          badge.innerText = 'Level 3: Boss Battle (100 Pts)';
+        }
+
+        this.renderQuestion();
+      },
+
+      renderQuestion() {
+        this.answered = false;
+        this.selectedAnswer = null;
+
+        const questions = QUESTION_BANK[this.currentLevel];
+        const q = questions[this.currentIndex];
+
+        // Update HUD
+        document.getElementById('quiz-question-counter').innerText = `Question ${this.currentIndex + 1} / ${questions.length}`;
+        document.getElementById('quiz-current-score').innerText = `${this.score} / 100`;
+
+        const progressPercent = ((this.currentIndex + 1) / questions.length) * 100;
+        document.getElementById('quiz-progress-bar').style.width = `${progressPercent}%`;
+
+        // Fill Question Details
+        document.getElementById('question-sentence').innerText = `"${q.sentence}"`;
+        document.getElementById('question-prompt').innerText = q.prompt;
+
+        // Bilingual Scaffolding text
+        document.getElementById('scaffold-en').innerText = q.scaffoldEn;
+        document.getElementById('scaffold-es').innerText = q.scaffoldEs;
+        // Close scaffold box by default
+        document.getElementById('scaffold-box').classList.add('hidden');
+        document.getElementById('scaffold-arrow').innerText = '▼ Click to see hint';
+
+        // Reset Feedback Box
+        const feedbackContainer = document.getElementById('feedback-container');
+        feedbackContainer.classList.add('hidden');
+        feedbackContainer.className = 'hidden mt-6 p-4 rounded-2xl border-2 flex items-center justify-between transition-all';
+
+        // Render Answer Options
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+
+        const letters = ['A', 'B', 'C', 'D'];
+        q.options.forEach((opt, index) => {
+          const btn = document.createElement('button');
+          btn.className = 'btn-choice w-full p-4 bg-roblox-surface border-2 border-roblox-accent hover:border-roblox-cyan rounded-2xl flex items-center space-x-3 text-left transition-all font-blox btn-3d btn-3d-dark';
+          btn.onclick = () => this.handleOptionClick(index);
+          btn.innerHTML = `
+            <span class="w-8 h-8 rounded-xl bg-roblox-card border border-gray-600 flex items-center justify-center font-bold text-sm text-roblox-yellow flex-shrink-0">
+              ${letters[index]}
+            </span>
+            <span class="text-white text-sm md:text-base font-semibold leading-snug">${opt}</span>
+          `;
+          container.appendChild(btn);
+        });
+      },
+
+      toggleScaffolding() {
+        SoundFX.playClick();
+        const box = document.getElementById('scaffold-box');
+        const arrow = document.getElementById('scaffold-arrow');
+        const isHidden = box.classList.contains('hidden');
+        if (isHidden) {
+          box.classList.remove('hidden');
+          arrow.innerText = '▲ Hide hint';
+        } else {
+          box.classList.add('hidden');
+          arrow.innerText = '▼ Click to see hint';
+        }
+      },
+
+      handleOptionClick(chosenIndex) {
+        if (this.answered) return;
+        this.answered = true;
+        this.selectedAnswer = chosenIndex;
+
+        const questions = QUESTION_BANK[this.currentLevel];
+        const q = questions[this.currentIndex];
+        const isCorrect = (chosenIndex === q.correct);
+
+        const buttons = document.querySelectorAll('.btn-choice');
+        buttons.forEach((btn, idx) => {
+          btn.disabled = true;
+          if (idx === q.correct) {
+            btn.classList.remove('bg-roblox-surface', 'border-roblox-accent');
+            btn.classList.add('bg-roblox-green/30', 'border-roblox-green', 'text-green-300');
+          } else if (idx === chosenIndex) {
+            btn.classList.remove('bg-roblox-surface', 'border-roblox-accent');
+            btn.classList.add('bg-roblox-red/30', 'border-roblox-red', 'text-red-300');
+          }
+        });
+
+        const feedbackContainer = document.getElementById('feedback-container');
+        const feedbackIcon = document.getElementById('feedback-icon');
+        const feedbackTitle = document.getElementById('feedback-title');
+        const feedbackReason = document.getElementById('feedback-reason');
+
+        feedbackContainer.classList.remove('hidden');
+
+        if (isCorrect) {
+          SoundFX.playCorrect();
+          this.score += this.levelPointsPerQ;
+          if (this.score > 100) this.score = 100;
+          document.getElementById('quiz-current-score').innerText = `${this.score} / 100`;
+
+          feedbackContainer.classList.add('bg-roblox-green/20', 'border-roblox-green');
+          feedbackIcon.innerText = '⚡';
+          feedbackTitle.innerText = `CORRECT! (+${this.levelPointsPerQ} PTS)`;
+          feedbackTitle.className = 'font-blox font-bold text-lg text-roblox-green';
+          feedbackReason.innerText = q.explanation;
+        } else {
+          SoundFX.playWrong();
+          feedbackContainer.classList.add('bg-roblox-red/20', 'border-roblox-red');
+          feedbackIcon.innerText = '❌';
+          feedbackTitle.innerText = 'KEEP LEARNING!';
+          feedbackTitle.className = 'font-blox font-bold text-lg text-roblox-red';
+          feedbackReason.innerText = q.explanation;
+        }
+      },
+
+      nextQuestion() {
+        SoundFX.playClick();
+        const questions = QUESTION_BANK[this.currentLevel];
+        if (this.currentIndex < questions.length - 1) {
+          this.currentIndex++;
+          this.renderQuestion();
+        } else {
+          this.finishLevel();
+        }
+      },
+
+      finishLevel() {
+        SoundFX.playFanfare();
+        document.getElementById('screen-quiz').classList.add('hidden');
+        document.getElementById('screen-results').classList.remove('hidden');
+
+        const score = this.score;
+        const total = 100;
+        const accuracy = Math.round((score / total) * 100);
+
+        document.getElementById('results-final-score').innerText = `${score} / 100`;
+        document.getElementById('results-accuracy').innerText = `${accuracy}%`;
+
+        const titleEl = document.getElementById('results-rank-title');
+        const subtitleEl = document.getElementById('results-subtitle');
+        const avatarEl = document.getElementById('results-avatar');
+
+        if (score === 100) {
+          avatarEl.innerText = '👑';
+          titleEl.innerText = 'LEGENDARY GRAMMAR MASTER!';
+          titleEl.className = 'text-3xl md:text-5xl font-blox font-extrabold text-roblox-yellow drop-shadow';
+          subtitleEl.innerText = 'Flawless 100/100! Osvaldo, you solved every Thunder Rose question with perfection!';
+        } else if (score >= 80) {
+          avatarEl.innerText = '⭐';
+          titleEl.innerText = 'PRO GRAMMARIAN CADET!';
+          titleEl.className = 'text-3xl md:text-5xl font-blox font-extrabold text-roblox-cyan drop-shadow';
+          subtitleEl.innerText = 'Great score! You mastered the key rules of subject, predicate, and descriptive adjectives.';
+        } else {
+          avatarEl.innerText = '🌱';
+          titleEl.innerText = 'ROOKIE GRAMMAR SCOUT';
+          titleEl.className = 'text-3xl md:text-5xl font-blox font-extrabold text-white drop-shadow';
+          subtitleEl.innerText = 'Good training run! Replay the level to hit that perfect 100 and claim the top diploma!';
+        }
+
+        // Draw Canvas Diploma
+        this.generateCertificate();
+      },
+
+      exitToHome() {
+        SoundFX.playClick();
+        document.getElementById('screen-quiz').classList.add('hidden');
+        document.getElementById('screen-results').classList.add('hidden');
+        document.getElementById('screen-home').classList.remove('hidden');
+      },
+
+      replayLevel() {
+        this.startLevel(this.currentLevel);
+      },
+
+      /* =====================================================================
+         4. CANVAS ROBOLX DIPLOMA GENERATOR (800 x 500 px)
+         ===================================================================== */
+      generateCertificate() {
+        const canvas = document.getElementById('certCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const W = canvas.width;
+        const H = canvas.height;
+
+        // Background
+        const grad = ctx.createLinearGradient(0, 0, W, H);
+        grad.addColorStop(0, '#111216');
+        grad.addColorStop(0.5, '#1a1d24');
+        grad.addColorStop(1, '#0b0c0f');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, W, H);
+
+        // Roblox Stud Pattern Overlay
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+        for (let x = 15; x < W; x += 30) {
+          for (let y = 15; y < H; y += 30) {
+            ctx.beginPath();
+            ctx.arc(x, y, 4, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+
+        // Outer Borders
+        ctx.strokeStyle = '#00A2FF';
+        ctx.lineWidth = 8;
+        ctx.strokeRect(16, 16, W - 32, H - 32);
+
+        ctx.strokeStyle = '#F1C40F';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(26, 26, W - 52, H - 52);
+
+        // Header Title
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#E2231A';
+        ctx.font = 'bold 30px "Fredoka", sans-serif';
+        ctx.fillText('ROBLOX ACADEMY OF GRAMMAR', W / 2, 75);
+
+        // Subtitle
+        ctx.fillStyle = '#00A2FF';
+        ctx.font = 'bold 15px "Nunito", sans-serif';
+        ctx.fillText('OFFICIAL CERTIFICATION OF MASTERY • THUNDER ROSE', W / 2, 105);
+
+        // Decorative Line
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(100, 125);
+        ctx.lineTo(W - 100, 125);
+        ctx.stroke();
+
+        // Certification statement
+        ctx.fillStyle = '#D1D5DB';
+        ctx.font = 'italic 16px "Nunito", sans-serif';
+        ctx.fillText('This document certifies that 3rd Grade Cadet', W / 2, 160);
+
+        // Student Name Highlight
+        ctx.fillStyle = '#F1C40F';
+        ctx.font = 'bold 36px "Fredoka", sans-serif';
+        ctx.fillText('Osvaldo Matías Obregón', W / 2, 210);
+
+        // Body Description
+        ctx.fillStyle = '#E5E7EB';
+        ctx.font = '16px "Nunito", sans-serif';
+        ctx.fillText(
+          'has demonstrated outstanding skill identifying the Subject, Predicate, and Adjectives',
+          W / 2,
+          255
+        );
+        ctx.fillText(
+          'across the full 20-sentence tall tale series of Thunder Rose.',
+          W / 2,
+          280
+        );
+
+        // Score Pill Box
+        ctx.fillStyle = '#1e222d';
+        ctx.strokeStyle = '#2ECC71';
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.roundRect(W / 2 - 130, 310, 260, 50, 14);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#2ECC71';
+        ctx.font = 'bold 22px "Fredoka", sans-serif';
+        ctx.fillText(`SCORE: ${this.score} / 100 PTS`, W / 2, 343);
+
+        // Level Details
+        const levelNames = ['', 'Level 1: Rookie Scout', 'Level 2: Worksheet Pro', 'Level 3: Master Boss'];
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = 'bold 13px "Nunito", sans-serif';
+        ctx.fillText(`Rank Achieved: ${levelNames[this.currentLevel]}`, W / 2, 385);
+
+        // Seal / Stamp Bottom Left
+        ctx.beginPath();
+        ctx.arc(130, 420, 38, 0, Math.PI * 2);
+        ctx.fillStyle = '#b7950b';
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 11px "Fredoka", sans-serif';
+        ctx.fillText('VERIFIED', 130, 416);
+        ctx.fillText('ACADEMY', 130, 430);
+
+        // Date Bottom Right
+        const today = new Date().toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#9CA3AF';
+        ctx.font = '13px "Nunito", sans-serif';
+        ctx.fillText(`Issued: ${today}`, W - 60, 425);
+        ctx.fillText(`Language Arts • Grade 3`, W - 60, 445);
+      },
+
+      downloadCertificate() {
+        SoundFX.playClick();
+        const canvas = document.getElementById('certCanvas');
+        if (!canvas) return;
+        const link = document.createElement('a');
+        link.download = `Thunder_Rose_Certificate_Osvaldo_Score_${this.score}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        this.showToast('✅ Certificate downloaded successfully!');
+      },
+
+      shareResults() {
+        SoundFX.playClick();
+        const textToShare = `🎉 Osvaldo scored ${this.score}/100 in ROBLOX ACADEMY: Thunder Rose Grammar Quest (Subject, Predicate & Adjectives)!`;
+
+        if (navigator.share) {
+          navigator.share({
+            title: 'Roblox Grammar Quest Result',
+            text: textToShare
+          }).catch(() => {
+            this.copyToClipboard(textToShare);
+          });
+        } else {
+          this.copyToClipboard(textToShare);
+        }
+      },
+
+      copyToClipboard(text) {
+        const dummy = document.createElement('textarea');
+        document.body.appendChild(dummy);
+        dummy.value = text;
+        dummy.select();
+        document.execCommand('copy');
+        document.body.removeChild(dummy);
+        this.showToast('📋 Score copied to clipboard!');
+      },
+
+      showToast(msg) {
+        const toast = document.getElementById('toast');
+        const msgEl = document.getElementById('toast-message');
+        msgEl.innerText = msg;
+        toast.classList.remove('translate-y-24', 'opacity-0');
+        setTimeout(() => {
+          toast.classList.add('translate-y-24', 'opacity-0');
+        }, 3000);
+      }
+    };
+
+    // Initialize application on load
+    window.addEventListener('DOMContentLoaded', () => {
+      // Pre-render certificate blank layout if needed
+      Game.generateCertificate();
+    });
+  </script>
+</body>
+</html>
