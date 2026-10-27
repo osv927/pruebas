@@ -3,26 +3,28 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mundo de Entrenamiento - Osvaldo Matías #58</title>
+  <title>Mundo de Entrenamiento - Osvaldo #58</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body, html { width: 100%; height: 100%; overflow: hidden; background: #0b0f19; font-family: 'Segoe UI', system-ui, sans-serif; user-select: none; }
+    body, html { width: 100%; height: 100%; overflow: hidden; background: #080c14; font-family: 'Segoe UI', system-ui, sans-serif; user-select: none; }
     #canvas-container { width: 100%; height: 100%; position: absolute; left: 0; top: 0; cursor: grab; }
     #canvas-container:active { cursor: grabbing; }
 
     /* HUD Superior */
     #hud {
       position: absolute; top: 16px; left: 16px; right: 16px;
-      display: flex; justify-content: space-between; align-items: center;
-      pointer-events: none; z-index: 20;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      pointer-events: none; z-index: 25;
     }
-    .hud-group { display: flex; align-items: center; gap: 10px; }
+    .hud-left { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+    .hud-right { display: flex; align-items: center; gap: 10px; }
+
     .badge {
       background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(8px);
       border: 2px solid #38bdf8; border-radius: 14px;
       padding: 8px 16px; color: #fff; font-weight: 700;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
       display: flex; align-items: center; gap: 10px; font-size: 14px;
     }
     .badge-icon { font-size: 20px; }
@@ -35,12 +37,35 @@
     }
     .hud-btn:hover { border-color: #38bdf8; background: #334155; }
 
+    /* Mini-mapa (Radar) */
+    #radar-container {
+      width: 110px; height: 150px; background: rgba(15, 23, 42, 0.88);
+      border: 2px solid #38bdf8; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6); pointer-events: none;
+    }
+    #radar { width: 100%; height: 100%; display: block; }
+
+    /* Cartel de ¡GOOOOOOL! */
+    #goal-banner {
+      position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%) scale(0.5);
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      border: 4px solid #ffffff; padding: 20px 48px; border-radius: 30px;
+      color: #0f172a; font-size: 42px; font-weight: 900; letter-spacing: 2px;
+      box-shadow: 0 0 60px rgba(251, 191, 36, 0.9), 0 20px 40px rgba(0,0,0,0.7);
+      display: none; z-index: 80; text-align: center; pointer-events: none;
+      animation: goalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes goalPop {
+      0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
     /* Menú flotante de personalización */
     #customizer-panel {
       position: absolute; top: 75px; right: 16px; width: 280px;
       background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
       border: 2px solid #38bdf8; border-radius: 18px; padding: 16px;
-      display: none; flex-direction: column; gap: 14px; z-index: 25;
+      display: none; flex-direction: column; gap: 14px; z-index: 30;
       box-shadow: 0 10px 30px rgba(0,0,0,0.6); color: #fff;
     }
     .cust-title { font-size: 12px; color: #94a3b8; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
@@ -137,24 +162,33 @@
 
   <!-- HUD Principal -->
   <div id="hud">
-    <div class="hud-group">
+    <div class="hud-left">
       <div class="badge">
         <span class="badge-icon">⚽</span>
         <div>
-          <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Jugador #58</div>
-          <div>Osvaldo Matías</div>
+          <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Capitán #58</div>
+          <div>Osvaldo</div>
         </div>
       </div>
-      <a href="clasico.html" class="hud-btn">📋 Menú Clásico</a>
+      <div id="radar-container">
+        <canvas id="radar" width="110" height="150"></canvas>
+      </div>
     </div>
 
-    <div class="hud-group">
+    <div class="hud-right">
+      <a href="clasico.html" class="hud-btn">📋 Menú Clásico</a>
       <div class="badge" style="border-color: #fbbf24;">
         <span class="badge-icon">🏆</span>
         <span id="score-text">0 / 4</span>
       </div>
       <button class="hud-btn" onclick="toggleCustomizer()">⚙️ Ajustes</button>
     </div>
+  </div>
+
+  <!-- Cartel Celebración de Gol -->
+  <div id="goal-banner">
+    <div>⚽ ¡GOOOOOOL! ⚽</div>
+    <div style="font-size: 18px; font-weight: 700; margin-top: 6px; color: #1e293b;">¡GOLAZO DE OSVALDO #58!</div>
   </div>
 
   <!-- Menú de Personalización -->
@@ -165,7 +199,7 @@
       <button class="time-btn" id="btn-night" onclick="setTimeMode('night')">🌙 Noche</button>
     </div>
 
-    <div class="cust-title">Uniformes Matías (#58)</div>
+    <div class="cust-title">Uniformes Osvaldo (#58)</div>
     <div class="kit-selector">
       <div class="kit-opt active" onclick="setKit(0, this)">
         <div class="kit-preview-swatch">
@@ -245,9 +279,17 @@
       osc.connect(gain); gain.connect(audioCtx.destination);
       osc.start(); osc.stop(audioCtx.currentTime + duration);
     }
-    function playWhistle() {
-      playBeep(2400, 'triangle', 0.12);
-      setTimeout(() => playBeep(2600, 'triangle', 0.25), 130);
+    function playWhistle(long = false) {
+      playBeep(2400, 'triangle', 0.15);
+      setTimeout(() => playBeep(2600, 'triangle', long ? 0.6 : 0.25), 160);
+      if (long) setTimeout(() => playBeep(2500, 'triangle', 0.8), 500);
+    }
+    function playGoalCheer() {
+      playWhistle(true);
+      // Fanfarria sintética
+      [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+        setTimeout(() => playBeep(freq, 'triangle', 0.4), i * 140);
+      });
     }
 
     // Three.js Setup
@@ -265,28 +307,38 @@
     document.getElementById('canvas-container').appendChild(renderer.domElement);
 
     // Luces
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     scene.add(ambientLight);
-    const sunLight = new THREE.DirectionalLight(0xfffaed, 0.9);
+    const sunLight = new THREE.DirectionalLight(0xfffaed, 0.95);
     sunLight.position.set(40, 70, 30);
     sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 1024;
+    sunLight.shadow.mapSize.height = 1024;
     scene.add(sunLight);
 
-    // Dimensiones y Límites de la Cancha
+    // Dimensiones de Cancha
     const pitchWidth = 66, pitchLength = 96;
     const limitX = (pitchWidth / 2) - 1.5;
     const limitZ = (pitchLength / 2) - 1.5;
 
-    // Césped
-    const field = new THREE.Mesh(
-      new THREE.PlaneGeometry(pitchWidth, pitchLength),
-      new THREE.MeshLambertMaterial({ color: 0x2e8540 })
-    );
-    field.rotation.x = -Math.PI / 2;
-    field.receiveShadow = true;
-    scene.add(field);
+    // Pasto con corte a rayas estilo profesional
+    const stripesCount = 12;
+    const stripeLength = pitchLength / stripesCount;
+    const fieldGroup = new THREE.Group();
+    const matGreen1 = new THREE.MeshLambertMaterial({ color: 0x2e8540 });
+    const matGreen2 = new THREE.MeshLambertMaterial({ color: 0x277437 });
 
-    // Líneas
+    for (let i = 0; i < stripesCount; i++) {
+      const stripeGeo = new THREE.PlaneGeometry(pitchWidth, stripeLength);
+      const stripe = new THREE.Mesh(stripeGeo, i % 2 === 0 ? matGreen1 : matGreen2);
+      stripe.rotation.x = -Math.PI / 2;
+      stripe.position.set(0, 0, -pitchLength / 2 + stripeLength * i + stripeLength / 2);
+      stripe.receiveShadow = true;
+      fieldGroup.add(stripe);
+    }
+    scene.add(fieldGroup);
+
+    // Líneas Reglamentarias
     function createLine(w, h, x, z) {
       const line = new THREE.Mesh(
         new THREE.PlaneGeometry(w, h),
@@ -300,15 +352,39 @@
     createLine(pitchWidth - 4, 0.6, 0, -(pitchLength - 4) / 2);
     createLine(0.6, pitchLength - 4, (pitchWidth - 4) / 2, 0);
     createLine(0.6, pitchLength - 4, -(pitchWidth - 4) / 2, 0);
-    createLine(pitchWidth - 4, 0.6, 0, 0);
+    createLine(pitchWidth - 4, 0.6, 0, 0); // Centro
 
-    // Graderías y Vallas de Contención
+    // Círculo central y áreas
+    const centerCircle = new THREE.Mesh(
+      new THREE.RingGeometry(8.8, 9.4, 32),
+      new THREE.MeshBasicMaterial({ color: 0xffffff, depthWrite: false, side: THREE.DoubleSide })
+    );
+    centerCircle.rotation.x = -Math.PI / 2;
+    centerCircle.position.y = 0.02;
+    scene.add(centerCircle);
+
+    // Banderines de Tiro de Esquina
+    function buildCornerFlag(x, z) {
+      const flagGroup = new THREE.Group();
+      const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 2.2), new THREE.MeshStandardMaterial({ color: 0xffffff }));
+      pole.position.y = 1.1;
+      const cloth = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.5), new THREE.MeshBasicMaterial({ color: 0xef4444, side: THREE.DoubleSide }));
+      cloth.position.set(0.35, 1.9, 0);
+      flagGroup.add(pole, cloth);
+      flagGroup.position.set(x, 0, z);
+      scene.add(flagGroup);
+    }
+    buildCornerFlag(limitX + 0.5, limitZ + 0.5);
+    buildCornerFlag(-limitX - 0.5, limitZ + 0.5);
+    buildCornerFlag(limitX + 0.5, -limitZ - 0.5);
+    buildCornerFlag(-limitX - 0.5, -limitZ - 0.5);
+
+    // Graderías y Vallas
     function buildStadiumBounds() {
       const wallMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
       const seatMat1 = new THREE.MeshLambertMaterial({ color: 0x0284c7 });
       const seatMat2 = new THREE.MeshLambertMaterial({ color: 0xb91c1c });
 
-      // Graderías laterales (Este / Oeste)
       [-1, 1].forEach(side => {
         const grandstand = new THREE.Group();
         for (let tier = 0; tier < 4; tier++) {
@@ -323,13 +399,11 @@
         if (side === 1) grandstand.rotation.y = Math.PI;
         scene.add(grandstand);
 
-        // Valla publicitaria de choque
         const board = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.5, pitchLength), wallMat);
         board.position.set(side * ((pitchWidth / 2) + 0.5), 0.75, 0);
         scene.add(board);
       });
 
-      // Graderías traseras (Norte / Sur)
       [-1, 1].forEach(side => {
         const grandstand = new THREE.Group();
         for (let tier = 0; tier < 3; tier++) {
@@ -392,70 +466,127 @@
     buildFloodlight(-36, 50);
     buildFloodlight(36, 50);
 
-    // Textura dorsal #58
-    function createJerseyNumberTexture(kitColor, textColor) {
+    // Textura de Cara Roblox de Osvaldo
+    function createFaceTexture() {
       const c = document.createElement('canvas');
       c.width = 128; c.height = 128;
       const ctx = c.getContext('2d');
-      ctx.fillStyle = kitColor;
+      ctx.fillStyle = '#ffdbac';
       ctx.fillRect(0, 0, 128, 128);
-      ctx.fillStyle = textColor;
-      ctx.font = 'bold 72px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('58', 64, 64);
+
+      // Ojos estilo anime/bloques
+      ctx.fillStyle = '#1e293b';
+      ctx.fillRect(26, 42, 18, 26);
+      ctx.fillRect(84, 42, 18, 26);
+      // Brillo ojos
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(28, 44, 8, 8);
+      ctx.fillRect(86, 44, 8, 8);
+
+      // Cejas deportivas
+      ctx.fillStyle = '#271910';
+      ctx.fillRect(24, 32, 22, 6);
+      ctx.fillRect(82, 32, 22, 6);
+
+      // Sonrisa canchera
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 6;
+      ctx.beginPath();
+      ctx.arc(64, 84, 22, 0.15 * Math.PI, 0.85 * Math.PI);
+      ctx.stroke();
+
       return new THREE.CanvasTexture(c);
     }
 
-    // Materiales del Avatar
+    // Textura Dorsal: "OSVALDO" + 58
+    function createJerseyNumberTexture(kitColor, textColor) {
+      const c = document.createElement('canvas');
+      c.width = 256; c.height = 256;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = kitColor;
+      ctx.fillRect(0, 0, 256, 256);
+
+      ctx.fillStyle = textColor;
+      ctx.textAlign = 'center';
+
+      // Nombre en arco
+      ctx.font = 'bold 36px sans-serif';
+      ctx.fillText('OSVALDO', 128, 65);
+
+      // Dorsal 58 grande
+      ctx.font = 'bold 125px sans-serif';
+      ctx.fillText('58', 128, 195);
+
+      return new THREE.CanvasTexture(c);
+    }
+
+    // Avatar de Osvaldo
     const skinMat = new THREE.MeshLambertMaterial({ color: 0xffdbac });
     const hairMat = new THREE.MeshLambertMaterial({ color: 0x271910 });
     const jerseyMat = new THREE.MeshLambertMaterial({ color: 0x1d4ed8 }); // Arriba
     const shortsMat = new THREE.MeshLambertMaterial({ color: 0xdc2626 }); // Medio
     const socksMat = new THREE.MeshLambertMaterial({ color: 0xdc2626 });  // Abajo
+    const cleatsMat = new THREE.MeshLambertMaterial({ color: 0xff5500 }); // Tacos naranja brillante
+    const captainArmbandMat = new THREE.MeshLambertMaterial({ color: 0xfbbf24 }); // Brazalete Capitán
 
     const player = new THREE.Group();
     const head = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), skinMat); head.position.y = 2.4;
+    const facePlane = new THREE.Mesh(new THREE.PlaneGeometry(0.92, 0.92), new THREE.MeshBasicMaterial({ map: createFaceTexture(), transparent: true }));
+    facePlane.position.set(0, 2.4, 0.51);
+
     const hair = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.4, 1.05), hairMat); hair.position.y = 2.8;
 
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.7), jerseyMat);
-    torso.position.y = 1.4;
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.7), jerseyMat); torso.position.y = 1.4;
 
     const backNumberMat = new THREE.MeshBasicMaterial({
       map: createJerseyNumberTexture('#1d4ed8', '#ffffff'),
       transparent: false
     });
-    const backNumber = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.7), backNumberMat);
+    const backNumber = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.8), backNumberMat);
     backNumber.position.set(0, 1.45, -0.36);
     backNumber.rotation.y = Math.PI;
 
-    const shorts = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.5, 0.72), shortsMat);
-    shorts.position.y = 0.85;
+    const shorts = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.5, 0.72), shortsMat); shorts.position.y = 0.85;
 
-    // Piernas con medias diferenciadas (Abajo)
-    const legGeo = new THREE.BoxGeometry(0.45, 0.8, 0.45);
-    const leftLeg = new THREE.Mesh(legGeo, socksMat); leftLeg.position.set(-0.32, 0.4, 0);
-    const rightLeg = new THREE.Mesh(legGeo, socksMat); rightLeg.position.set(0.32, 0.4, 0);
+    // Piernas con medias y tacos naranja brillante
+    function buildLeg(x) {
+      const legGroup = new THREE.Group();
+      const sock = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.65, 0.45), socksMat);
+      sock.position.y = 0.45;
+      const cleat = new THREE.Mesh(new THREE.BoxGeometry(0.48, 0.25, 0.65), cleatsMat);
+      cleat.position.set(0, 0.12, 0.08);
+      legGroup.add(sock, cleat);
+      legGroup.position.set(x, 0, 0);
+      return legGroup;
+    }
+    const leftLeg = buildLeg(-0.32);
+    const rightLeg = buildLeg(0.32);
 
-    const armGeo = new THREE.BoxGeometry(0.35, 1, 0.35);
-    const leftArm = new THREE.Mesh(armGeo, skinMat); leftArm.position.set(-0.85, 1.4, 0);
-    const rightArm = new THREE.Mesh(armGeo, skinMat); rightArm.position.set(0.85, 1.4, 0);
+    // Brazos con brazalete en el izquierdo
+    const leftArmGroup = new THREE.Group();
+    const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1, 0.35), skinMat); leftArm.position.y = 0.5;
+    const armband = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.25, 0.38), captainArmbandMat); armband.position.y = 0.75;
+    leftArmGroup.add(leftArm, armband);
+    leftArmGroup.position.set(-0.85, 0.9, 0);
 
-    player.add(head, hair, torso, backNumber, shorts, leftLeg, rightLeg, leftArm, rightArm);
+    const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.35, 1, 0.35), skinMat);
+    rightArm.position.set(0.85, 1.4, 0);
+
+    player.add(head, facePlane, hair, torso, backNumber, shorts, leftLeg, rightLeg, leftArmGroup, rightArm);
     player.traverse(c => { if(c.isMesh) c.castShadow = true; });
     scene.add(player);
 
     // Pelota de fútbol
     const ball = new THREE.Mesh(
-      new THREE.SphereGeometry(0.6, 16, 16),
+      new THREE.SphereGeometry(0.65, 16, 16),
       new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 })
     );
-    ball.position.set(0, 0.6, 4);
+    ball.position.set(0, 0.65, 4);
     ball.castShadow = true;
     scene.add(ball);
     let ballVel = new THREE.Vector3(0, 0, 0);
 
-    // Portales Dinámicos Orientados hacia el centro (Siempre de frente)
+    // Portales Dinámicos con Columna de Luz
     const portals = [];
     let currentPortalNear = null;
 
@@ -474,8 +605,16 @@
         const post2 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 5, 0.8), frameMat); post2.position.set(2, 2.5, 0);
         const lintel = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.8, 0.8), frameMat); lintel.position.set(0, 5, 0);
 
-        const coreMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(test.color || 0x38bdf8), transparent: true, opacity: 0.75 });
+        const coreMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(test.color || 0x38bdf8), transparent: true, opacity: 0.85 });
         const core = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 4.4), coreMat); core.position.set(0, 2.6, 0);
+
+        // Columna de Luz hacia el cielo
+        const beamMat = new THREE.MeshBasicMaterial({
+          color: new THREE.Color(test.color || 0x38bdf8),
+          transparent: true, opacity: 0.25, side: THREE.DoubleSide, depthWrite: false
+        });
+        const beam = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 2.2, 40, 16, 1, true), beamMat);
+        beam.position.set(0, 20, 0);
 
         // Cartel 3D
         const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 160;
@@ -491,13 +630,11 @@
         const sign = new THREE.Mesh(new THREE.PlaneGeometry(5, 1.6), new THREE.MeshBasicMaterial({ map: textTex, transparent: true }));
         sign.position.set(0, 6.3, 0);
 
-        group.add(post1, post2, lintel, core, sign);
-
-        // Orientación: Mirando directamente al centro de la cancha
+        group.add(post1, post2, lintel, core, beam, sign);
         group.lookAt(0, 0, 0);
         scene.add(group);
 
-        portals.push({ ...test, position: new THREE.Vector3(x, 0, z), mesh: group, coreMesh: core });
+        portals.push({ ...test, position: new THREE.Vector3(x, 0, z), mesh: group, coreMesh: core, beamMesh: beam });
       });
       document.getElementById('score-text').textContent = `0 / ${tests.length}`;
     }
@@ -528,13 +665,13 @@
       if (mode === 'day') {
         scene.background.setHex(dayColor);
         scene.fog.color.setHex(dayColor);
-        ambientLight.intensity = 0.65;
-        sunLight.intensity = 0.9;
+        ambientLight.intensity = 0.7;
+        sunLight.intensity = 0.95;
         floodlights.forEach(f => { f.spot.intensity = 0; f.bulb.material.color.setHex(0x334155); });
       } else {
         scene.background.setHex(nightColor);
         scene.fog.color.setHex(nightColor);
-        ambientLight.intensity = 0.2;
+        ambientLight.intensity = 0.25;
         sunLight.intensity = 0.15;
         floodlights.forEach(f => { f.spot.intensity = 1.4; f.bulb.material.color.setHex(0xffffaa); });
       }
@@ -575,9 +712,9 @@
       document.getElementById('test-iframe').src = 'about:blank';
     }
 
-    // Rotación de Cámara Libre (Mouse y Touch 360°)
+    // Rotación de Cámara 360° (Mouse & Touch)
     let cameraAngle = 0;
-    let cameraPitch = 0.5; // Ángulo vertical
+    let cameraPitch = 0.45;
     let isDragging = false, prevMouseX = 0, prevMouseY = 0;
 
     const container = document.getElementById('canvas-container');
@@ -590,17 +727,16 @@
         const dx = e.clientX - prevMouseX;
         const dy = e.clientY - prevMouseY;
         cameraAngle -= dx * 0.007;
-        cameraPitch = Math.max(0.15, Math.min(1.1, cameraPitch + dy * 0.005));
+        cameraPitch = Math.max(0.12, Math.min(1.05, cameraPitch + dy * 0.005));
         prevMouseX = e.clientX; prevMouseY = e.clientY;
       }
     });
 
-    // Touch en lado derecho para rotación de cámara
     let touchCamID = null, startCamX = 0, startCamY = 0;
     window.addEventListener('touchstart', e => {
       for (let i = 0; i < e.changedTouches.length; i++) {
         const t = e.changedTouches[i];
-        if (t.clientX > window.innerWidth * 0.4 && touchCamID === null) {
+        if (t.clientX > window.innerWidth * 0.38 && touchCamID === null) {
           touchCamID = t.identifier;
           startCamX = t.clientX; startCamY = t.clientY;
         }
@@ -613,7 +749,7 @@
           const dx = t.clientX - startCamX;
           const dy = t.clientY - startCamY;
           cameraAngle -= dx * 0.007;
-          cameraPitch = Math.max(0.15, Math.min(1.1, cameraPitch + dy * 0.005));
+          cameraPitch = Math.max(0.12, Math.min(1.05, cameraPitch + dy * 0.005));
           startCamX = t.clientX; startCamY = t.clientY;
         }
       }
@@ -626,7 +762,7 @@
     window.addEventListener('touchend', endTouchCam);
     window.addEventListener('touchcancel', endTouchCam);
 
-    // Movimiento y Teclado
+    // Controles Teclado
     const keys = { w: false, a: false, s: false, d: false };
     window.addEventListener('keydown', e => {
       const k = e.key.toLowerCase();
@@ -652,15 +788,15 @@
     }
     function kickBall() {
       const dist = player.position.distanceTo(ball.position);
-      if (dist < 3.5) {
+      if (dist < 3.8) {
         const dir = new THREE.Vector3().subVectors(ball.position, player.position).normalize();
-        ballVel.copy(dir.multiplyScalar(0.9));
-        ballVel.y = 0.35;
-        playBeep(180, 'sine', 0.2);
+        ballVel.copy(dir.multiplyScalar(1.05));
+        ballVel.y = 0.38;
+        playBeep(180, 'sine', 0.22);
       }
     }
 
-    // Joystick táctil
+    // Touch Virtual
     if ('ontouchstart' in window) {
       document.getElementById('touch-controls').style.display = 'block';
       const jZone = document.getElementById('joystick-zone');
@@ -703,13 +839,88 @@
       if (currentPortalNear) openTest(currentPortalNear);
     });
 
+    // Detección de Goles
+    let isGoalCooldown = false;
+    function checkGoal() {
+      if (isGoalCooldown) return;
+      const inZNorth = ball.position.z < -43 && Math.abs(ball.position.x) < 5.8;
+      const inZSouth = ball.position.z > 43 && Math.abs(ball.position.x) < 5.8;
+
+      if ((inZNorth || inZSouth) && ball.position.y < 3.8) {
+        isGoalCooldown = true;
+        playGoalCheer();
+        const banner = document.getElementById('goal-banner');
+        banner.style.display = 'block';
+
+        setTimeout(() => {
+          banner.style.display = 'none';
+          ball.position.set(0, 0.65, 0);
+          ballVel.set(0, 0, 0);
+          isGoalCooldown = false;
+        }, 3200);
+      }
+    }
+
+    // Mini-mapa / Radar Táctico
+    const radarCanvas = document.getElementById('radar');
+    const radarCtx = radarCanvas.getContext('2d');
+    function updateRadar() {
+      const rw = radarCanvas.width;
+      const rh = radarCanvas.height;
+      radarCtx.clearRect(0, 0, rw, rh);
+
+      // Fondo Cancha
+      radarCtx.fillStyle = '#1e293b';
+      radarCtx.fillRect(0, 0, rw, rh);
+      radarCtx.strokeStyle = 'rgba(255,255,255,0.3)';
+      radarCtx.strokeRect(6, 6, rw - 12, rh - 12);
+      radarCtx.beginPath();
+      radarCtx.moveTo(6, rh / 2); radarCtx.lineTo(rw - 6, rh / 2);
+      radarCtx.stroke();
+
+      function mapCoords(x, z) {
+        return {
+          rx: ((x / pitchWidth) + 0.5) * (rw - 16) + 8,
+          ry: ((z / pitchLength) + 0.5) * (rh - 16) + 8
+        };
+      }
+
+      // Estaciones
+      portals.forEach(p => {
+        const c = mapCoords(p.position.x, p.position.z);
+        radarCtx.fillStyle = p.color || '#38bdf8';
+        radarCtx.beginPath();
+        radarCtx.arc(c.rx, c.ry, 4, 0, Math.PI * 2);
+        radarCtx.fill();
+      });
+
+      // Balón
+      const bCoords = mapCoords(ball.position.x, ball.position.z);
+      radarCtx.fillStyle = '#ffffff';
+      radarCtx.beginPath();
+      radarCtx.arc(bCoords.rx, bCoords.ry, 3, 0, Math.PI * 2);
+      radarCtx.fill();
+
+      // Jugador Osvaldo (Flecha con orientación)
+      const pCoords = mapCoords(player.position.x, player.position.z);
+      radarCtx.save();
+      radarCtx.translate(pCoords.rx, pCoords.ry);
+      radarCtx.rotate(-player.rotation.y);
+      radarCtx.fillStyle = '#38bdf8';
+      radarCtx.beginPath();
+      radarCtx.moveTo(0, -6); radarCtx.lineTo(4, 5); radarCtx.lineTo(-4, 5);
+      radarCtx.closePath();
+      radarCtx.fill();
+      radarCtx.restore();
+    }
+
     // Bucle Principal
     const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
       const time = clock.getElapsedTime();
 
-      // Dirección relativa a la cámara
+      // Movimiento de Osvaldo
       const inputVec = new THREE.Vector3();
       if (keys.w) inputVec.z -= 1;
       if (keys.s) inputVec.z += 1;
@@ -719,7 +930,6 @@
       const isMoving = inputVec.lengthSq() > 0;
       if (isMoving) {
         inputVec.normalize();
-        // Rota el vector de movimiento con la orientación de la cámara
         const forward = new THREE.Vector3(-Math.sin(cameraAngle), 0, -Math.cos(cameraAngle));
         const right = new THREE.Vector3(Math.cos(cameraAngle), 0, -Math.sin(cameraAngle));
         const moveVec = new THREE.Vector3()
@@ -733,50 +943,51 @@
 
         leftLeg.rotation.x = Math.sin(time * 12) * 0.6;
         rightLeg.rotation.x = -Math.sin(time * 12) * 0.6;
-        leftArm.rotation.x = -Math.sin(time * 12) * 0.6;
+        leftArmGroup.rotation.x = -Math.sin(time * 12) * 0.6;
         rightArm.rotation.x = Math.sin(time * 12) * 0.6;
       } else {
         leftLeg.rotation.x = rightLeg.rotation.x = 0;
-        leftArm.rotation.x = rightArm.rotation.x = 0;
+        leftArmGroup.rotation.x = rightArm.rotation.x = 0;
       }
 
-      // TOPE FÍSICO ESTRICTO (No salirse de la cancha)
+      // Límites físicos estrictos
       player.position.x = Math.max(-limitX, Math.min(limitX, player.position.x));
       player.position.z = Math.max(-limitZ, Math.min(limitZ, player.position.z));
 
-      // Salto y Gravedad
+      // Gravedad
       playerVelocityY -= 0.015;
       playerY += playerVelocityY;
       if (playerY <= 0) { playerY = 0; playerVelocityY = 0; isGrounded = true; }
       player.position.y = playerY;
 
-      // Físicas del balón con rebote en las gradas
+      // Físicas del balón
       ball.position.add(ballVel);
       ballVel.x *= 0.94; ballVel.z *= 0.94;
       ball.rotation.x += ballVel.z * 0.5;
       ball.rotation.z -= ballVel.x * 0.5;
 
-      // Rebote de la pelota en los bordes
       if (Math.abs(ball.position.x) > limitX) {
         ball.position.x = Math.sign(ball.position.x) * limitX;
-        ballVel.x *= -0.7;
+        ballVel.x *= -0.75;
       }
       if (Math.abs(ball.position.z) > limitZ) {
         ball.position.z = Math.sign(ball.position.z) * limitZ;
-        ballVel.z *= -0.7;
+        ballVel.z *= -0.75;
       }
 
-      // Conducción de balón
-      if (player.position.distanceTo(ball.position) < 1.4) {
+      if (player.position.distanceTo(ball.position) < 1.45) {
         const push = new THREE.Vector3().subVectors(ball.position, player.position).normalize();
-        ballVel.x += push.x * 0.06;
-        ballVel.z += push.z * 0.06;
+        ballVel.x += push.x * 0.07;
+        ballVel.z += push.z * 0.07;
       }
 
-      // Proximidad de portales
+      checkGoal();
+
+      // Animación de Portales
       currentPortalNear = null;
       portals.forEach(p => {
         p.coreMesh.rotation.y += 0.02;
+        p.beamMesh.rotation.y -= 0.01;
         if (player.position.distanceTo(p.position) < 4.2) currentPortalNear = p;
       });
 
@@ -788,13 +999,14 @@
         promptEl.style.display = 'none';
       }
 
-      // Cámara Orbital Libre 360°
+      // Cámara Orbital 360°
       const camDist = 12;
       camera.position.x = player.position.x + Math.sin(cameraAngle) * camDist * Math.cos(cameraPitch);
       camera.position.y = player.position.y + 1.5 + Math.sin(cameraPitch) * camDist;
       camera.position.z = player.position.z + Math.cos(cameraAngle) * camDist * Math.cos(cameraPitch);
       camera.lookAt(player.position.x, player.position.y + 1.5, player.position.z);
 
+      updateRadar();
       renderer.render(scene, camera);
     }
     animate();
