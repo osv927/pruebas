@@ -8,7 +8,8 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body, html { width: 100%; height: 100%; overflow: hidden; background: #0b0f19; font-family: 'Segoe UI', system-ui, sans-serif; user-select: none; }
-    #canvas-container { width: 100%; height: 100%; position: absolute; left: 0; top: 0; }
+    #canvas-container { width: 100%; height: 100%; position: absolute; left: 0; top: 0; cursor: grab; }
+    #canvas-container:active { cursor: grabbing; }
 
     /* HUD Superior */
     #hud {
@@ -36,21 +37,25 @@
 
     /* Menú flotante de personalización */
     #customizer-panel {
-      position: absolute; top: 75px; right: 16px; width: 260px;
+      position: absolute; top: 75px; right: 16px; width: 280px;
       background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
       border: 2px solid #38bdf8; border-radius: 18px; padding: 16px;
       display: none; flex-direction: column; gap: 14px; z-index: 25;
       box-shadow: 0 10px 30px rgba(0,0,0,0.6); color: #fff;
     }
     .cust-title { font-size: 12px; color: #94a3b8; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
-    .kit-selector { display: flex; gap: 8px; justify-content: space-between; }
+    .kit-selector { display: flex; flex-direction: column; gap: 8px; }
     .kit-opt {
-      width: 48px; height: 44px; border-radius: 10px; border: 3px solid transparent;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      font-size: 15px; font-weight: 900; transition: transform 0.15s;
+      display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+      border-radius: 10px; border: 2px solid #334155; background: #1e293b;
+      cursor: pointer; font-size: 13px; font-weight: 700; transition: all 0.15s;
     }
-    .kit-opt:hover { transform: scale(1.08); }
-    .kit-opt.active { border-color: #fbbf24; box-shadow: 0 0 10px rgba(251, 191, 36, 0.6); }
+    .kit-opt:hover { border-color: #38bdf8; background: #243248; }
+    .kit-opt.active { border-color: #fbbf24; background: #1e293b; box-shadow: 0 0 12px rgba(251, 191, 36, 0.4); }
+    .kit-preview-swatch {
+      display: flex; flex-direction: column; width: 22px; height: 32px; border-radius: 4px; overflow: hidden; border: 1px solid #475569;
+    }
+    .swatch-part { flex: 1; width: 100%; }
 
     .time-selector { display: flex; gap: 8px; }
     .time-btn {
@@ -160,12 +165,40 @@
       <button class="time-btn" id="btn-night" onclick="setTimeMode('night')">🌙 Noche</button>
     </div>
 
-    <div class="cust-title">Uniforme Matías (#58)</div>
+    <div class="cust-title">Uniformes Matías (#58)</div>
     <div class="kit-selector">
-      <div class="kit-opt active" style="background: #1d4ed8; color: #fff;" onclick="setKit('azul', this)" title="Azul">58</div>
-      <div class="kit-opt" style="background: #f8fafc; color: #0f172a;" onclick="setKit('blanco', this)" title="Blanco">58</div>
-      <div class="kit-opt" style="background: #111827; color: #fff;" onclick="setKit('negro', this)" title="Negro">58</div>
-      <div class="kit-opt" style="background: #38bdf8; color: #0f172a;" onclick="setKit('celeste', this)" title="Celeste">58</div>
+      <div class="kit-opt active" onclick="setKit(0, this)">
+        <div class="kit-preview-swatch">
+          <div class="swatch-part" style="background: #1d4ed8;"></div>
+          <div class="swatch-part" style="background: #dc2626;"></div>
+          <div class="swatch-part" style="background: #dc2626;"></div>
+        </div>
+        <span>1. Azul / Rojo / Rojo</span>
+      </div>
+      <div class="kit-opt" onclick="setKit(1, this)">
+        <div class="kit-preview-swatch">
+          <div class="swatch-part" style="background: #38bdf8;"></div>
+          <div class="swatch-part" style="background: #38bdf8;"></div>
+          <div class="swatch-part" style="background: #f8fafc;"></div>
+        </div>
+        <span>2. Celeste / Celeste / Blanco</span>
+      </div>
+      <div class="kit-opt" onclick="setKit(2, this)">
+        <div class="kit-preview-swatch">
+          <div class="swatch-part" style="background: #111827;"></div>
+          <div class="swatch-part" style="background: #111827;"></div>
+          <div class="swatch-part" style="background: #dc2626;"></div>
+        </div>
+        <span>3. Negro / Negro / Rojo</span>
+      </div>
+      <div class="kit-opt" onclick="setKit(3, this)">
+        <div class="kit-preview-swatch">
+          <div class="swatch-part" style="background: #f8fafc;"></div>
+          <div class="swatch-part" style="background: #1d4ed8;"></div>
+          <div class="swatch-part" style="background: #f8fafc;"></div>
+        </div>
+        <span>4. Blanco / Azul / Blanco</span>
+      </div>
     </div>
   </div>
 
@@ -182,7 +215,7 @@
     <div class="action-btn" id="jump-btn">⏫</div>
   </div>
 
-  <!-- Modal Opción A (Pantalla Completa Flotante) -->
+  <!-- Modal Opción A -->
   <div id="test-modal">
     <div id="test-card">
       <div id="test-header">
@@ -220,9 +253,9 @@
     // Three.js Setup
     const scene = new THREE.Scene();
     const dayColor = 0x87ceeb;
-    const nightColor = 0x0a1128;
+    const nightColor = 0x080e1e;
     scene.background = new THREE.Color(dayColor);
-    scene.fog = new THREE.FogExp2(dayColor, 0.01);
+    scene.fog = new THREE.FogExp2(dayColor, 0.009);
 
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -239,8 +272,12 @@
     sunLight.castShadow = true;
     scene.add(sunLight);
 
-    // Cancha reglamentaria
-    const pitchWidth = 70, pitchLength = 100;
+    // Dimensiones y Límites de la Cancha
+    const pitchWidth = 66, pitchLength = 96;
+    const limitX = (pitchWidth / 2) - 1.5;
+    const limitZ = (pitchLength / 2) - 1.5;
+
+    // Césped
     const field = new THREE.Mesh(
       new THREE.PlaneGeometry(pitchWidth, pitchLength),
       new THREE.MeshLambertMaterial({ color: 0x2e8540 })
@@ -249,6 +286,7 @@
     field.receiveShadow = true;
     scene.add(field);
 
+    // Líneas
     function createLine(w, h, x, z) {
       const line = new THREE.Mesh(
         new THREE.PlaneGeometry(w, h),
@@ -264,6 +302,55 @@
     createLine(0.6, pitchLength - 4, -(pitchWidth - 4) / 2, 0);
     createLine(pitchWidth - 4, 0.6, 0, 0);
 
+    // Graderías y Vallas de Contención
+    function buildStadiumBounds() {
+      const wallMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
+      const seatMat1 = new THREE.MeshLambertMaterial({ color: 0x0284c7 });
+      const seatMat2 = new THREE.MeshLambertMaterial({ color: 0xb91c1c });
+
+      // Graderías laterales (Este / Oeste)
+      [-1, 1].forEach(side => {
+        const grandstand = new THREE.Group();
+        for (let tier = 0; tier < 4; tier++) {
+          const step = new THREE.Mesh(
+            new THREE.BoxGeometry(4, 1.2, pitchLength),
+            tier % 2 === 0 ? seatMat1 : seatMat2
+          );
+          step.position.set(tier * 3.5, (tier * 1.2) + 0.6, 0);
+          grandstand.add(step);
+        }
+        grandstand.position.x = side * ((pitchWidth / 2) + 4);
+        if (side === 1) grandstand.rotation.y = Math.PI;
+        scene.add(grandstand);
+
+        // Valla publicitaria de choque
+        const board = new THREE.Mesh(new THREE.BoxGeometry(0.8, 1.5, pitchLength), wallMat);
+        board.position.set(side * ((pitchWidth / 2) + 0.5), 0.75, 0);
+        scene.add(board);
+      });
+
+      // Graderías traseras (Norte / Sur)
+      [-1, 1].forEach(side => {
+        const grandstand = new THREE.Group();
+        for (let tier = 0; tier < 3; tier++) {
+          const step = new THREE.Mesh(
+            new THREE.BoxGeometry(pitchWidth + 24, 1.2, 4),
+            tier % 2 === 0 ? seatMat2 : seatMat1
+          );
+          step.position.set(0, (tier * 1.2) + 0.6, tier * 3.5);
+          grandstand.add(step);
+        }
+        grandstand.position.z = side * ((pitchLength / 2) + 4);
+        if (side === 1) grandstand.rotation.y = Math.PI;
+        scene.add(grandstand);
+
+        const board = new THREE.Mesh(new THREE.BoxGeometry(pitchWidth, 1.5, 0.8), wallMat);
+        board.position.set(0, 0.75, side * ((pitchLength / 2) + 0.5));
+        scene.add(board);
+      });
+    }
+    buildStadiumBounds();
+
     // Porterías
     function buildGoal(zPos, rotY) {
       const goal = new THREE.Group();
@@ -277,35 +364,35 @@
       goal.rotation.y = rotY;
       scene.add(goal);
     }
-    buildGoal(46, 0);
-    buildGoal(-46, Math.PI);
+    buildGoal(44, 0);
+    buildGoal(-44, Math.PI);
 
     // Torres de Reflectores
     const floodlights = [];
     function buildFloodlight(x, z) {
       const tower = new THREE.Group();
-      const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 16), new THREE.MeshStandardMaterial({ color: 0x475569 }));
-      mast.position.y = 8;
-      const head = new THREE.Mesh(new THREE.BoxGeometry(3, 1.5, 0.5), new THREE.MeshBasicMaterial({ color: 0xffffcc }));
-      head.position.set(0, 16, 0);
+      const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 18), new THREE.MeshStandardMaterial({ color: 0x475569 }));
+      mast.position.y = 9;
+      const head = new THREE.Mesh(new THREE.BoxGeometry(3.5, 1.8, 0.6), new THREE.MeshBasicMaterial({ color: 0xffffcc }));
+      head.position.set(0, 18, 0);
       tower.add(mast, head);
       tower.position.set(x, 0, z);
       tower.lookAt(0, 0, 0);
       scene.add(tower);
 
-      const light = new THREE.SpotLight(0xfffaed, 0, 80, Math.PI / 3, 0.5);
-      light.position.set(x, 16, z);
+      const light = new THREE.SpotLight(0xfffaed, 0, 90, Math.PI / 3, 0.5);
+      light.position.set(x, 18, z);
       light.target.position.set(0, 0, 0);
       scene.add(light);
       scene.add(light.target);
       floodlights.push({ spot: light, bulb: head });
     }
-    buildFloodlight(-32, -45);
-    buildFloodlight(32, -45);
-    buildFloodlight(-32, 45);
-    buildFloodlight(32, 45);
+    buildFloodlight(-36, -50);
+    buildFloodlight(36, -50);
+    buildFloodlight(-36, 50);
+    buildFloodlight(36, 50);
 
-    // Textura dinámica para número #58 en el dorsal
+    // Textura dorsal #58
     function createJerseyNumberTexture(kitColor, textColor) {
       const c = document.createElement('canvas');
       c.width = 128; c.height = 128;
@@ -320,33 +407,35 @@
       return new THREE.CanvasTexture(c);
     }
 
-    // Avatar #58 Matías
-    const player = new THREE.Group();
+    // Materiales del Avatar
     const skinMat = new THREE.MeshLambertMaterial({ color: 0xffdbac });
-    const jerseyMat = new THREE.MeshLambertMaterial({ color: 0x1d4ed8 });
-    const shortsMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
     const hairMat = new THREE.MeshLambertMaterial({ color: 0x271910 });
+    const jerseyMat = new THREE.MeshLambertMaterial({ color: 0x1d4ed8 }); // Arriba
+    const shortsMat = new THREE.MeshLambertMaterial({ color: 0xdc2626 }); // Medio
+    const socksMat = new THREE.MeshLambertMaterial({ color: 0xdc2626 });  // Abajo
 
+    const player = new THREE.Group();
     const head = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), skinMat); head.position.y = 2.4;
     const hair = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.4, 1.05), hairMat); hair.position.y = 2.8;
-    
-    // Torso con dorsal #58 en la espalda
-    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.7), jerseyMat); 
+
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.7), jerseyMat);
     torso.position.y = 1.4;
 
-    const backNumberMat = new THREE.MeshBasicMaterial({ 
-      map: createJerseyNumberTexture('#1d4ed8', '#ffffff'), 
-      transparent: false 
+    const backNumberMat = new THREE.MeshBasicMaterial({
+      map: createJerseyNumberTexture('#1d4ed8', '#ffffff'),
+      transparent: false
     });
     const backNumber = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.7), backNumberMat);
     backNumber.position.set(0, 1.45, -0.36);
     backNumber.rotation.y = Math.PI;
 
-    const shorts = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.5, 0.72), shortsMat); shorts.position.y = 0.85;
+    const shorts = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.5, 0.72), shortsMat);
+    shorts.position.y = 0.85;
 
+    // Piernas con medias diferenciadas (Abajo)
     const legGeo = new THREE.BoxGeometry(0.45, 0.8, 0.45);
-    const leftLeg = new THREE.Mesh(legGeo, jerseyMat); leftLeg.position.set(-0.32, 0.4, 0);
-    const rightLeg = new THREE.Mesh(legGeo, jerseyMat); rightLeg.position.set(0.32, 0.4, 0);
+    const leftLeg = new THREE.Mesh(legGeo, socksMat); leftLeg.position.set(-0.32, 0.4, 0);
+    const rightLeg = new THREE.Mesh(legGeo, socksMat); rightLeg.position.set(0.32, 0.4, 0);
 
     const armGeo = new THREE.BoxGeometry(0.35, 1, 0.35);
     const leftArm = new THREE.Mesh(armGeo, skinMat); leftArm.position.set(-0.85, 1.4, 0);
@@ -366,7 +455,7 @@
     scene.add(ball);
     let ballVel = new THREE.Vector3(0, 0, 0);
 
-    // Estaciones / Portales Dinámicos
+    // Portales Dinámicos Orientados hacia el centro (Siempre de frente)
     const portals = [];
     let currentPortalNear = null;
 
@@ -403,6 +492,8 @@
         sign.position.set(0, 6.3, 0);
 
         group.add(post1, post2, lintel, core, sign);
+
+        // Orientación: Mirando directamente al centro de la cancha
         group.lookAt(0, 0, 0);
         scene.add(group);
 
@@ -416,7 +507,6 @@
       .then(r => r.json())
       .then(data => buildPortals(data))
       .catch(err => {
-        console.warn("Fallback de pruebas locales:", err);
         buildPortals([
           { id: "math", titulo: "Math Practice", materia: "Matemáticas", url: "math.html", color: "#3b82f6", icono: "📐" },
           { id: "science", titulo: "Life Cycles", materia: "Science", url: "Science-Topic4-Life-Cycles-and-traits.html", color: "#10b981", icono: "🧬" },
@@ -450,24 +540,28 @@
       }
     }
 
-    function setKit(colorName, el) {
+    // 4 Uniformes precisos
+    const kitPresets = [
+      { topHex: 0x1d4ed8, midHex: 0xdc2626, botHex: 0xdc2626, topCss: '#1d4ed8', textCss: '#ffffff' }, // 1. Azul / Rojo / Rojo
+      { topHex: 0x38bdf8, midHex: 0x38bdf8, botHex: 0xf8fafc, topCss: '#38bdf8', textCss: '#0f172a' }, // 2. Celeste / Celeste / Blanco
+      { topHex: 0x111827, midHex: 0x111827, botHex: 0xdc2626, topCss: '#111827', textCss: '#ffffff' }, // 3. Negro / Negro / Rojo
+      { topHex: 0xf8fafc, midHex: 0x1d4ed8, botHex: 0xf8fafc, topCss: '#f8fafc', textCss: '#1d4ed8' }  // 4. Blanco / Azul / Blanco
+    ];
+
+    function setKit(index, el) {
       document.querySelectorAll('.kit-opt').forEach(b => b.classList.remove('active'));
       el.classList.add('active');
 
-      const kits = {
-        azul: { jerseyHex: 0x1d4ed8, shortsHex: 0xffffff, cssColor: '#1d4ed8', textColor: '#ffffff' },
-        blanco: { jerseyHex: 0xf8fafc, shortsHex: 0x1e293b, cssColor: '#f8fafc', textColor: '#0f172a' },
-        negro: { jerseyHex: 0x111827, shortsHex: 0x374151, cssColor: '#111827', textColor: '#ffffff' },
-        celeste: { jerseyHex: 0x38bdf8, shortsHex: 0x0f172a, cssColor: '#38bdf8', textColor: '#0f172a' }
-      };
-      const kit = kits[colorName];
-      jerseyMat.color.setHex(kit.jerseyHex);
-      shortsMat.color.setHex(kit.shortsHex);
-      backNumberMat.map = createJerseyNumberTexture(kit.cssColor, kit.textColor);
+      const k = kitPresets[index];
+      jerseyMat.color.setHex(k.topHex);
+      shortsMat.color.setHex(k.midHex);
+      socksMat.color.setHex(k.botHex);
+
+      backNumberMat.map = createJerseyNumberTexture(k.topCss, k.textCss);
       backNumberMat.needsUpdate = true;
     }
 
-    // Modal de Examen (Opción A: Sobre pantalla)
+    // Modal de Examen
     function openTest(portal) {
       playWhistle();
       document.getElementById('modal-title').textContent = `${portal.materia} - ${portal.titulo}`;
@@ -480,6 +574,57 @@
       document.getElementById('test-modal').style.display = 'none';
       document.getElementById('test-iframe').src = 'about:blank';
     }
+
+    // Rotación de Cámara Libre (Mouse y Touch 360°)
+    let cameraAngle = 0;
+    let cameraPitch = 0.5; // Ángulo vertical
+    let isDragging = false, prevMouseX = 0, prevMouseY = 0;
+
+    const container = document.getElementById('canvas-container');
+    container.addEventListener('mousedown', e => {
+      isDragging = true; prevMouseX = e.clientX; prevMouseY = e.clientY;
+    });
+    window.addEventListener('mouseup', () => { isDragging = false; });
+    window.addEventListener('mousemove', e => {
+      if (isDragging) {
+        const dx = e.clientX - prevMouseX;
+        const dy = e.clientY - prevMouseY;
+        cameraAngle -= dx * 0.007;
+        cameraPitch = Math.max(0.15, Math.min(1.1, cameraPitch + dy * 0.005));
+        prevMouseX = e.clientX; prevMouseY = e.clientY;
+      }
+    });
+
+    // Touch en lado derecho para rotación de cámara
+    let touchCamID = null, startCamX = 0, startCamY = 0;
+    window.addEventListener('touchstart', e => {
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        const t = e.changedTouches[i];
+        if (t.clientX > window.innerWidth * 0.4 && touchCamID === null) {
+          touchCamID = t.identifier;
+          startCamX = t.clientX; startCamY = t.clientY;
+        }
+      }
+    });
+    window.addEventListener('touchmove', e => {
+      for (let i = 0; i < e.touches.length; i++) {
+        const t = e.touches[i];
+        if (t.identifier === touchCamID) {
+          const dx = t.clientX - startCamX;
+          const dy = t.clientY - startCamY;
+          cameraAngle -= dx * 0.007;
+          cameraPitch = Math.max(0.15, Math.min(1.1, cameraPitch + dy * 0.005));
+          startCamX = t.clientX; startCamY = t.clientY;
+        }
+      }
+    });
+    const endTouchCam = e => {
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        if (e.changedTouches[i].identifier === touchCamID) touchCamID = null;
+      }
+    };
+    window.addEventListener('touchend', endTouchCam);
+    window.addEventListener('touchcancel', endTouchCam);
 
     // Movimiento y Teclado
     const keys = { w: false, a: false, s: false, d: false };
@@ -515,21 +660,21 @@
       }
     }
 
-    // Controles Touch
+    // Joystick táctil
     if ('ontouchstart' in window) {
       document.getElementById('touch-controls').style.display = 'block';
       const jZone = document.getElementById('joystick-zone');
       const jKnob = document.getElementById('joystick-knob');
-      let touchID = null, startX = 0, startY = 0;
+      let joyID = null, startX = 0, startY = 0;
 
       jZone.addEventListener('touchstart', e => {
-        const t = e.changedTouches[0]; touchID = t.identifier;
+        const t = e.changedTouches[0]; joyID = t.identifier;
         startX = t.clientX; startY = t.clientY;
       });
       window.addEventListener('touchmove', e => {
-        if (touchID === null) return;
+        if (joyID === null) return;
         for (let i = 0; i < e.touches.length; i++) {
-          if (e.touches[i].identifier === touchID) {
+          if (e.touches[i].identifier === joyID) {
             const dx = e.touches[i].clientX - startX;
             const dy = e.touches[i].clientY - startY;
             const dist = Math.min(Math.hypot(dx, dy), 45);
@@ -540,9 +685,13 @@
           }
         }
       });
-      const endJoy = () => {
-        touchID = null; jKnob.style.transform = 'translate(0,0)';
-        keys.w = keys.s = keys.a = keys.d = false;
+      const endJoy = e => {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          if (e.changedTouches[i].identifier === joyID) {
+            joyID = null; jKnob.style.transform = 'translate(0,0)';
+            keys.w = keys.s = keys.a = keys.d = false;
+          }
+        }
       };
       window.addEventListener('touchend', endJoy);
       window.addEventListener('touchcancel', endJoy);
@@ -554,23 +703,34 @@
       if (currentPortalNear) openTest(currentPortalNear);
     });
 
-    // Bucle de Animación
+    // Bucle Principal
     const clock = new THREE.Clock();
     function animate() {
       requestAnimationFrame(animate);
       const time = clock.getElapsedTime();
 
-      const moveVec = new THREE.Vector3();
-      if (keys.w) moveVec.z -= 1;
-      if (keys.s) moveVec.z += 1;
-      if (keys.a) moveVec.x -= 1;
-      if (keys.d) moveVec.x += 1;
+      // Dirección relativa a la cámara
+      const inputVec = new THREE.Vector3();
+      if (keys.w) inputVec.z -= 1;
+      if (keys.s) inputVec.z += 1;
+      if (keys.a) inputVec.x -= 1;
+      if (keys.d) inputVec.x += 1;
 
-      const isMoving = moveVec.lengthSq() > 0;
+      const isMoving = inputVec.lengthSq() > 0;
       if (isMoving) {
-        moveVec.normalize().multiplyScalar(0.28);
+        inputVec.normalize();
+        // Rota el vector de movimiento con la orientación de la cámara
+        const forward = new THREE.Vector3(-Math.sin(cameraAngle), 0, -Math.cos(cameraAngle));
+        const right = new THREE.Vector3(Math.cos(cameraAngle), 0, -Math.sin(cameraAngle));
+        const moveVec = new THREE.Vector3()
+          .addScaledVector(forward, -inputVec.z)
+          .addScaledVector(right, inputVec.x)
+          .normalize()
+          .multiplyScalar(0.28);
+
         player.position.add(moveVec);
         player.rotation.y = Math.atan2(moveVec.x, moveVec.z);
+
         leftLeg.rotation.x = Math.sin(time * 12) * 0.6;
         rightLeg.rotation.x = -Math.sin(time * 12) * 0.6;
         leftArm.rotation.x = -Math.sin(time * 12) * 0.6;
@@ -580,18 +740,33 @@
         leftArm.rotation.x = rightArm.rotation.x = 0;
       }
 
+      // TOPE FÍSICO ESTRICTO (No salirse de la cancha)
+      player.position.x = Math.max(-limitX, Math.min(limitX, player.position.x));
+      player.position.z = Math.max(-limitZ, Math.min(limitZ, player.position.z));
+
       // Salto y Gravedad
       playerVelocityY -= 0.015;
       playerY += playerVelocityY;
       if (playerY <= 0) { playerY = 0; playerVelocityY = 0; isGrounded = true; }
       player.position.y = playerY;
 
-      // Físicas del balón
+      // Físicas del balón con rebote en las gradas
       ball.position.add(ballVel);
       ballVel.x *= 0.94; ballVel.z *= 0.94;
       ball.rotation.x += ballVel.z * 0.5;
       ball.rotation.z -= ballVel.x * 0.5;
 
+      // Rebote de la pelota en los bordes
+      if (Math.abs(ball.position.x) > limitX) {
+        ball.position.x = Math.sign(ball.position.x) * limitX;
+        ballVel.x *= -0.7;
+      }
+      if (Math.abs(ball.position.z) > limitZ) {
+        ball.position.z = Math.sign(ball.position.z) * limitZ;
+        ballVel.z *= -0.7;
+      }
+
+      // Conducción de balón
       if (player.position.distanceTo(ball.position) < 1.4) {
         const push = new THREE.Vector3().subVectors(ball.position, player.position).normalize();
         ballVel.x += push.x * 0.06;
@@ -613,10 +788,11 @@
         promptEl.style.display = 'none';
       }
 
-      // Cámara
-      camera.position.x = player.position.x;
-      camera.position.y = player.position.y + 7;
-      camera.position.z = player.position.z + 12;
+      // Cámara Orbital Libre 360°
+      const camDist = 12;
+      camera.position.x = player.position.x + Math.sin(cameraAngle) * camDist * Math.cos(cameraPitch);
+      camera.position.y = player.position.y + 1.5 + Math.sin(cameraPitch) * camDist;
+      camera.position.z = player.position.z + Math.cos(cameraAngle) * camDist * Math.cos(cameraPitch);
       camera.lookAt(player.position.x, player.position.y + 1.5, player.position.z);
 
       renderer.render(scene, camera);
