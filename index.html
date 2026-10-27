@@ -2,291 +2,632 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Servidor Personal Osvaldo Matías | Repaso Escolar</title>
-  <!-- Fuentes estilo Roblox / Bloques -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700;800&family=Lilita+One&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mundo de Entrenamiento - Osvaldo Matías #58</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
-    :root {
-      --bg-sky: #4aa3df;
-      --stud-pattern: #3b8ec4;
-      --card-bg: #232527;
-      --card-border: #111215;
-      --roblox-green: #00b06f;
-      --roblox-green-shadow: #007a4d;
-      --roblox-yellow: #f5a623;
-      --text: #ffffff;
-      --text-muted: #abb1b8;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body, html { width: 100%; height: 100%; overflow: hidden; background: #0b0f19; font-family: 'Segoe UI', system-ui, sans-serif; user-select: none; }
+    #canvas-container { width: 100%; height: 100%; position: absolute; left: 0; top: 0; }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Fredoka', cursive, system-ui, sans-serif;
-      /* Textura tipo studs / bloques en el fondo */
-      background-color: var(--bg-sky);
-      background-image: 
-        radial-gradient(circle, var(--stud-pattern) 18%, transparent 19%),
-        radial-gradient(circle, var(--stud-pattern) 18%, transparent 19%);
-      background-size: 32px 32px;
-      background-position: 0 0, 16px 16px;
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px 16px;
+    /* HUD Superior */
+    #hud {
+      position: absolute; top: 16px; left: 16px; right: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      pointer-events: none; z-index: 20;
     }
-
-    /* Header estilo Roblox Top Bar */
-    header {
-      text-align: center;
-      margin-bottom: 30px;
-      width: 100%;
-      max-width: 820px;
-      background: rgba(35, 37, 39, 0.94);
-      border: 4px solid var(--card-border);
-      border-radius: 20px;
-      padding: 24px 20px;
-      box-shadow: 0 10px 0px rgba(0, 0, 0, 0.25);
+    .hud-group { display: flex; align-items: center; gap: 10px; }
+    .badge {
+      background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(8px);
+      border: 2px solid #38bdf8; border-radius: 14px;
+      padding: 8px 16px; color: #fff; font-weight: 700;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      display: flex; align-items: center; gap: 10px; font-size: 14px;
     }
-
-    .badge-lobby {
-      display: inline-block;
-      background: var(--roblox-yellow);
-      color: #111;
-      padding: 4px 18px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 8px;
-      border: 2px solid #000;
-      box-shadow: 0 3px 0 #000;
+    .badge-icon { font-size: 20px; }
+    .hud-btn {
+      pointer-events: auto; background: rgba(30, 41, 59, 0.88);
+      border: 2px solid #64748b; color: #fff; border-radius: 12px;
+      padding: 8px 14px; font-weight: bold; font-size: 13px;
+      cursor: pointer; display: flex; align-items: center; gap: 6px;
+      text-decoration: none; transition: 0.2s all;
     }
+    .hud-btn:hover { border-color: #38bdf8; background: #334155; }
 
-    h1 {
-      font-family: 'Lilita One', cursive;
-      font-size: 2.5rem;
-      letter-spacing: 0.03em;
-      color: #ffffff;
-      text-shadow: 
-        -2px -2px 0 #000,  
-         2px -2px 0 #000,
-        -2px  2px 0 #000,
-         2px  2px 0 #000,
-         0 6px 0 rgba(0,0,0,0.4);
-      margin-bottom: 6px;
+    /* Menú flotante de personalización */
+    #customizer-panel {
+      position: absolute; top: 75px; right: 16px; width: 260px;
+      background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
+      border: 2px solid #38bdf8; border-radius: 18px; padding: 16px;
+      display: none; flex-direction: column; gap: 14px; z-index: 25;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6); color: #fff;
     }
+    .cust-title { font-size: 12px; color: #94a3b8; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
+    .kit-selector { display: flex; gap: 8px; justify-content: space-between; }
+    .kit-opt {
+      width: 48px; height: 44px; border-radius: 10px; border: 3px solid transparent;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 900; transition: transform 0.15s;
+    }
+    .kit-opt:hover { transform: scale(1.08); }
+    .kit-opt.active { border-color: #fbbf24; box-shadow: 0 0 10px rgba(251, 191, 36, 0.6); }
 
-    p.subtitle {
-      color: var(--text-muted);
-      font-size: 1.15rem;
-      font-weight: 600;
+    .time-selector { display: flex; gap: 8px; }
+    .time-btn {
+      flex: 1; padding: 8px 0; border-radius: 10px; border: 2px solid #475569;
+      background: #1e293b; color: #cbd5e1; font-weight: bold; cursor: pointer;
+      display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 13px;
     }
+    .time-btn.active { border-color: #38bdf8; background: #0284c7; color: #fff; }
 
-    /* Grid de Portales / Pads */
-    .grid {
-      width: 100%;
-      max-width: 960px;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 22px;
+    /* Indicador interactivo en pantalla */
+    #prompt {
+      position: absolute; bottom: 120px; left: 50%; transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.95); border: 2px solid #fbbf24;
+      padding: 14px 26px; border-radius: 40px; color: #fff; font-size: 15px; font-weight: 800;
+      display: none; align-items: center; gap: 12px; pointer-events: auto; cursor: pointer;
+      box-shadow: 0 0 25px rgba(251, 191, 36, 0.6); animation: bounce 0.6s infinite alternate;
+      z-index: 20; text-transform: uppercase; letter-spacing: 0.5px;
     }
+    @keyframes bounce { 0% { transform: translate(-50%, 0); } 100% { transform: translate(-50%, -8px); } }
 
-    /* Tarjeta estilo Bloque 3D */
-    .card {
-      background: var(--card-bg);
-      border: 4px solid var(--card-border);
-      border-radius: 20px;
-      padding: 22px;
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 190px;
-      box-shadow: 0 8px 0px #111215;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-      position: relative;
-      overflow: hidden;
+    /* Controles virtuales touch */
+    #touch-controls {
+      position: absolute; width: 100%; height: 100%;
+      pointer-events: none; z-index: 15; display: none;
     }
+    #joystick-zone {
+      position: absolute; bottom: 30px; left: 30px; width: 120px; height: 120px;
+      border-radius: 50%; background: rgba(255,255,255,0.08); border: 2px dashed rgba(255,255,255,0.25);
+      pointer-events: auto; touch-action: none;
+    }
+    #joystick-knob {
+      width: 50px; height: 50px; border-radius: 50%; background: #38bdf8;
+      position: absolute; top: 35px; left: 35px; pointer-events: none;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+    }
+    .action-btn {
+      position: absolute; width: 65px; height: 65px; border-radius: 50%;
+      background: rgba(15, 23, 42, 0.85); border: 3px solid #38bdf8;
+      color: #fff; font-size: 24px; font-weight: bold;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: auto; touch-action: manipulation; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    .action-btn:active { transform: scale(0.9); background: #38bdf8; }
+    #jump-btn { bottom: 35px; right: 35px; }
+    #kick-btn { bottom: 115px; right: 35px; border-color: #fbbf24; }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 0px #111215;
+    /* Modal Visor de Examen (Opción A - Overlay sin salir del juego) */
+    #test-modal {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(10, 15, 30, 0.88); backdrop-filter: blur(10px);
+      z-index: 100; display: none; align-items: center; justify-content: center;
+      padding: 16px;
     }
-
-    .card:active {
-      transform: translateY(4px);
-      box-shadow: 0 4px 0px #111215;
+    #test-card {
+      width: 100%; max-width: 960px; height: 92%; background: #0f172a;
+      border-radius: 20px; border: 2px solid #38bdf8;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      display: flex; flex-direction: column; overflow: hidden;
     }
-
-    /* Tag de la tarjeta */
-    .card-zone {
-      position: absolute;
-      top: 12px;
-      right: 14px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 8px;
-      color: var(--roblox-yellow);
-      text-transform: uppercase;
+    #test-header {
+      background: #1e293b; padding: 12px 20px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 2px solid #334155;
     }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-top: 8px;
+    #test-title-bar { color: #fff; font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+    .header-actions { display: flex; gap: 10px; }
+    .btn-action {
+      background: #334155; border: none; color: #fff; border-radius: 8px;
+      padding: 8px 14px; font-weight: bold; cursor: pointer; font-size: 13px; text-decoration: none;
     }
-
-    .card-icon {
-      font-size: 2.2rem;
-      background: #111215;
-      border: 3px solid #3b3f46;
-      padding: 10px;
-      border-radius: 14px;
-      box-shadow: inset 0 -3px 0 rgba(0,0,0,0.5);
-      flex-shrink: 0;
-    }
-
-    .card-title {
-      font-family: 'Lilita One', cursive;
-      font-size: 1.35rem;
-      line-height: 1.2;
-      color: #fff;
-      text-transform: capitalize;
-    }
-
-    /* Botón verde 3D de Spawn */
-    .btn-spawn {
-      margin-top: 20px;
-      background: var(--roblox-green);
-      border: 3px solid #000;
-      border-radius: 12px;
-      color: #fff;
-      font-family: 'Lilita One', cursive;
-      font-size: 1.15rem;
-      letter-spacing: 0.05em;
-      padding: 10px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 5px 0 var(--roblox-green-shadow);
-      text-transform: uppercase;
-    }
-
-    .card:hover .btn-spawn {
-      background: #00c97e;
-    }
-
-    /* Mensajes de estado */
-    .status-box {
-      grid-column: 1 / -1;
-      text-align: center;
-      padding: 60px 20px;
-      background: var(--card-bg);
-      border: 4px dashed #3b3f46;
-      border-radius: 20px;
-      color: var(--text-muted);
-      font-size: 1.2rem;
-      box-shadow: 0 8px 0 #111215;
-    }
+    .btn-action:hover { background: #475569; }
+    .btn-close { background: #ef4444; }
+    .btn-close:hover { background: #dc2626; }
+    #test-iframe { width: 100%; flex: 1; border: none; background: #ffffff; }
   </style>
 </head>
 <body>
+  <div id="canvas-container"></div>
 
-  <header>
-    <div class="badge-lobby">⭐ BIENVENIDO A TU SERVIDOR DE REPASO</div>
-    <h1>OSVALDO MATIAS ESPERO ESTES LISTO</h1>
-    <p class="subtitle">Entra a cualquier portal para entrenar. ¡Puedes repetir las veces que quieras!</p>
-  </header>
+  <!-- HUD Principal -->
+  <div id="hud">
+    <div class="hud-group">
+      <div class="badge">
+        <span class="badge-icon">⚽</span>
+        <div>
+          <div style="font-size: 10px; color: #94a3b8; text-transform: uppercase;">Jugador #58</div>
+          <div>Osvaldo Matías</div>
+        </div>
+      </div>
+      <a href="clasico.html" class="hud-btn">📋 Menú Clásico</a>
+    </div>
 
-  <main class="grid" id="contenedor-pruebas">
-    <div class="status-box">Buscando portales activos en el servidor...</div>
-  </main>
+    <div class="hud-group">
+      <div class="badge" style="border-color: #fbbf24;">
+        <span class="badge-icon">🏆</span>
+        <span id="score-text">0 / 4</span>
+      </div>
+      <button class="hud-btn" onclick="toggleCustomizer()">⚙️ Ajustes</button>
+    </div>
+  </div>
+
+  <!-- Menú de Personalización -->
+  <div id="customizer-panel">
+    <div class="cust-title">Ambiente de Cancha</div>
+    <div class="time-selector">
+      <button class="time-btn active" id="btn-day" onclick="setTimeMode('day')">☀️ Día</button>
+      <button class="time-btn" id="btn-night" onclick="setTimeMode('night')">🌙 Noche</button>
+    </div>
+
+    <div class="cust-title">Uniforme Matías (#58)</div>
+    <div class="kit-selector">
+      <div class="kit-opt active" style="background: #1d4ed8; color: #fff;" onclick="setKit('azul', this)" title="Azul">58</div>
+      <div class="kit-opt" style="background: #f8fafc; color: #0f172a;" onclick="setKit('blanco', this)" title="Blanco">58</div>
+      <div class="kit-opt" style="background: #111827; color: #fff;" onclick="setKit('negro', this)" title="Negro">58</div>
+      <div class="kit-opt" style="background: #38bdf8; color: #0f172a;" onclick="setKit('celeste', this)" title="Celeste">58</div>
+    </div>
+  </div>
+
+  <!-- Prompt Flotante -->
+  <div id="prompt">
+    <span id="prompt-icon">⚽</span>
+    <span id="prompt-text">Presiona [E] o toca para repasar</span>
+  </div>
+
+  <!-- Touch Controls -->
+  <div id="touch-controls">
+    <div id="joystick-zone"><div id="joystick-knob"></div></div>
+    <div class="action-btn" id="kick-btn">⚽</div>
+    <div class="action-btn" id="jump-btn">⏫</div>
+  </div>
+
+  <!-- Modal Opción A (Pantalla Completa Flotante) -->
+  <div id="test-modal">
+    <div id="test-card">
+      <div id="test-header">
+        <div id="test-title-bar">
+          <span id="modal-icon">📖</span>
+          <span id="modal-title">Repaso</span>
+        </div>
+        <div class="header-actions">
+          <a id="modal-external-link" href="#" target="_blank" class="btn-action">Abrir Pestaña Nueva ↗</a>
+          <button class="btn-action btn-close" onclick="closeTest()">✕ Volver a la Cancha</button>
+        </div>
+      </div>
+      <iframe id="test-iframe" src="about:blank"></iframe>
+    </div>
+  </div>
 
   <script>
-    const GITHUB_USER = 'osv927';
-    const GITHUB_REPO = 'pruebas';
-    const FOLDER_PATH = '';
-
-    function categorizar(nombre) {
-      const n = nombre.toLowerCase();
-      if (n.includes('mate') || n.includes('suma') || n.includes('resta') || n.includes('fraccion') || n.includes('multiplica') || n.includes('divis')) {
-        return { icono: '⚡', tag: 'Prueba tu conocimiento' };
-      }
-      if (n.includes('esp') || n.includes('lengua') || n.includes('acento') || n.includes('lectura') || n.includes('palabra')) {
-        return { icono: '📖', tag: 'Prueba tu conocimiento' };
-      }
-      if (n.includes('cien') || n.includes('insecto') || n.includes('animal') || n.includes('planta') || n.includes('cuerpo')) {
-        return { icono: '🧪', tag: 'Prueba tu conocimiento' };
-      }
-      if (n.includes('soc') || n.includes('historia') || n.includes('mapa') || n.includes('geografia')) {
-        return { icono: '🗺️', tag: 'Prueba tu conocimiento' };
-      }
-      return { icono: '🎮', tag: 'Prueba tu conocimiento' };
+    // Audio sintetizado
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq = 440, type = 'sine', duration = 0.15) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type; osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + duration);
+    }
+    function playWhistle() {
+      playBeep(2400, 'triangle', 0.12);
+      setTimeout(() => playBeep(2600, 'triangle', 0.25), 130);
     }
 
-    async function listarRetos() {
-      const grid = document.getElementById('contenedor-pruebas');
-      const endpoint = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${FOLDER_PATH}`;
+    // Three.js Setup
+    const scene = new THREE.Scene();
+    const dayColor = 0x87ceeb;
+    const nightColor = 0x0a1128;
+    scene.background = new THREE.Color(dayColor);
+    scene.fog = new THREE.FogExp2(dayColor, 0.01);
 
-      try {
-        const res = await fetch(endpoint);
-        if (!res.ok) throw new Error('Error al conectar');
-        const items = await res.json();
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-        const pruebas = items.filter(f => 
-          f.type === 'file' &&
-          f.name.endsWith('.html') &&
-          f.name.toLowerCase() !== 'index.html'
-        );
+    // Luces
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+    scene.add(ambientLight);
+    const sunLight = new THREE.DirectionalLight(0xfffaed, 0.9);
+    sunLight.position.set(40, 70, 30);
+    sunLight.castShadow = true;
+    scene.add(sunLight);
 
-        if (pruebas.length === 0) {
-          grid.innerHTML = '<div class="status-box">No hay pruebas disponibles en este momento.</div>';
-          return;
+    // Cancha reglamentaria
+    const pitchWidth = 70, pitchLength = 100;
+    const field = new THREE.Mesh(
+      new THREE.PlaneGeometry(pitchWidth, pitchLength),
+      new THREE.MeshLambertMaterial({ color: 0x2e8540 })
+    );
+    field.rotation.x = -Math.PI / 2;
+    field.receiveShadow = true;
+    scene.add(field);
+
+    function createLine(w, h, x, z) {
+      const line = new THREE.Mesh(
+        new THREE.PlaneGeometry(w, h),
+        new THREE.MeshBasicMaterial({ color: 0xffffff, depthWrite: false })
+      );
+      line.rotation.x = -Math.PI / 2;
+      line.position.set(x, 0.02, z);
+      scene.add(line);
+    }
+    createLine(pitchWidth - 4, 0.6, 0, (pitchLength - 4) / 2);
+    createLine(pitchWidth - 4, 0.6, 0, -(pitchLength - 4) / 2);
+    createLine(0.6, pitchLength - 4, (pitchWidth - 4) / 2, 0);
+    createLine(0.6, pitchLength - 4, -(pitchWidth - 4) / 2, 0);
+    createLine(pitchWidth - 4, 0.6, 0, 0);
+
+    // Porterías
+    function buildGoal(zPos, rotY) {
+      const goal = new THREE.Group();
+      const mat = new THREE.MeshStandardMaterial({ color: 0xffffff });
+      const p1 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 4), mat); p1.position.set(-6, 2, 0);
+      const p2 = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 4), mat); p2.position.set(6, 2, 0);
+      const bar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 12), mat);
+      bar.rotation.z = Math.PI / 2; bar.position.set(0, 4, 0);
+      goal.add(p1, p2, bar);
+      goal.position.set(0, 0, zPos);
+      goal.rotation.y = rotY;
+      scene.add(goal);
+    }
+    buildGoal(46, 0);
+    buildGoal(-46, Math.PI);
+
+    // Torres de Reflectores
+    const floodlights = [];
+    function buildFloodlight(x, z) {
+      const tower = new THREE.Group();
+      const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.6, 16), new THREE.MeshStandardMaterial({ color: 0x475569 }));
+      mast.position.y = 8;
+      const head = new THREE.Mesh(new THREE.BoxGeometry(3, 1.5, 0.5), new THREE.MeshBasicMaterial({ color: 0xffffcc }));
+      head.position.set(0, 16, 0);
+      tower.add(mast, head);
+      tower.position.set(x, 0, z);
+      tower.lookAt(0, 0, 0);
+      scene.add(tower);
+
+      const light = new THREE.SpotLight(0xfffaed, 0, 80, Math.PI / 3, 0.5);
+      light.position.set(x, 16, z);
+      light.target.position.set(0, 0, 0);
+      scene.add(light);
+      scene.add(light.target);
+      floodlights.push({ spot: light, bulb: head });
+    }
+    buildFloodlight(-32, -45);
+    buildFloodlight(32, -45);
+    buildFloodlight(-32, 45);
+    buildFloodlight(32, 45);
+
+    // Textura dinámica para número #58 en el dorsal
+    function createJerseyNumberTexture(kitColor, textColor) {
+      const c = document.createElement('canvas');
+      c.width = 128; c.height = 128;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = kitColor;
+      ctx.fillRect(0, 0, 128, 128);
+      ctx.fillStyle = textColor;
+      ctx.font = 'bold 72px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('58', 64, 64);
+      return new THREE.CanvasTexture(c);
+    }
+
+    // Avatar #58 Matías
+    const player = new THREE.Group();
+    const skinMat = new THREE.MeshLambertMaterial({ color: 0xffdbac });
+    const jerseyMat = new THREE.MeshLambertMaterial({ color: 0x1d4ed8 });
+    const shortsMat = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    const hairMat = new THREE.MeshLambertMaterial({ color: 0x271910 });
+
+    const head = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), skinMat); head.position.y = 2.4;
+    const hair = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.4, 1.05), hairMat); hair.position.y = 2.8;
+    
+    // Torso con dorsal #58 en la espalda
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.7), jerseyMat); 
+    torso.position.y = 1.4;
+
+    const backNumberMat = new THREE.MeshBasicMaterial({ 
+      map: createJerseyNumberTexture('#1d4ed8', '#ffffff'), 
+      transparent: false 
+    });
+    const backNumber = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.7), backNumberMat);
+    backNumber.position.set(0, 1.45, -0.36);
+    backNumber.rotation.y = Math.PI;
+
+    const shorts = new THREE.Mesh(new THREE.BoxGeometry(1.22, 0.5, 0.72), shortsMat); shorts.position.y = 0.85;
+
+    const legGeo = new THREE.BoxGeometry(0.45, 0.8, 0.45);
+    const leftLeg = new THREE.Mesh(legGeo, jerseyMat); leftLeg.position.set(-0.32, 0.4, 0);
+    const rightLeg = new THREE.Mesh(legGeo, jerseyMat); rightLeg.position.set(0.32, 0.4, 0);
+
+    const armGeo = new THREE.BoxGeometry(0.35, 1, 0.35);
+    const leftArm = new THREE.Mesh(armGeo, skinMat); leftArm.position.set(-0.85, 1.4, 0);
+    const rightArm = new THREE.Mesh(armGeo, skinMat); rightArm.position.set(0.85, 1.4, 0);
+
+    player.add(head, hair, torso, backNumber, shorts, leftLeg, rightLeg, leftArm, rightArm);
+    player.traverse(c => { if(c.isMesh) c.castShadow = true; });
+    scene.add(player);
+
+    // Pelota de fútbol
+    const ball = new THREE.Mesh(
+      new THREE.SphereGeometry(0.6, 16, 16),
+      new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.3 })
+    );
+    ball.position.set(0, 0.6, 4);
+    ball.castShadow = true;
+    scene.add(ball);
+    let ballVel = new THREE.Vector3(0, 0, 0);
+
+    // Estaciones / Portales Dinámicos
+    const portals = [];
+    let currentPortalNear = null;
+
+    function buildPortals(tests) {
+      const radius = 22;
+      tests.forEach((test, i) => {
+        const angle = (i / tests.length) * Math.PI * 2 + (Math.PI / 4);
+        const x = Math.cos(angle) * radius;
+        const z = Math.sin(angle) * radius;
+
+        const group = new THREE.Group();
+        group.position.set(x, 0, z);
+
+        const frameMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.6 });
+        const post1 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 5, 0.8), frameMat); post1.position.set(-2, 2.5, 0);
+        const post2 = new THREE.Mesh(new THREE.BoxGeometry(0.8, 5, 0.8), frameMat); post2.position.set(2, 2.5, 0);
+        const lintel = new THREE.Mesh(new THREE.BoxGeometry(4.8, 0.8, 0.8), frameMat); lintel.position.set(0, 5, 0);
+
+        const coreMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(test.color || 0x38bdf8), transparent: true, opacity: 0.75 });
+        const core = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 4.4), coreMat); core.position.set(0, 2.6, 0);
+
+        // Cartel 3D
+        const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 160;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#0f172a'; ctx.roundRect(0, 0, 512, 160, 24); ctx.fill();
+        ctx.strokeStyle = test.color || '#38bdf8'; ctx.lineWidth = 8; ctx.stroke();
+        ctx.fillStyle = '#ffffff'; ctx.font = 'bold 36px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText((test.icono || '⚽') + ' ' + test.materia, 256, 65);
+        ctx.fillStyle = '#94a3b8'; ctx.font = '26px sans-serif';
+        ctx.fillText(test.titulo, 256, 120);
+
+        const textTex = new THREE.CanvasTexture(canvas);
+        const sign = new THREE.Mesh(new THREE.PlaneGeometry(5, 1.6), new THREE.MeshBasicMaterial({ map: textTex, transparent: true }));
+        sign.position.set(0, 6.3, 0);
+
+        group.add(post1, post2, lintel, core, sign);
+        group.lookAt(0, 0, 0);
+        scene.add(group);
+
+        portals.push({ ...test, position: new THREE.Vector3(x, 0, z), mesh: group, coreMesh: core });
+      });
+      document.getElementById('score-text').textContent = `0 / ${tests.length}`;
+    }
+
+    // Carga de tests.json
+    fetch('tests.json')
+      .then(r => r.json())
+      .then(data => buildPortals(data))
+      .catch(err => {
+        console.warn("Fallback de pruebas locales:", err);
+        buildPortals([
+          { id: "math", titulo: "Math Practice", materia: "Matemáticas", url: "math.html", color: "#3b82f6", icono: "📐" },
+          { id: "science", titulo: "Life Cycles", materia: "Science", url: "Science-Topic4-Life-Cycles-and-traits.html", color: "#10b981", icono: "🧬" },
+          { id: "adverbios", titulo: "Los Adverbios", materia: "Español", url: "adverbios.html", color: "#f59e0b", icono: "📚" },
+          { id: "thunder-rose", titulo: "Thunder Rose", materia: "English", url: "Thunder Rose.html", color: "#8b5cf6", icono: "⚡" }
+        ]);
+      });
+
+    // Control Personalización
+    function toggleCustomizer() {
+      const p = document.getElementById('customizer-panel');
+      p.style.display = p.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function setTimeMode(mode) {
+      document.getElementById('btn-day').classList.toggle('active', mode === 'day');
+      document.getElementById('btn-night').classList.toggle('active', mode === 'night');
+
+      if (mode === 'day') {
+        scene.background.setHex(dayColor);
+        scene.fog.color.setHex(dayColor);
+        ambientLight.intensity = 0.65;
+        sunLight.intensity = 0.9;
+        floodlights.forEach(f => { f.spot.intensity = 0; f.bulb.material.color.setHex(0x334155); });
+      } else {
+        scene.background.setHex(nightColor);
+        scene.fog.color.setHex(nightColor);
+        ambientLight.intensity = 0.2;
+        sunLight.intensity = 0.15;
+        floodlights.forEach(f => { f.spot.intensity = 1.4; f.bulb.material.color.setHex(0xffffaa); });
+      }
+    }
+
+    function setKit(colorName, el) {
+      document.querySelectorAll('.kit-opt').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+
+      const kits = {
+        azul: { jerseyHex: 0x1d4ed8, shortsHex: 0xffffff, cssColor: '#1d4ed8', textColor: '#ffffff' },
+        blanco: { jerseyHex: 0xf8fafc, shortsHex: 0x1e293b, cssColor: '#f8fafc', textColor: '#0f172a' },
+        negro: { jerseyHex: 0x111827, shortsHex: 0x374151, cssColor: '#111827', textColor: '#ffffff' },
+        celeste: { jerseyHex: 0x38bdf8, shortsHex: 0x0f172a, cssColor: '#38bdf8', textColor: '#0f172a' }
+      };
+      const kit = kits[colorName];
+      jerseyMat.color.setHex(kit.jerseyHex);
+      shortsMat.color.setHex(kit.shortsHex);
+      backNumberMat.map = createJerseyNumberTexture(kit.cssColor, kit.textColor);
+      backNumberMat.needsUpdate = true;
+    }
+
+    // Modal de Examen (Opción A: Sobre pantalla)
+    function openTest(portal) {
+      playWhistle();
+      document.getElementById('modal-title').textContent = `${portal.materia} - ${portal.titulo}`;
+      document.getElementById('modal-icon').textContent = portal.icono || '⚽';
+      document.getElementById('modal-external-link').href = portal.url;
+      document.getElementById('test-iframe').src = portal.url;
+      document.getElementById('test-modal').style.display = 'flex';
+    }
+    function closeTest() {
+      document.getElementById('test-modal').style.display = 'none';
+      document.getElementById('test-iframe').src = 'about:blank';
+    }
+
+    // Movimiento y Teclado
+    const keys = { w: false, a: false, s: false, d: false };
+    window.addEventListener('keydown', e => {
+      const k = e.key.toLowerCase();
+      if (['w', 'arrowup'].includes(k)) keys.w = true;
+      if (['s', 'arrowdown'].includes(k)) keys.s = true;
+      if (['a', 'arrowleft'].includes(k)) keys.a = true;
+      if (['d', 'arrowright'].includes(k)) keys.d = true;
+      if (k === ' ') { e.preventDefault(); doJump(); }
+      if (k === 'e' && currentPortalNear) openTest(currentPortalNear);
+      if (k === 'f') kickBall();
+    });
+    window.addEventListener('keyup', e => {
+      const k = e.key.toLowerCase();
+      if (['w', 'arrowup'].includes(k)) keys.w = false;
+      if (['s', 'arrowdown'].includes(k)) keys.s = false;
+      if (['a', 'arrowleft'].includes(k)) keys.a = false;
+      if (['d', 'arrowright'].includes(k)) keys.d = false;
+    });
+
+    let playerY = 0, playerVelocityY = 0, isGrounded = true;
+    function doJump() {
+      if (isGrounded) { playerVelocityY = 0.28; isGrounded = false; playBeep(350, 'square', 0.1); }
+    }
+    function kickBall() {
+      const dist = player.position.distanceTo(ball.position);
+      if (dist < 3.5) {
+        const dir = new THREE.Vector3().subVectors(ball.position, player.position).normalize();
+        ballVel.copy(dir.multiplyScalar(0.9));
+        ballVel.y = 0.35;
+        playBeep(180, 'sine', 0.2);
+      }
+    }
+
+    // Controles Touch
+    if ('ontouchstart' in window) {
+      document.getElementById('touch-controls').style.display = 'block';
+      const jZone = document.getElementById('joystick-zone');
+      const jKnob = document.getElementById('joystick-knob');
+      let touchID = null, startX = 0, startY = 0;
+
+      jZone.addEventListener('touchstart', e => {
+        const t = e.changedTouches[0]; touchID = t.identifier;
+        startX = t.clientX; startY = t.clientY;
+      });
+      window.addEventListener('touchmove', e => {
+        if (touchID === null) return;
+        for (let i = 0; i < e.touches.length; i++) {
+          if (e.touches[i].identifier === touchID) {
+            const dx = e.touches[i].clientX - startX;
+            const dy = e.touches[i].clientY - startY;
+            const dist = Math.min(Math.hypot(dx, dy), 45);
+            const ang = Math.atan2(dy, dx);
+            jKnob.style.transform = `translate(${Math.cos(ang)*dist}px, ${Math.sin(ang)*dist}px)`;
+            keys.w = dy < -15; keys.s = dy > 15;
+            keys.a = dx < -15; keys.d = dx > 15;
+          }
         }
-
-        pruebas.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
-
-        grid.innerHTML = pruebas.map(p => {
-          const limpio = p.name.replace('.html', '').replace(/[-_]/g, ' ');
-          const { icono, tag } = categorizar(p.name);
-
-          return `
-            <a class="card" href="${p.name}">
-              <span class="card-zone">${tag}</span>
-              <div class="card-header">
-                <div class="card-icon">${icono}</div>
-                <div class="card-title">${limpio}</div>
-              </div>
-              <div class="btn-spawn">
-                ▶ SPAWN
-              </div>
-            </a>
-          `;
-        }).join('');
-
-      } catch (err) {
-        grid.innerHTML = `
-          <div class="status-box">
-            No se pudo conectar con el servidor.<br>
-            Asegúrate de que <code>osv927/pruebas</code> sea público.
-          </div>
-        `;
-      }
+      });
+      const endJoy = () => {
+        touchID = null; jKnob.style.transform = 'translate(0,0)';
+        keys.w = keys.s = keys.a = keys.d = false;
+      };
+      window.addEventListener('touchend', endJoy);
+      window.addEventListener('touchcancel', endJoy);
+      document.getElementById('jump-btn').addEventListener('touchstart', doJump);
+      document.getElementById('kick-btn').addEventListener('touchstart', kickBall);
     }
 
-    listarRetos();
+    document.getElementById('prompt').addEventListener('click', () => {
+      if (currentPortalNear) openTest(currentPortalNear);
+    });
+
+    // Bucle de Animación
+    const clock = new THREE.Clock();
+    function animate() {
+      requestAnimationFrame(animate);
+      const time = clock.getElapsedTime();
+
+      const moveVec = new THREE.Vector3();
+      if (keys.w) moveVec.z -= 1;
+      if (keys.s) moveVec.z += 1;
+      if (keys.a) moveVec.x -= 1;
+      if (keys.d) moveVec.x += 1;
+
+      const isMoving = moveVec.lengthSq() > 0;
+      if (isMoving) {
+        moveVec.normalize().multiplyScalar(0.28);
+        player.position.add(moveVec);
+        player.rotation.y = Math.atan2(moveVec.x, moveVec.z);
+        leftLeg.rotation.x = Math.sin(time * 12) * 0.6;
+        rightLeg.rotation.x = -Math.sin(time * 12) * 0.6;
+        leftArm.rotation.x = -Math.sin(time * 12) * 0.6;
+        rightArm.rotation.x = Math.sin(time * 12) * 0.6;
+      } else {
+        leftLeg.rotation.x = rightLeg.rotation.x = 0;
+        leftArm.rotation.x = rightArm.rotation.x = 0;
+      }
+
+      // Salto y Gravedad
+      playerVelocityY -= 0.015;
+      playerY += playerVelocityY;
+      if (playerY <= 0) { playerY = 0; playerVelocityY = 0; isGrounded = true; }
+      player.position.y = playerY;
+
+      // Físicas del balón
+      ball.position.add(ballVel);
+      ballVel.x *= 0.94; ballVel.z *= 0.94;
+      ball.rotation.x += ballVel.z * 0.5;
+      ball.rotation.z -= ballVel.x * 0.5;
+
+      if (player.position.distanceTo(ball.position) < 1.4) {
+        const push = new THREE.Vector3().subVectors(ball.position, player.position).normalize();
+        ballVel.x += push.x * 0.06;
+        ballVel.z += push.z * 0.06;
+      }
+
+      // Proximidad de portales
+      currentPortalNear = null;
+      portals.forEach(p => {
+        p.coreMesh.rotation.y += 0.02;
+        if (player.position.distanceTo(p.position) < 4.2) currentPortalNear = p;
+      });
+
+      const promptEl = document.getElementById('prompt');
+      if (currentPortalNear) {
+        promptEl.style.display = 'flex';
+        document.getElementById('prompt-text').textContent = `Toca para entrar a: ${currentPortalNear.materia}`;
+      } else {
+        promptEl.style.display = 'none';
+      }
+
+      // Cámara
+      camera.position.x = player.position.x;
+      camera.position.y = player.position.y + 7;
+      camera.position.z = player.position.z + 12;
+      camera.lookAt(player.position.x, player.position.y + 1.5, player.position.z);
+
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
   </script>
 </body>
 </html>
