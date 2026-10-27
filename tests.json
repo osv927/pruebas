@@ -1,0 +1,38 @@
+[
+  {
+    "id": "math",
+    "titulo": "Math Practice",
+    "materia": "Matemáticas",
+    "subtitulo": "Cálculo y Razonamiento",
+    "url": "math.html",
+    "color": "#3b82f6",
+    "icono": "📐"
+  },
+  {
+    "id": "science",
+    "titulo": "Life Cycles & Traits",
+    "materia": "Science - Topic 4",
+    "subtitulo": "Ciclos de Vida y Rasgos",
+    "url": "Science-Topic4-Life-Cycles-and-traits.html",
+    "color": "#10b981",
+    "icono": "🧬"
+  },
+  {
+    "id": "adverbios",
+    "titulo": "Los Adverbios",
+    "materia": "Español",
+    "subtitulo": "Gramática y Tipos",
+    "url": "adverbios.html",
+    "color": "#f59e0b",
+    "icono": "📚"
+  },
+  {
+    "id": "thunder-rose",
+    "titulo": "Thunder Rose",
+    "materia": "Reading & English",
+    "subtitulo": "Reading Comprehension",
+    "url": "Thunder Rose.html",
+    "color": "#8b5cf6",
+    "icono": "⚡"
+  }
+]
